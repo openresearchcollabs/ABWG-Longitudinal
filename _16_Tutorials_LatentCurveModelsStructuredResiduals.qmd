@@ -1,0 +1,135 @@
+---
+title: "Latent Curve Models with Structured Residuals"
+author: "Biostatistics Working Group"
+---
+
+## Overview
+Latent Curve Models with Structured Residuals (LCM-SR) stand at the forefront of advanced statistical methodologies designed to dissect the nuances of longitudinal data. Gaining momentum in fields like psychology, epidemiology, and education, LCM-SRs shine in their ability to model growth trajectories while also accounting for structured deviations from these trajectories. These models expand upon traditional latent curve models by integrating structured residuals, capturing unique patterns in the data that aren't solely attributed to the underlying growth curve. This feature is pivotal when diving deep into longitudinal studies, where observations are sequential and the relationships between time points may have specific patterns. Within the LCM-SR framework, the primary focus remains on the general trajectory (latent curve) of a variable over time, while the structured residuals capture the systematic variations around this trajectory. This dual-layered analysis, blending the overarching growth patterns with detailed residuals, is the distinctive strength of LCM-SRs, marking them as an indispensable asset for intricate longitudinal studies.
+
+[+add diagrams/figures]
+
+#### When to use Latent Curve Models with Structured Residuals?
+You should consider Latent Curve Models with Structured Residuals in the following situations:
+
+1. You are interested in: Modeling the trajectory of a variable over time while considering structured deviations from the main growth curve.
+2. Your data: Contains multiple repeated measurements taken at distinct time points.
+3. You aim to: Not only capture the underlying growth trajectory but also model specific patterns in the residuals, which represent deviations from the main growth trend.
+
+#### Getting Started with Latent Curve Models with Structured Residuals
+In this tutorial, we will guide you through an example of a latent curve model with structured residualsl using a small dataset. By the time you complete this tutorial, you will be equipped to:
+
+1. Understand the basic concepts underlying Latent Curve Models with Structured Residuals.
+2. Constructing these models to assess both the primary growth trajectory and structured deviations from this trajectory.
+3. Analyzing and interpreting the results, providing a comprehensive understanding of the growth process and its deviations.
+
+## Basic Example
+In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you'll likely start by importing your own data.
+
+The simulated dataset created for this example consists of scores on two outcome variables ("Job_Satisfaction", "Life_Satisfaction") for 500 individuals each measured at five time points: T1-T5. 
+
+### Create Example Dataset
+```{r}
+
+# Setting the seed for reproducibility
+set.seed(123)
+
+# Setting the number of individuals for our sample data
+n <- 500
+
+# Specifying the desired correlation matrix for our data (5x5 matrix for 5 timepoints)
+cor_matrix <- matrix(c(1, 0.3, 0.3, 0.3, 0.3,
+                      0.3, 1, 0.3, 0.3, 0.3,
+                      0.3, 0.3, 1, 0.3, 0.3,
+                      0.3, 0.3, 0.3, 1, 0.3,
+                      0.3, 0.3, 0.3, 0.3, 1), 
+                      nrow=5)
+
+# Using Cholesky decomposition to generate correlated data
+cholesky <- chol(cor_matrix)
+
+# Generating correlated random data for 5 timepoints
+random_data <- matrix(rnorm(n * 5), ncol=5)
+correlated_data <- random_data %*% cholesky
+
+# Converting the generated data into a structured data frame in wide format
+data_wide <- data.frame(
+  Individual = 1:n,
+  Job_Satisfaction_T1 = round(runif(n, 5, 10)),
+  Job_Satisfaction_T2 = round(runif(n, 5, 10)),
+  Job_Satisfaction_T3 = round(runif(n, 5, 10)),
+  Job_Satisfaction_T4 = round(runif(n, 5, 10)),
+  Job_Satisfaction_T5 = round(runif(n, 5, 10)),
+  Life_Satisfaction_T1 = round(correlated_data[,1] * 2 + 7),
+  Life_Satisfaction_T2 = round(correlated_data[,2] * 2 + 7),
+  Life_Satisfaction_T3 = round(correlated_data[,3] * 2 + 7),
+  Life_Satisfaction_T4 = round(correlated_data[,4] * 2 + 7),
+  Life_Satisfaction_T5 = round(correlated_data[,5] * 2 + 7)
+)
+
+```
+
+### Model Specification and Estimation
+To specify an LCM-SR, we will use the lavaan syntax to define the measurement model and the structural model. We will model the linear growth of the outcome variable while accounting for the effect of the time-varying covariate.
+
+#### Install and Load Necessary Libraries
+```{r}
+if (!("lavaan" %in% installed.packages())) install.packages("lavaan")
+if (!("semTools" %in% installed.packages())) install.packages("semTools")
+
+library(lavaan)
+library(semTools)
+```
+
+#### Fit Model
+```{r}
+
+model <- '
+  # Latent variables
+  intercept =~ 1 * outcome_t1 + 1 * outcome_t2 + 1 * outcome_t3 + 1 * outcome_t4 + 1 * outcome_t5
+  slope =~ 0 * outcome_t1 + 1 * outcome_t2 + 2 * outcome_t3 + 3 * outcome_t4 + 4 * outcome_t5
+
+  # Time-varying covariate effect on outcome
+  outcome_t1 ~ c1 * covariate_t1
+  outcome_t2 ~ c2 * covariate_t2
+  outcome_t3 ~ c3 * covariate_t3
+  outcome_t4 ~ c4 * covariate_t4
+  outcome_t5 ~ c5 * covariate_t5
+
+  # Residual variances and covariances
+  outcome_t1 ~~ r1 * outcome_t1
+  outcome_t2 ~~ r2 * outcome_t2
+  outcome_t3 ~~ r3 * outcome_t3
+  outcome_t4 ~~ r4 * outcome_t4
+  outcome_t5 ~~ r5 * outcome_t5
+
+  # Latent variable variances
+  intercept ~~ i_var * intercept
+  slope ~~ s_var * slope
+
+  # Latent variable covariances
+  intercept ~~ i_s_cov * slope
+'
+```
+
+#### Model Summary
+```{r}
+summary(fit, fit.measures=TRUE, standardized=TRUE, rsquare=TRUE)
+```
+
+### Interpreting the Results
+The Latent Curve Model with Structured Residuals (LCM-SR) was fitted to understand the trajectory of the outcome variable over time while accounting for the structured residuals. The model decomposes the variance in the repeated measurements of the outcome into an intercept (average level) and a slope (rate of change) component. 
+
+From the `summary` output:
+- The `intercept` represents the average level of the outcome across time points.
+- The `slope` captures the rate of change in the outcome over time.
+- The time-varying covariate effects (`c1` to `c5`) provide insight into how the covariate at each time point influences the outcome at the corresponding time point.
+- The residual variances (`r1` to `r5`) represent the variances of the outcome at each time point not explained by the latent variables or the time-varying covariates.
+- The variances of the `intercept` and `slope`, `i_var` and `s_var` respectively, provide insight into individual differences in the average level and rate of change in the outcome.
+
+## Conclusion
+The LCM-SR provides a comprehensive understanding of the dynamics of the outcome variable over time while accounting for structured residuals. It captures both the average level and the rate of change in the outcome and adjusts for the influence of a time-varying covariate. This model offers insights into the patterns of change in the outcome over time and the factors influencing it.
+
+
+
+
+

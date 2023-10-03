@@ -1,0 +1,104 @@
+---
+title: "Signed-Rank Test"
+author: "Biostatistics Working Group"
+---
+
+## Overview
+The Signed-rank test, commonly referred to as the Wilcoxon signed-rank test, is a non-parametric statistical method used yo compare two related samples or repeated measurements on a single sample. Favored across fields like psychology, medicine, and economics, this test shines when data deviates from the assumptions of parametric tests, offering a robust alternative for evaluating median differences. Particularly beneficial for paired data, the signed-rank test delves into the depth of data, unveiling the nuances of change across two points in time. By addressing the ties and ranks within paired observations, this test imparts a comprehensive understanding of data distributions. It's the "ranking" and "signing" of these paired differences that give this method its distinctive name.
+
+![Signed-Rank Test](./figures/signedrank.png)
+### When to use a Signed-Rank Test?
+You should use a Wilcoxon Signed-Rank Test in the following scenario:
+
+1.	You want to know if two groups are different on your variable of interest
+2.	Your variable of interest is continuous
+3.	You have two and only two groups
+4.	You have independent samples
+5.	You have a skewed variable of interest
+
+### Getting Started with Longitudinal Signed-Rank Test
+
+In this tutorial, we will introduce the concept of the longitudinal signed-rank test and guide you through a simple example using a small dataset. By the end of this tutorial, you will be able to:
+
+1. Understand the basic concepts of the longitudinal signed-rank test.
+2. Perform a longitudinal signed-rank test using example data in R.
+3. Interpret the results of the test.
+
+## Basic Example
+In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you'll likely start by importing your own data.
+
+The simulated dataset created for this example consists of scores on a single outcome variable ("Job_Satisfaction") for 500 individuals each measured at two time points: T1-T2. 
+
+#### Create Example Dataset
+```{r}
+
+# Setting the number of individuals for our sample data
+n <- 500
+
+# Specifying the desired correlation matrix for our data (2x2 for two time points)
+cor_matrix <- matrix(c(1, 0.30, 
+                      0.30, 1),
+                      nrow=2)
+
+# Using Cholesky decomposition to generate correlated data
+cholesky <- chol(cor_matrix)
+
+# Generating correlated random data for 2 timepoints
+random_data <- matrix(rnorm(n * 2), ncol=2)
+correlated_data <- random_data %*% cholesky
+
+# Converting the generated data into a structured data frame in wide format
+data_wide <- data.frame(
+  Individual = 1:n,
+  Job_Satisfaction_T1 = correlated_data[,1],
+  Job_Satisfaction_T2 = correlated_data[,2]
+)
+
+```
+
+#### View Dataset
+```{r}
+head(data_wide)
+```
+
+### Model Specification and Estimation
+To conduct a Signed Rank Test, we will leverage the `stats` package in R, specifically the `wilcox.test` function. This non-parametric test is employed when tracking changes in a single group over two time points. In the Signed Rank Test, we aim to test the hypothesis that the distribution of differences between paired measurements remains symmetric about zero, without making assumptions about the specific form of the population distribution.
+
+#### Install and Load Necessary Libraries
+```{r}
+# Load necessary packages
+if (!("stats" %in% installed.packages())) install.packages("stats")
+library(stats)
+
+```
+
+#### Model
+```{r}
+
+# Conducting the Wilcoxon Signed-Rank Test
+test_result <- wilcox.test(data_wide$Job_Satisfaction_T1, data_wide$Job_Satisfaction_T2, paired = TRUE)
+
+```
+
+#### Model Summary
+```{r}
+# Displaying the result
+print(test_result)
+summary(test_result)
+```
+
+### Interpreting the Results
+The Wilcoxon signed-rank test was conducted to compare Job Satisfaction scores at two time points: T1 and T2. This test is a non-parametric alternative to the paired t-test and is suitable when the data might not meet the normality assumption. The test yielded a W statistic of W=`r round(test_result$statistic, 3)`. The associated p-value is p=`r round(test_result$p.value, 3)`. If this p-value is less than the common significance level of 0.05, we would reject the null hypothesis, indicating a statistically significant difference between the two time points.
+
+By using the `summary()` and `plot()` functions in R, we can also obtain additional details about the test and visually inspect the differences between the paired observations.
+
+## Conclusion
+Based on the Wilcoxon signed-rank test results, if the p-value is less than 0.05, we conclude that there is a statistically significant difference in Job Satisfaction scores between the two time points, T1 and T2. Otherwise, there is no significant difference between the two time points.
+
+
+
+
+
+
+
+

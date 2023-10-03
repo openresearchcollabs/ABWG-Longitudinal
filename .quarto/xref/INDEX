@@ -1,0 +1,78 @@
+{
+  "testpresentation.qmd": {
+    "testpresentation.html": "b50063c0"
+  },
+  "2_Tutorials_ResidualizedChangeScores.qmd": {
+    "2_Tutorials_ResidualizedChangeScores.html": "26e722f0"
+  },
+  "1_Tutorials_DifferenceScores.qmd": {
+    "1_Tutorials_DifferenceScores.html": "3535de45"
+  },
+  "examples.qmd": {
+    "examples.html": "bb8c7c61"
+  },
+  "2_Examples_ResidualizedChangeScores.qmd": {
+    "2_Examples_ResidualizedChangeScores.html": "52e8f445"
+  },
+  "reference.qmd": {
+    "reference.html": "8daee621"
+  },
+  "3a_Examples_LinearMixedModels.qmd": {
+    "3a_Examples_LinearMixedModels.html": "e199483b"
+  },
+  "drafts/oldvers_manuscript.qmd": {
+    "oldvers_manuscript.html": "d13d4cd5"
+  },
+  "drafts/manuscript_priorto091523.qmd": {
+    "manuscript_priorto091523.docx": "76a24fd4",
+    "manuscript_priorto091523.tex": "6ba34408",
+    "manuscript_priorto091523.html": "3fc10954"
+  },
+  "explanations.qmd": {
+    "explanations.html": "0df49b42"
+  },
+  "index.qmd": {
+    "index.html": "f533e1e1"
+  },
+  "1b_Examples_DifferenceScores_SimpleRegression.qmd": {
+    "1b_Examples_DifferenceScores_SimpleRegression.html": "f97ff7ec"
+  },
+  "3b_Examples_LinearMixedModels.qmd": {
+    "3b_Examples_LinearMixedModels.html": "661f047b"
+  },
+  "tutorials.qmd": {
+    "tutorials.html": "787413d5"
+  },
+  "manuscript.qmd": {
+    "manuscript.docx": "43aed3ab",
+    "manuscript.tex": "8c8dbd32",
+    "manuscript.html": "0235c183"
+  },
+  "3_Tutorials_LinearMixedModels.qmd": {
+    "3_Tutorials_LinearMixedModels.html": "c2db57dc"
+  },
+  "1a_Examples_DifferenceScores_PairedTtests.qmd": {
+    "1a_Examples_DifferenceScores_PairedTtests.html": "6710ac7b"
+  },
+  "4_Tutorials_SignedRankTest.qmd": {
+    "4_Tutorials_SignedRankTest.html": "f21ea260"
+  },
+  "5_Tutorials_MarginalModels.qmd": {
+    "5_Tutorials_MarginalModels.html": "ea78bd0d"
+  },
+  "6_Tutorials_GeneralizedEstimatingEquations.qmd": {
+    "6_Tutorials_GeneralizedEstimatingEquations.html": "9e4abeb7"
+  },
+  "7_Tutorials_GeneralizedLinearMixedEffectsModels.qmd": {
+    "7_Tutorials_GeneralizedLinearMixedEffectsModels.html": "43d56865"
+  },
+  "8_Tutorials_AutoregressiveCrosslaggedPanelModels.qmd": {
+    "8_Tutorials_AutoregressiveCrosslaggedPanelModels.html": "2fadef5b"
+  },
+  "9_Tutorials_LatentChangeScoresModels.qmd": {
+    "9_Tutorials_LatentChangeScoresModels.html": "80337692"
+  },
+  "10_Tutorials_LatentGrowthCurveModels.qmd": {
+    "10_Tutorials_LatentGrowthCurveModels.html": "37d813e7"
+  }
+}

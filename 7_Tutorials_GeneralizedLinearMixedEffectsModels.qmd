@@ -1,0 +1,105 @@
+---
+title: "Generalized Linear Mixed Effects Models"
+author: "Biostatistics Working Group"
+---
+
+## Overview
+Generalized linear mixed-effects models (GLMMs) represent a sophisticated statistical methodology adept at analyzing intricate data that exhibits both fixed effects and random variability. GLMMs have garnered attention in numerous arenas like ecology, psychology, and medicine, owing to their prowess in accommodating non-normal data and dealing with hierarchical or nested data structures. They can be seen as an evolution of the general linear model (GLM), enriched to include both fixed effects, which capture population-level trends, and random effects, which account for individual or group-specific variability. This becomes invaluable in longitudinal studies, where data points are chronologically collected, and the need to capture both overarching trends and individual-specific trajectories is paramount. In essence, the GLMM paradigm extends the capabilities of GLMs, marrying them with the mixed-effects framework. This fusion allows the model to cater to diverse data distributions while simultaneously capturing both the grand mean trend (fixed effect) and deviations specific to individual or groups (random effects). The seamless blend of general and specific effects is the hallmark of GLMMs, granting them a unique niche in the statistical modeling realm.
+
+[+add diagrams/figures]
+
+### When to use Longitudinal Generalized Linear Mixed Effects Models?
+You should employ longitudinal generalized linear mixed effects models in the following scenarios:
+
+1. You want to know: How individual trajectories change over time while accounting for within-subject correlations.
+2. Your variable: Is recorded over multiple time points and may not necessarily follow a normal distribution.
+3. You have: Longitudinal data where measurements within subjects are correlated and you want to capture both fixed (population-level) and random (subject-specific) effects in your analysis.
+
+### Getting Started with Longitudinal Generalized Linear Mixed Effects Models
+In this tutorial, we will delve into the world of longitudinal generalized linear mixed effects models, guiding you through an illustrative example using a small dataset. By the conclusion of this tutorial, you will be poised to:
+
+1. Understand the basic principles of generalized linear mixed effects models in longitudinal settings.
+2. Fit these models to longitudinal data in R.
+3. Analyze and interpret the results derived from the generalized linear mixed effects model analysis.
+
+## Basic Example
+In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you'll likely start by importing your own data.
+
+The simulated dataset created for this example consists of scores on a single outcome variable ("Job_Satisfaction") for 500 individuals each measured at four time points: T1-T4. 
+
+#### Create Example Dataset
+```{r}
+
+# This will create a dataset with 2000 rows (4 rows for each of the 500 individuals).
+
+# Setting the number of individuals for our sample data
+n <- 500
+
+# Specifying the desired correlation matrix for our data
+cor_matrix <- matrix(c(1, 0.30, 0.30, 0.30, 
+                      0.30, 1, 0.30, 0.30, 
+                      0.30, 0.30, 1, 0.30,
+                      0.30, 0.30, 0.30, 1),
+                      nrow=4)
+
+# Using Cholesky decomposition to generate correlated data
+cholesky <- chol(cor_matrix)
+
+# Generating correlated random data for 4 timepoints
+random_data <- matrix(rnorm(n * 4), ncol=4)
+correlated_data <- random_data %*% cholesky
+
+# Convert the correlated data to probabilities using the plogis function
+correlated_probs <- plogis(correlated_data)
+
+# Convert the probabilities to binary outcomes (using 0.5 as the threshold)
+binary_outcomes <- ifelse(correlated_probs > 0.5, 1, 0)
+
+# Converting the generated data into a structured data frame
+data_large <- data.frame(
+  Individual = rep(1:n, each=4),
+  TimePoint = rep(c("T1", "T2", "T3", "T4"), times=n),
+  Job_Satisfaction = as.vector(t(binary_outcomes))
+)
+
+```
+
+### View Dataset
+```{r}
+head(data_large)
+```
+
+### Model Specification and Estimation
+To specify a Generalized Linear Mixed Effects Model (GLMM), we will use the `lme4` package in R to establish both the fixed and random effects in our model, accounting for the nested or hierarchical structure of the data by introducing random effects. This approach allows us to model non-normally distributed outcome variables, while capturing both fixed and random effects.
+
+#### Install and Load Necessary Libraries
+```{r}
+if (!("lme4" %in% installed.packages())) install.packages("lme4")
+library(lme4)
+
+```
+
+#### Model
+```{r}
+model <- glmer(Job_Satisfaction ~ TimePoint + (1 | Individual), data = data_large, family = binomial(link = "logit"))
+```
+
+#### Model Summary
+```{r}
+print(model)
+```
+
+### Interpreting the Results
+A Generalized linear mixed-effects model (GLMM) was employed to understand the relationship between Job Satisfaction and TimePoint while accounting for the random effects associated with individuals. The model assumes a binomial distribution for Job Satisfaction with a logit link function.
+
+From the `glmer` output, we can gather key information:
+- Fixed effects coefficients, which give us information about the change in the log odds of Job Satisfaction for a unit change in TimePoint.
+- Random effects variance components, which quantify the variability in intercepts across individuals.
+
+For a comprehensive interpretation, we would look at:
+- Coefficient (Estimate) for `TimePoint`: **r round(coef(model)["TimePoint"], 3)**
+- Associated p-value: **r round(summary(model)$coefficients["TimePoint", "Pr(>|z|)"], 3)**
+
+## Conclusion
+If the p-value for the `TimePoint` coefficient is less than 0.05, we can conclude that there's a statistically significant change in Job Satisfaction across the TimePoints according to the GLMM. Otherwise, there isn't sufficient evidence to support such a change. The direction (increase or decrease) of this change is indicated by the sign of the coefficient for `TimePoint`.
+

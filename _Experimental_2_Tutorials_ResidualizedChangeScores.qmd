@@ -1,0 +1,146 @@
+---
+title: Difference Scores
+format: html
+engine: knitr
+webr: 
+  show-startup-message: false
+  show-header-message: false
+  home-dir: '/Users/shawes/git/abcd-biostatwg-longitudinal'
+  packages: ['tidyverse','rstatix','DT']
+filters:
+  - webr
+---
+
+### Config Options
+
+
+**This code configures knitr code chunk options**
+
+```{r config}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+
+knitr::opts_chunk$set(echo = T, message=F, warning=F, error=F, 
+                      comment=NA, cache=T, code_folding=T,
+                      R.options=list(width=220, digits = 3),
+                      fig.align='center', 
+                      out.width='75%', fig.asp=.75)
+```
+
+## Overview
+Residualized change scores are a statistical approach that allows for examining the true change in a variable over time by controlling for the initial level of that variable. This method is commonly employed in longitudinal research, especially in fields such as psychology, education, and medicine. Residualized change scores offer a way to address a significant concern in repeated measures: the potential correlation between initial scores and their subsequent change. By using regression analyses, the score at Time 2 is predicted based on the score at Time 1. The residuals from this analysis, which represent the portion of the Time 2 score not predicted by the Time 1 score, give the residualized change score. This score effectively captures the 'true change' from Time 1 to Time 2. In essence, this method seeks to answer the question: Given where someone started (Time 1), did they end up higher or lower than expected at Time 2? By removing the influence of initial levels, researchers can gain clearer insights into the factors that drive genuine change over time.
+
+![Figure x. Difference score add explanation or tag](./figures/Difference Score 1_Tutorial.png)
+
+### When to use Difference Score Models?
+You should use difference scores in the following scenario:
+
+1. You want to know: The impact of interventions or time on a measured variable.
+2. Your variable: Has paired measurements, like pre-test and post-test scores.
+3. You have: Matched data for each set, ensuring valid difference computations.
+
+### Getting Started with Difference Score Models
+In this tutorial, we will guide you through two simple examples of using difference scores. By the end of this tutorial, you will be able to:
+
+1. Understand the basic concepts of difference scores.
+2. Calculate difference scores using example data.
+3. Interpret the results of the difference scores analysis.
+
+## Basic Example
+In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout the tutorial. Remember, in your own analyses, you'll likely start by importing your own data.
+
+```{webr-r}
+
+# Creating the example dataset
+set.seed(123) # for reproducibility
+
+# Setting the number of individuals for our sample data
+n <- 250
+
+# Specifying the desired correlation matrix for our data
+cor_matrix <- matrix(c(1, 0.30, 
+                      0.30, 1), 
+                      nrow=2)
+
+# Using Cholesky decomposition to generate correlated data
+cholesky <- chol(cor_matrix)
+
+# Generating correlated random data
+random_data <- matrix(rnorm(n * 2), ncol=2)
+correlated_data <- random_data %*% cholesky
+
+# Converting the generated data into a structured data frame
+data_large <- data.frame(
+  Individual = rep(1:n, each=2),
+  TimePoint = rep(c("T1", "T2"), times=n),
+  Job_Satisfaction = round(runif(2*n, 5, 10)), # keeping this random as before
+  Life_Satisfaction = round(correlated_data[,1] * 2 + 7) # scaling and shifting to get values between 5 and 10
+)
+
+```
+
+The dataset we've created consists of simulated scores for individuals at two time points: T1 and T2. It captures Job_Satisfaction and Life_Satisfaction ratings. This data will help us understand the changes in satisfaction levels over the two time points.
+
+Here is a view of the dataset:
+```{webr-r}
+head(data_large)
+```
+
+### Repeated Measures Paired Samples T-test
+To conduct a repeated measures paired samples t-test on satisfaction_diff, we will use the t.test() function in R:
+
+```{webr-r}
+# Performing the paired t-test to compare Life Satisfaction scores at two time points
+t1_scores_large <- data_large$Life_Satisfaction[data_large$TimePoint == "T1"]
+t2_scores_large <- data_large$Life_Satisfaction[data_large$TimePoint == "T2"]
+test_result <- t.test(t1_scores_large, t2_scores_large, mu = 0, paired = TRUE)
+test_result
+
+```
+
+### Interpreting the Results
+
+The paired t-test was conducted to compare Life Satisfaction scores at two time points: T1 and T2. The test yielded a t-value of t=0.806 with df=249 degrees of freedom. The associated p-value is p=0.421. This p-value is greater than the common significance level of 0.05, which means that we do not have enough evidence to reject the null hypothesis. The 95% confidence interval for the mean difference ranges from -0.207 to 0.495. The observed mean difference between the two time points is 0.144.
+
+### Conclusion
+There is no statistically significant difference in Life Satisfaction scores between the two time points, T1 and T2, based on the paired t-test results. The mean difference, although positive (0.144), is not significant at the 0.05 level.
+
+########
+
+```{=html}
+<iframe width="780" height="500" src="https://quarto.org/" title="Quarto Documentation"></iframe>
+```
+
+```{=html}
+<iframe width="100%" height="808" frameborder="0"
+  src="https://ucsd-cmig.shinyapps.io/abcd-metrics/"></iframe>
+```
+
+```{=html}
+<div id="observablehq-viewof-svg-05cd2bd3"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@observablehq/inspector@5/dist/inspector.css">
+<script type="module">
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+import define from "https://api.observablehq.com/d/59b19988767e67d6@1083.js?v=3";
+new Runtime().module(define, name => {
+  if (name === "viewof svg") return new Inspector(document.querySelector("#observablehq-viewof-svg-05cd2bd3"));
+});
+</script>
+```
+
+
+```{=html}
+<div id="observablehq-chart-2cee073f"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@observablehq/inspector@5/dist/inspector.css">
+<script type="module">
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+import define from "https://api.observablehq.com/d/968904872e580c18@165.js?v=3";
+new Runtime().module(define, name => {
+  if (name === "chart") return new Inspector(document.querySelector("#observablehq-chart-2cee073f"));
+});
+</script>
+```

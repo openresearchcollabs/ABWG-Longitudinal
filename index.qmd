@@ -1,0 +1,30 @@
+---
+#title: "Longitudinal Analysis"
+format:
+  html:
+    css: styles.css
+    theme: cosmo
+    page-layout: full
+    grid:
+      sidebar-width: 0px
+      body-width: 2000px
+      margin-width: 0px
+    #gutter-width: 1.5rem
+---
+
+
+::: {.column-screen}
+![](./figures/Figlanding5.svg)
+:::
+
+
+
+
+
+
+
+
+
+
+
+

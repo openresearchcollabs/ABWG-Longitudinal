@@ -1,0 +1,133 @@
+---
+title: "Latent Change Score Models"
+author: "Biostatistics Working Group"
+---
+
+## Overview
+Latent change score models (LCSMs) are a sophisticated statistical method designed to delve deep into the intricacies of individual change over time. LCSMs have gained prominence in fields such as psychology, health sciences, and education for their ability to decipher the underlying structure and magnitude of change. These models represent an evolution of traditional growth curve models, emphasizing the differences between consecutive time points to capture the essence of change. Particularly adept for longitudinal data, LCSMs shine when there's a need to understand how and why individuals change over multiple time points, offering insights into both the rate and direction of change. At their core, LCSMs utilize a latent variable framework to model the difference scores, ensuring that the observed change is disentangled from measurement error. This unique approach to modeling change, by focusing on the "latent" or hidden aspects of growth or decline, is what lends the method its distinctive name.
+
+[+add diagrams/figures]
+
+### When to use Latent Change Score Models?
+You should consider latent change score models in the following situations:
+
+1. You aim to understand: The dynamics of individual change over time.
+2. Your data: Contains repeated measures spanning multiple time points.
+3. You are interested in: Quantifying both the magnitude and direction of change for each individual in your sample.
+
+### Getting Started with Latent Change Score Models
+In this tutorial, we will guide you through an example of latent change score model using a small dataset. By the time you complete this tutorial, you will be equipped to:
+
+1. Understand the basic principles of latent change score models.
+2. Implement these models on your own longitudinal data using appropriate statistical tools.
+3. Analyze and discern the implications derived from the latent change score model analysis.
+
+## Basic Example
+In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you'll likely start by importing your own data.
+
+The simulated dataset created for this example consists of scores on a single outcome variable ("Job_Satisfaction") for 500 individuals each measured at four time points: T1-T4.
+
+#### Create Example Dataset
+```{r}
+# Setting the seed for reproducibility
+set.seed(123)
+
+# Setting the number of individuals for our sample data
+n <- 500
+
+# Specifying the desired correlation matrix for our data
+cor_matrix <- matrix(c(1, 0.3, 0.3, 0.3, 
+                      0.3, 1, 0.3, 0.3,
+                      0.3, 0.3, 1, 0.3,
+                      0.3, 0.3, 0.3, 1), 
+                      nrow=4)
+
+# Using Cholesky decomposition to generate correlated data
+cholesky <- chol(cor_matrix)
+
+# Generating correlated random data
+random_data <- matrix(rnorm(n * 4), ncol=4)
+correlated_data <- random_data %*% cholesky
+
+# Converting the generated data into a structured data frame in wide format
+data_wide <- data.frame(
+  Individual = 1:n,
+  Job_Satisfaction_T1 = round(runif(n, 5, 10)),
+  Job_Satisfaction_T2 = round(runif(n, 5, 10)),
+  Job_Satisfaction_T3 = round(runif(n, 5, 10)),
+  Job_Satisfaction_T4 = round(runif(n, 5, 10))
+)
+
+```
+
+### View Dataset
+```{r}
+head(data_wide)
+```
+
+### Model Specification and Estimation
+To specify a Latent Change Score Model (LCSM), we will employ the lavaan syntax to detail both the measurement model and the structural model. In an LCSM, we focus on modeling the changes in an outcome variable from one time point to the next. This enables us to capture both the magnitude and direction of these changes, while also considering the influences of time-invariant and time-varying predictors.
+
+#### Install and Load Necessary Libraries
+```{r}
+if (!("lavaan" %in% installed.packages())) {
+  install.packages("lavaan")
+}
+
+library(lavaan)
+
+```
+
+#### Model
+```{r}
+
+library(lavaan)
+
+# Define the Latent Change Score Model
+model <- '
+    # Measurement part
+    delta12 =~ Job_Satisfaction_T2
+    delta23 =~ Job_Satisfaction_T3
+    delta34 =~ Job_Satisfaction_T4
+    
+    # Structural part (relationships)
+    delta12 ~ Job_Satisfaction_T1
+    delta23 ~ Job_Satisfaction_T2
+    delta34 ~ Job_Satisfaction_T3
+    
+    # Variances
+    delta12 ~~ 1*delta12
+    delta23 ~~ 1*delta23
+    delta34 ~~ 1*delta34
+'
+
+```
+
+#### Fit Model
+```{r}
+# Fit the model
+fit <- sem(model, data = data_wide)
+
+```
+
+#### Model Summary
+```{r}
+# Summary of the model
+summary(fit, fit.measures=TRUE, standardized=TRUE, rsquare=TRUE)
+
+```
+
+### Interpreting the Results
+A Latent Change Score Model (LCSM) was employed to understand the dynamic changes in scores over time. This model captures the latent change (or difference) between consecutive time points, allowing for a detailed analysis of the trajectory of change.
+
+From the `sem` output, we can interpret:
+- The estimated change score from T1 to T2: **r round(fit@coef["delta12"], 3)**
+- The estimated change score from T2 to T3: **r round(fit@coef["delta23"], 3)**
+
+These coefficients represent the latent change in scores from one time point to the next. A positive coefficient suggests an increase, while a negative coefficient indicates a decrease.
+
+## Conclusion
+The LCSM provides insights into how scores evolve over time. By examining the estimated change scores, we can determine whether there's an increasing or decreasing trend in the scores across the specified time points. The statistical significance of these change scores can further inform us about the reliability of these observed trends.
+
+
+

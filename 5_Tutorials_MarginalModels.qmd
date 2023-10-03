@@ -1,0 +1,119 @@
+---
+title: "Marginal Models"
+author: "Biostatistics Working Group"
+format:
+  html:
+    mermaid:
+      theme: forest
+---
+## Overview
+Marginal models, often termed population-averaged models, are a statistical method used to analyze longitudinal or clustered data. The marginal model estimates the average effect of the independent variables on the outcome while accounting for the within-subject correlation. These models allow for the estimation of population-averaged effects, in contrast to subject-specific effects estimated by random-effects models. Similar to the GEE approach, marginal models account for correlations within repeated measures, but using a different estimation technique that does not account for subject-specific effects. Marginal models expand upon the general linear model, providing a repeated measures framework that is robust to non-normality and non-constant variance, and can handle unbalanced or unequally spaced data. The term marginal in this context is used to emphasize that the model for the mean response at each occasion depends only on the covariates of interest, and not on any random effects or previous responses. 
+
+```{mermaid}
+graph LR
+A(( )) -- Intercept --> B(( ))
+B -- Slope --> C(( ))
+C -- Quadratic --> D(( ))
+
+B -- Y1 --> E[square]
+C -- Y2 --> F[square]
+D -- Y3 --> G[square]
+```
+
+### When to use Longitudinal Marginal Models?
+You should use longitudinal marginal models in the following scenario:
+
+1. You want to know: How the average response of a population changes over time or under different conditions.
+2. Your variable: Is measured repeatedly over time or under varying conditions, like multiple visits to a doctor.
+3. You have: Repeated measures that might be correlated, and you want to account for this correlation without specifying a full covariance structure.
+
+### Getting Started with Longitudinal Marginal Models
+In this tutorial, we will introduce the concept of longitudinal marginal models and guide you through a simple example using a small dataset. By the end of this tutorial, you will be able to:
+
+1. Understand the basic concepts of longitudinal marginal models.
+2. Fit a marginal model to longitudinal data using an example dataset in R.
+3. Interpret the results and understand the implications of the longitudinal marginal model analysis.
+
+## Basic Example
+In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you'll likely start by importing your own data.
+
+The simulated dataset created for this example consists of scores on a single outcome variable ("Job_Satisfaction") for 500 individuals each measured at four time points: T1-T4. 
+
+#### Create Example Dataset
+```{r}
+
+# This will create a dataset with 2000 rows (4 rows for each of the 500 individuals).
+
+# Setting the number of individuals for our sample data
+n <- 500
+
+# Specifying the desired correlation matrix for our data
+cor_matrix <- matrix(c(1, 0.30, 0.30, 0.30, 
+                      0.30, 1, 0.30, 0.30, 
+                      0.30, 0.30, 1, 0.30,
+                      0.30, 0.30, 0.30, 1),
+                      nrow=4)
+
+# Using Cholesky decomposition to generate correlated data
+cholesky <- chol(cor_matrix)
+
+# Generating correlated random data for 4 timepoints
+random_probs <- matrix(runif(n * 4), ncol=4)
+correlated_probs <- random_probs %*% cholesky
+
+# Convert the probabilities to binary outcomes (using 0.5 as the threshold)
+binary_outcomes <- ifelse(correlated_probs > 0.5, 1, 0)
+
+# Converting the generated data into a structured data frame
+data_large <- data.frame(
+  Individual = rep(1:n, each=4),
+  TimePoint = rep(c("T1", "T2", "T3", "T4"), times=n),
+  Job_Satisfaction = as.vector(t(binary_outcomes))
+)
+
+
+```
+
+#### View Dataset
+```{r}
+head(data_large)
+```
+
+### Model Specification and Estimation
+To specify a Longitudinal Marginal Model, we will employ the `geepack` (or `nlme`) package in R. These models are adept at examining changes over time while considering the non-independence of repeated measurements on the same subjects. In a marginal model, we aim to estimate average population effects, taking into account the correlations between repeated measures on the same individuals.
+
+#### Install and Load Necessary Libraries
+```{r}
+if (!("lme4" %in% installed.packages())) install.packages("geepack")
+library(geepack)
+```
+
+#### Model
+```{r}
+
+# Fitting the longitudinal marginal model
+model <- geeglm(Job_Satisfaction ~ TimePoint, data = data_large, id = Individual, family = binomial(link = "logit"), corstr = "exchangeable")
+
+```
+
+#### Model Summary
+```{r}
+print(model)
+```
+
+### Interpreting the Results
+A marginal model was fitted using the Generalized Estimating Equations (GEE) approach to assess the effect of TimePoint on Job Satisfaction while accounting for the correlation of observations within individuals. The model used an exchangeable correlation structure, assuming that observations within the same individual have the same correlation. The output of the `geeglm` function provides estimates for the coefficients, along with their standard errors, Wald statistics, and p-values. The coefficient for `TimePoint` indicates how the log odds of Job Satisfaction change from one time point to another. If the p-value associated with this coefficient is less than 0.05, it suggests that there is a statistically significant change in Job Satisfaction across the time points. For a more detailed interpretation, we would look at the specific values obtained from the `print(model)` output, such as:
+
+- Coefficient (Estimate) for `TimePoint`: `r round(coef(model)["TimePoint"], 3)`
+- Associated p-value: `r round(summary(model)$coefficients["TimePoint", "Pr(>|W|)"], 3)`
+
+## Conclusion
+If the p-value for the `TimePoint` coefficient is less than 0.05, we conclude that there is a statistically significant change in Job Satisfaction scores between the time points. Otherwise, there is no significant change based on the marginal model results. The exact nature (increase/decrease) of the change can be inferred from the sign (+/-) of the coefficient.
+
+
+
+
+
+
+
+

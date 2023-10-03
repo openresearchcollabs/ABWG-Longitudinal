@@ -1,0 +1,134 @@
+---
+title: "Latent Growth Curve Models"
+author: "Biostatistics Working Group"
+---
+
+## Overview
+Latent growth curve models (LGCMs) are an advanced statistical approach that allows researchers to explore the trajectory of growth, decline, or stability over time within individuals. LGCMs have become indispensable in disciplines such as psychology, public health, and developmental research, owing to their capability to model individual differences in change trajectories and capture the underlying structure of growth. These models are an enhancement of structural equation modeling, designed specifically for longitudinal data, where the essence of change across multiple time points is of interest. LGCMs offer a flexible framework that can model both the average trajectory in the population (fixed effects) and individual deviations from this average (random effects). By representing time as a latent construct, these models capture the nuances of individual change while accounting for measurement error. This combination of capturing overarching growth patterns while also emphasizing individual differences is the hallmark of the "latent" growth curve models, making them a vital tool for understanding longitudinal patterns.
+
+![Latent Growth Curve Model 1_Tutorial](./figures/lgcm.png)
+
+### When to use Latent Growth Curve Models?
+You should consider latent growth curve models in the following situations:
+
+1. You aim to explore: The trajectory of change over time for an observed variable.
+2. Your data: Contains repeated measures taken at multiple time points.
+3. You seek to: Capture both the average growth pattern in the population and individual differences in that growth.
+
+### Getting Started with Latent Growth Curve Models
+In this tutorial, we will guide you through an example of a latent growth curve model using a small dataset. By the time you complete this tutorial, you will be equipped to:
+
+1. Understand the basic principles of latent growth curve models.
+2. Implement these models on your own longitudinal data using appropriate statistical tools.
+3. Analyze and draw meaningful inferences from the latent growth curve model outputs.
+
+## Basic Example
+In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you'll likely start by importing your own data.
+
+The simulated dataset created for this example consists of scores on a single outcome variable ("Job_Satisfaction") for 500 individuals each measured at four time points: T1-T4.
+
+#### Create Example Dataset
+```{r}
+# Setting the seed for reproducibility
+set.seed(123)
+
+# Setting the number of individuals for our sample data
+n <- 500
+
+# Specifying the desired correlation matrix for our data
+cor_matrix <- matrix(c(1, 0.3, 0.3, 0.3, 
+                      0.3, 1, 0.3, 0.3,
+                      0.3, 0.3, 1, 0.3,
+                      0.3, 0.3, 0.3, 1), 
+                      nrow=4)
+
+# Using Cholesky decomposition to generate correlated data
+cholesky <- chol(cor_matrix)
+
+# Generating correlated random data
+random_data <- matrix(rnorm(n * 4), ncol=4)
+correlated_data <- random_data %*% cholesky
+
+# Converting the generated data into a structured data frame in wide format
+data_wide <- data.frame(
+  Individual = 1:n,
+  Job_Satisfaction_T1 = round(runif(n, 5, 10)),
+  Job_Satisfaction_T2 = round(runif(n, 5, 10)),
+  Job_Satisfaction_T3 = round(runif(n, 5, 10)),
+  Job_Satisfaction_T4 = round(runif(n, 5, 10))
+)
+
+```
+
+### View Dataset
+```{r}
+head(data_wide)
+```
+
+### Model Specification and Estimation
+To specify a Latent Growth Curve Model (LGCM), we will leverage the lavaan syntax to delineate both the measurement model and the structural model. The LGCM allows us to capture the trajectory of an outcome variable across multiple time points. By doing so, we can understand the inherent growth patterns and the variability around this growth, offering insights into individual differences and their development over time.
+
+#### Install and Load Necessary Libraries
+```{r}
+if (!("lavaan" %in% installed.packages())) {
+  install.packages("lavaan")
+}
+
+library(lavaan)
+
+```
+
+#### Model
+```{r}
+
+# Define the Latent Growth Curve Model
+model <- '
+  # Latent variables
+    i =~ 1 * Job_Satisfaction_T1 + 1 * Job_Satisfaction_T2 + 1 * Job_Satisfaction_T3 + 1 * Job_Satisfaction_T4
+    s =~ 0 * Job_Satisfaction_T1 + 1 * Job_Satisfaction_T2 + 2 * Job_Satisfaction_T3 + 3 * Job_Satisfaction_T4
+
+  # Variances
+    i ~~ var_i * i
+    s ~~ var_s * s
+
+  # Covariance
+    i ~~ cov_is * s
+'
+
+# Fit the model
+fit <- sem(model, data = data_wide)
+
+# Summary of the model
+summary(fit, fit.measures=TRUE, standardized=TRUE, rsquare=TRUE)
+
+
+```
+
+#### Fit Model
+```{r}
+# Fit the model
+fit <- sem(model, data = data_wide, missing = "FIML")
+
+```
+
+#### Model Summary
+```{r}
+summary(fit, fit.measures=TRUE, standardized=TRUE, rsquare=TRUE)
+```
+
+### Interpreting the Results
+A Latent Growth Curve Model (LGCM) was used to understand the trajectory of scores over time. This model separates the growth into two latent factors:
+- **Intercept (i)**: Represents the initial status or starting point.
+- **Slope (s)**: Represents the rate of change over time.
+
+From the `sem` output, we can interpret:
+- The average starting point (intercept) for the scores: **r round(fit@coef["mu_i"], 3)**
+- The average rate of change (slope) for the scores: **r round(fit@coef["mu_s"], 3)**
+
+The variance in the intercept and slope, **r round(fit@coef["var_i"], 3)** and **r round(fit@coef["var_s"], 3)** respectively, gives us information on individual differences in the initial status and rate of change. Additionally, the covariance between the intercept and slope, **r round(fit@coef["cov_is"], 3)**, informs us about the relationship between the initial status and the rate of change.
+
+## Conclusion
+The LGCM provides a comprehensive understanding of the trajectory of scores over time. By examining the estimated intercept and slope, we can determine the general trend of scores across time points. Additionally, the variance and covariance parameters provide insights into individual differences in growth trajectories.
+
+
+

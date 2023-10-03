@@ -1,0 +1,100 @@
+---
+title: "Latent Transition Analysis"
+author: "Biostatistics Working Group"
+---
+
+## Overview
+Latent transition analysis (LTA) is a cutting-edge statistical method tailored for understanding changes in latent group memberships over time. LTA is becoming increasingly influential in disciplines such as psychology, sociology, and public health, given its adeptness at tracking shifts between unobserved or "latent" states across multiple time points. LTA can be viewed as an extension of latent class analysis, but with a distinct focus on transitions between these classes over time, making it both dynamic and insightful. This technique is invaluable when handling longitudinal categorical data where individuals might transition between distinct categories or states. Central to the LTA framework is its ability to estimate probabilities of staying in a given state or moving to a different state over time. This dual capability of capturing both the latent states at each time point and the transitions between these states over successive time points is what sets LTA apart, marking it as a go-to method for intricate longitudinal categorical analyses.
+
+[+add diagrams/figures]
+
+### When to use Latent Transition Analysis?
+You should consider latent transition analysis in the following situations:
+
+1. You are interested in: Understanding how individuals transition between latent statuses or groups over time.
+2. Your data: Encompasses categorical outcomes measured at multiple time points.
+3. Your objective: Is to capture the probabilities and patterns of transitions between these latent statuses based on observed data.
+
+### Getting Started with Latent Transition Analysis
+In this tutorial, we will guide you through an example of a latent transition analysis using a small dataset. By the time you complete this tutorial, you will be equipped to:
+
+1. Understand the basic concepts of latent transition analysis.
+2. Implement this analysis on your categorical longitudinal data using appropriate statistical tools.
+3. Analyze and interpret the findings to deduce the transition probabilities and underlying patterns in the data.
+
+## Basic Example
+In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you'll likely start by importing your own data.
+
+The simulated dataset created for this example consists of scores on a single outcome variable ("Job_Satisfaction") for 500 individuals each measured at four time points: T1-T4.  
+
+#### Create Example Dataset
+```{r}
+set.seed(42)
+n <- 500
+
+# Generate three indicators for time 1
+time1_ind1 <- rbinom(n, size = 1, prob = 0.7)
+time1_ind2 <- rbinom(n, size = 1, prob = 0.6)
+time1_ind3 <- rbinom(n, size = 1, prob = 0.5)
+
+# Generate three indicators for time 2
+time2_ind1 <- rbinom(n, size = 1, prob = 0.6)
+time2_ind2 <- rbinom(n, size = 1, prob = 0.5)
+time2_ind3 <- rbinom(n, size = 1, prob = 0.4)
+
+# Generate three indicators for time 3
+time3_ind1 <- rbinom(n, size = 1, prob = 0.5)
+time3_ind2 <- rbinom(n, size = 1, prob = 0.4)
+time3_ind3 <- rbinom(n, size = 1, prob = 0.3)
+
+# Generate three indicators for time 4
+time4_ind1 <- rbinom(n, size = 1, prob = 0.4)
+time4_ind2 <- rbinom(n, size = 1, prob = 0.3)
+time4_ind3 <- rbinom(n, size = 1, prob = 0.2)
+
+data <- data.frame(time1_ind1, time1_ind2, time1_ind3,
+                   time2_ind1, time2_ind2, time2_ind3,
+                   time3_ind1, time3_ind2, time3_ind3,
+                   time4_ind1, time4_ind2, time4_ind3)
+```
+
+### Model Specification and Estimation
+To specify a Latent Transition Analysis (LTA), we will use the tidyLPA package to assess changes in latent status across multiple time points. Through this method, we can capture the transition probabilities between latent states, understanding the dynamics of change and the factors influencing these transitions over time.
+
+#### Install and Load Necessary Libraries
+```{r}
+# Load necessary packages
+if (!("tidyLPA" %in% installed.packages())) install.packages("tidyLPA")
+library(tidyLPA)
+
+```
+
+#### Model
+```{r}
+
+# Estimate the LTA model
+fit <- tidyLPA::estimate_profiles(data, 2, variances = "equal", covariances = "zero")
+```
+
+#### Model Summary
+```{r}
+summary(fit, fit.measures=TRUE, standardized=TRUE, rsquare=TRUE)
+```
+
+```{r, eval = FALSE}
+plot(fit)
+```
+
+### Interpreting the Results
+A Latent Transition Analysis (LTA) was conducted to identify and understand the transitions in latent states over time. LTA models are used to represent how individuals transition between latent states from one time point to the next.
+
+Using the `tidyLPA::estimate_profiles` function, we estimated a model with 2 profiles (or latent states). The model assumes equal variances and zero covariances across indicators.
+
+From the `summary` output:
+- The estimated proportions of individuals in each profile at each time point are: `r fit$proportions`
+- The estimated transition probabilities between profiles from one time point to the next are: `r fit$transitions`
+
+## Conclusion
+The LTA provides insights into the latent profiles present in the data and how individuals transition between these profiles over time. By examining the estimated proportions and transition probabilities, we can understand the dynamics of latent states in the data and how they change over time.
+
+

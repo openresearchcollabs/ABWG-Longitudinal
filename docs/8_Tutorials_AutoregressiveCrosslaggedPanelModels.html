@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Biostatistics Working Group">
+
+<title>Longitudinal Analysis - Autoregressive Crosslagged Panel Models</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./9_Tutorials_LatentChangeScoresModels.html" rel="next">
+<link href="./7_Tutorials_GeneralizedLinearMixedEffectsModels.html" rel="prev">
+<link href="././figures/lights.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<script async="" src="https://hypothes.is/embed.js"></script>
+
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta name="twitter:title" content="Longitudinal Analysis - Autoregressive Crosslagged Panel Models">
+<meta name="twitter:description" content="">
+<meta name="twitter:image" content="https://swhawes.github.io/abcd-biostats-longitudinal/figures/arcl.png">
+<meta name="twitter:image-height" content="735">
+<meta name="twitter:image-width" content="1738">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-sidebar docked nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Longitudinal Analysis</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" rel="" target="" aria-current="page">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./manuscript.html" rel="" target="">
+ <span class="menu-text">Manuscript</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./tutorials.html" rel="" target="">
+ <span class="menu-text">Tutorials</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./examples.html" rel="" target="">
+ <span class="menu-text">Examples</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./explanations.html" rel="" target="">
+ <span class="menu-text">Explanations</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./reference.html" rel="" target="">
+ <span class="menu-text">Reference</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools ms-auto tools-wide">
+    <a href="https://twitter.com" rel="" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
+    <div class="dropdown">
+      <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://github.com/swhawes/abcd-biostats-longitudinal">
+            Source Code
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools ms-auto-item" href="https://github.com/swhawes/abcd-biostats-longitudinal/issues">
+            Report a Bug
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./8_Tutorials_AutoregressiveCrosslaggedPanelModels.html">SEM Approaches</a></li><li class="breadcrumb-item"><a href="./8_Tutorials_AutoregressiveCrosslaggedPanelModels.html">Autoregressive Crosslagged Panel Models</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="././figures/lights.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+      <div class="sidebar-tools-main">
+    <a href="https://twitter.com" rel="" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
+    <div class="dropdown">
+      <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/swhawes/abcd-biostats-longitudinal">
+            Source Code
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/swhawes/test/abcd-biostats-longitudinal">
+            Report a Bug
+            </a>
+          </li>
+      </ul>
+    </div>
+</div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tutorials.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tutorials: A Brief Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false">
+ <span class="menu-text">Traditional Linear Models</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1_Tutorials_DifferenceScores.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Difference Scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./2_Tutorials_ResidualizedChangeScores.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Residualized Change Scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./3_Tutorials_LinearMixedModels.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linear Mixed Models</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false">
+ <span class="menu-text">Traditional Non-linear Models</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./4_Tutorials_SignedRankTest.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Signed-Rank Test</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./5_Tutorials_MarginalModels.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Marginal Models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./6_Tutorials_GeneralizedEstimatingEquations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Generalized Estimating Equations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./7_Tutorials_GeneralizedLinearMixedEffectsModels.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Generalized Linear Mixed Effects Models</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">SEM Approaches</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./8_Tutorials_AutoregressiveCrosslaggedPanelModels.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Autoregressive Crosslagged Panel Models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./9_Tutorials_LatentChangeScoresModels.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Latent Change Score Models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10_Tutorials_LatentGrowthCurveModels.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Latent Growth Curve Models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+ <span class="menu-text">11_Tutorials_MultivariateLatentGrowthCurveModels.qmd</span>
+  </li>
+          <li class="sidebar-item">
+ <span class="menu-text">12_Tutorials_LatentTransitionAnalysis.qmd</span>
+  </li>
+          <li class="sidebar-item">
+ <span class="menu-text">13_Tutorials_GrowthMixtureModels.qmd</span>
+  </li>
+          <li class="sidebar-item">
+ <span class="menu-text">14_Tutorials_StateTraitModels.qmd</span>
+  </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false">
+ <span class="menu-text">Advanced SEM</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+ <span class="menu-text">15_Tutorials_RandomInterceptCrosslaggedPanelModels.qmd</span>
+  </li>
+          <li class="sidebar-item">
+ <span class="menu-text">16_Tutorials_LatentCurveModelsStructuredResiduals.qmd</span>
+  </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false">
+ <span class="menu-text">Longitudinal Neuroimaging</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+ <span class="menu-text">blank.qmd</span>
+  </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="false">
+ <span class="menu-text">Twin Modeling &amp; Genetics Designs</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+ <span class="menu-text">blank.qmd</span>
+  </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="false">
+ <span class="menu-text">Data Wrangling</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+ <span class="menu-text">blank.qmd</span>
+  </li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Autoregressive Crosslagged Panel Models</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Biostatistics Working Group </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<p>Autoregressive cross-lagged panel models (ARCL) are advanced statistical techniques tailored for dissecting the dynamic interplay between variables over time. ARCL models have become indispensable in disciplines like psychology, economics, and sociology, as they can unravel the bidirectional relationships and causality between multiple variables across various time points. These models extend the concept of autoregressive models, which predict a variable based on its past values, by also integrating cross-lagged effects, thereby capturing the influence of one variable on another in subsequent time points. Especially potent for longitudinal designs, ARCL models provide a nuanced understanding of how variables evolve and influence each other over time, shedding light on potential causal pathways. In essence, the ARCL framework seizes upon the time-ordered data to not only track how a variable relates to its past self but also how it might affect or be affected by other variables. This dual capability of capturing both autoregressive and cross-lagged effects makes ARCL models a go-to choice for researchers aiming to understand intricate temporal dynamics and reciprocal relationships in their data.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./figures/arcl.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Autoregressive Crosslagged Panel 1_Tutorial</figcaption>
+</figure>
+</div>
+<section id="when-to-use-autoregressive-crosslagged-panel-models" class="level3">
+<h3 class="anchored" data-anchor-id="when-to-use-autoregressive-crosslagged-panel-models">When to use Autoregressive Crosslagged Panel Models?</h3>
+<p>You should consider autoregressive crosslagged panel models in the following situations:</p>
+<ol type="1">
+<li>You want to understand: The reciprocal relationships between variables over time.</li>
+<li>Your variables: Are repeatedly measured across multiple time points.</li>
+<li>You aim to: Disentangle the cause-and-effect relationship between these variables over successive time intervals.</li>
+</ol>
+</section>
+<section id="getting-started-with-autoregressive-crosslagged-panel-models" class="level3">
+<h3 class="anchored" data-anchor-id="getting-started-with-autoregressive-crosslagged-panel-models">Getting Started with Autoregressive Crosslagged Panel Models</h3>
+<p>In this tutorial, we will guide you through an example of an autoregressive crosslagged panel model using a small dataset. By the time you complete this tutorial, you will be equipped to:</p>
+<ol type="1">
+<li>Understand the basic principles of autoregressive crosslagged panel models.</li>
+<li>Implement these models on longitudinal panel data using R.</li>
+<li>Analyze and discern the implications derived from the autoregressive crosslagged panel model analysis.</li>
+</ol>
+</section>
+</section>
+<section id="basic-example" class="level2">
+<h2 class="anchored" data-anchor-id="basic-example">Basic Example</h2>
+<p>In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you’ll likely start by importing your own data.</p>
+<p>The simulated dataset created for this example consists of scores on a single outcome variable (“Job_Satisfaction”) for 500 individuals each measured at four time points: T1-T4.</p>
+<ul>
+<li>Subject ID</li>
+<li>Time (in years)</li>
+<li>Variable 1 (e.g., job satisfaction)</li>
+</ul>
+<section id="create-example-dataset" class="level4">
+<h4 class="anchored" data-anchor-id="create-example-dataset">Create Example Dataset</h4>
+<div class="cell" data-hash="8_Tutorials_AutoregressiveCrosslaggedPanelModels_cache/html/unnamed-chunk-1_5c5891e65aa9b91ba18dd4f8c26cd836">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Setting the seed for reproducibility</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co"># Setting the number of individuals for our sample data</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co"># Specifying the desired correlation matrix for our data</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, </span>
+<span id="cb1-9"><a href="#cb1-9"></a>                      <span class="fl">0.3</span>, <span class="dv">1</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>,</span>
+<span id="cb1-10"><a href="#cb1-10"></a>                      <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="dv">1</span>, <span class="fl">0.3</span>,</span>
+<span id="cb1-11"><a href="#cb1-11"></a>                      <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="dv">1</span>), </span>
+<span id="cb1-12"><a href="#cb1-12"></a>                      <span class="at">nrow=</span><span class="dv">4</span>)</span>
+<span id="cb1-13"><a href="#cb1-13"></a></span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="co"># Using Cholesky decomposition to generate correlated data</span></span>
+<span id="cb1-15"><a href="#cb1-15"></a>cholesky <span class="ot">&lt;-</span> <span class="fu">chol</span>(cor_matrix)</span>
+<span id="cb1-16"><a href="#cb1-16"></a></span>
+<span id="cb1-17"><a href="#cb1-17"></a><span class="co"># Generating correlated random data</span></span>
+<span id="cb1-18"><a href="#cb1-18"></a>random_data <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n <span class="sc">*</span> <span class="dv">4</span>), <span class="at">ncol=</span><span class="dv">4</span>)</span>
+<span id="cb1-19"><a href="#cb1-19"></a>correlated_data <span class="ot">&lt;-</span> random_data <span class="sc">%*%</span> cholesky</span>
+<span id="cb1-20"><a href="#cb1-20"></a></span>
+<span id="cb1-21"><a href="#cb1-21"></a><span class="co"># Converting the generated data into a structured data frame in wide format</span></span>
+<span id="cb1-22"><a href="#cb1-22"></a>data_wide <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-23"><a href="#cb1-23"></a>  <span class="at">Individual =</span> <span class="dv">1</span><span class="sc">:</span>n,</span>
+<span id="cb1-24"><a href="#cb1-24"></a>  <span class="at">Job_Satisfaction_T1 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
+<span id="cb1-25"><a href="#cb1-25"></a>  <span class="at">Job_Satisfaction_T2 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
+<span id="cb1-26"><a href="#cb1-26"></a>  <span class="at">Job_Satisfaction_T3 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
+<span id="cb1-27"><a href="#cb1-27"></a>  <span class="at">Job_Satisfaction_T4 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
+<span id="cb1-28"><a href="#cb1-28"></a>  <span class="at">Life_Satisfaction_T1 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">1</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>),</span>
+<span id="cb1-29"><a href="#cb1-29"></a>  <span class="at">Life_Satisfaction_T2 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">2</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>),</span>
+<span id="cb1-30"><a href="#cb1-30"></a>  <span class="at">Life_Satisfaction_T3 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">3</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>),</span>
+<span id="cb1-31"><a href="#cb1-31"></a>  <span class="at">Life_Satisfaction_T4 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">4</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>)</span>
+<span id="cb1-32"><a href="#cb1-32"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="view-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="view-dataset">View Dataset</h3>
+<div class="cell" data-hash="8_Tutorials_AutoregressiveCrosslaggedPanelModels_cache/html/unnamed-chunk-2_2ada69b4709d804899ffc6924d00fee1">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">head</span>(data_wide)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Individual"],"name":[1],"type":["int"],"align":["right"]},{"label":["Job_Satisfaction_T1"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Job_Satisfaction_T2"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Job_Satisfaction_T3"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Job_Satisfaction_T4"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["Life_Satisfaction_T1"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["Life_Satisfaction_T2"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["Life_Satisfaction_T3"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["Life_Satisfaction_T4"],"name":[9],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"7","3":"6","4":"6","5":"6","6":"6","7":"6","8":"5","9":"5","_rn_":"1"},{"1":"2","2":"9","3":"7","4":"10","5":"7","6":"7","7":"5","8":"4","9":"6","_rn_":"2"},{"1":"3","2":"8","3":"7","4":"9","5":"6","6":"10","7":"10","8":"8","9":"7","_rn_":"3"},{"1":"4","2":"9","3":"8","4":"8","5":"6","6":"7","7":"8","8":"7","9":"8","_rn_":"4"},{"1":"5","2":"6","3":"5","4":"6","5":"9","6":"7","7":"4","8":"2","9":"8","_rn_":"5"},{"1":"6","2":"6","3":"7","4":"5","5":"8","6":"10","7":"8","8":"10","9":"12","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+<section id="model-specification-and-estimation" class="level3">
+<h3 class="anchored" data-anchor-id="model-specification-and-estimation">Model Specification and Estimation</h3>
+<p>To specify an Autoregressive Crosslagged Panel Model (ARCL), we will utilize the lavaan syntax to focus on understanding the reciprocal influences between multiple variables over time. This approach allows us to discern how a change in one variable at a given time point can influence changes in another variable at subsequent time points, while also accounting for the autoregressive effects of each variable on itself across time.</p>
+<section id="install-and-load-necessary-libraries" class="level4">
+<h4 class="anchored" data-anchor-id="install-and-load-necessary-libraries">Install and Load Necessary Libraries</h4>
+<div class="cell" data-hash="8_Tutorials_AutoregressiveCrosslaggedPanelModels_cache/html/unnamed-chunk-3_510714efd00b0aaf7883551c4a7cb0d2">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="cf">if</span> (<span class="sc">!</span>(<span class="st">"lavaan"</span> <span class="sc">%in%</span> <span class="fu">installed.packages</span>())) <span class="fu">install.packages</span>(<span class="st">"lavaan"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="fu">library</span>(lavaan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="model" class="level4">
+<h4 class="anchored" data-anchor-id="model">Model</h4>
+<div class="cell" data-hash="8_Tutorials_AutoregressiveCrosslaggedPanelModels_cache/html/unnamed-chunk-4_af248c935c5180a06c857e89512b7366">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>model <span class="ot">&lt;-</span> <span class="st">'</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="st">  # Autoregressive paths</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="st">  Job_Satisfaction_T2 ~ a1 * Job_Satisfaction_T1</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="st">  Job_Satisfaction_T3 ~ a2 * Job_Satisfaction_T2</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="st">  Job_Satisfaction_T4 ~ a3 * Job_Satisfaction_T3</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="st">  </span></span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="st">  Life_Satisfaction_T2 ~ a4 * Life_Satisfaction_T1</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="st">  Life_Satisfaction_T3 ~ a5 * Life_Satisfaction_T2</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="st">  Life_Satisfaction_T4 ~ a6 * Life_Satisfaction_T3</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a></span>
+<span id="cb4-11"><a href="#cb4-11"></a><span class="st">  # Cross-lagged paths</span></span>
+<span id="cb4-12"><a href="#cb4-12"></a><span class="st">  Job_Satisfaction_T2 ~ b1 * Life_Satisfaction_T1</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="st">  Job_Satisfaction_T3 ~ b2 * Life_Satisfaction_T2</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="st">  Job_Satisfaction_T4 ~ b3 * Life_Satisfaction_T3</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a><span class="st">  </span></span>
+<span id="cb4-16"><a href="#cb4-16"></a><span class="st">  Life_Satisfaction_T2 ~ b4 * Job_Satisfaction_T1</span></span>
+<span id="cb4-17"><a href="#cb4-17"></a><span class="st">  Life_Satisfaction_T3 ~ b5 * Job_Satisfaction_T2</span></span>
+<span id="cb4-18"><a href="#cb4-18"></a><span class="st">  Life_Satisfaction_T4 ~ b6 * Job_Satisfaction_T3</span></span>
+<span id="cb4-19"><a href="#cb4-19"></a><span class="st">'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="fit-model" class="level4">
+<h4 class="anchored" data-anchor-id="fit-model">Fit Model</h4>
+<div class="cell" data-hash="8_Tutorials_AutoregressiveCrosslaggedPanelModels_cache/html/unnamed-chunk-5_6b08e68f698fe54341a1f8e8c5c1c925">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Fitting the model</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">data =</span> data_wide)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="model-summary" class="level4">
+<h4 class="anchored" data-anchor-id="model-summary">Model Summary</h4>
+<div class="cell" data-hash="8_Tutorials_AutoregressiveCrosslaggedPanelModels_cache/html/unnamed-chunk-6_f89d73abf470e3f5cfc5e841eff6d471">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Summarizing the model</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="fu">summary</span>(fit, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>, <span class="at">standardized =</span> <span class="cn">TRUE</span>, <span class="at">rsquare =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>lavaan 0.6.16 ended normally after 12 iterations
+
+  Estimator                                         ML
+  Optimization method                           NLMINB
+  Number of model parameters                        19
+
+  Number of observations                           500
+
+Model Test User Model:
+                                                      
+  Test statistic                               110.474
+  Degrees of freedom                                14
+  P-value (Chi-square)                           0.000
+
+Model Test Baseline Model:
+
+  Test statistic                               214.805
+  Degrees of freedom                                27
+  P-value                                        0.000
+
+User Model versus Baseline Model:
+
+  Comparative Fit Index (CFI)                    0.486
+  Tucker-Lewis Index (TLI)                       0.009
+
+Loglikelihood and Information Criteria:
+
+  Loglikelihood user model (H0)              -5846.702
+  Loglikelihood unrestricted model (H1)      -5791.465
+                                                      
+  Akaike (AIC)                               11731.404
+  Bayesian (BIC)                             11811.481
+  Sample-size adjusted Bayesian (SABIC)      11751.174
+
+Root Mean Square Error of Approximation:
+
+  RMSEA                                          0.117
+  90 Percent confidence interval - lower         0.098
+  90 Percent confidence interval - upper         0.138
+  P-value H_0: RMSEA &lt;= 0.050                    0.000
+  P-value H_0: RMSEA &gt;= 0.080                    0.999
+
+Standardized Root Mean Square Residual:
+
+  SRMR                                           0.076
+
+Parameter Estimates:
+
+  Standard errors                             Standard
+  Information                                 Expected
+  Information saturated (h1) model          Structured
+
+Regressions:
+                         Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+  Job_Satisfaction_T2 ~                                                       
+    Jb_Sts_T1 (a1)         -0.042    0.046   -0.925    0.355   -0.042   -0.042
+  Job_Satisfaction_T3 ~                                                       
+    Jb_Sts_T2 (a2)         -0.019    0.044   -0.424    0.672   -0.019   -0.019
+  Job_Satisfaction_T4 ~                                                       
+    Jb_Sts_T3 (a3)         -0.023    0.046   -0.494    0.621   -0.023   -0.022
+  Life_Satisfaction_T2 ~                                                      
+    Lf_Sts_T1 (a4)          0.246    0.045    5.504    0.000    0.246    0.240
+  Life_Satisfaction_T3 ~                                                      
+    Lf_Sts_T2 (a5)          0.342    0.044    7.813    0.000    0.342    0.330
+  Life_Satisfaction_T4 ~                                                      
+    Lf_Sts_T3 (a6)          0.153    0.043    3.533    0.000    0.153    0.156
+  Job_Satisfaction_T2 ~                                                       
+    Lf_Sts_T1 (b1)         -0.042    0.034   -1.246    0.213   -0.042   -0.056
+  Job_Satisfaction_T3 ~                                                       
+    Lf_Sts_T2 (b2)         -0.013    0.033   -0.390    0.697   -0.013   -0.017
+  Job_Satisfaction_T4 ~                                                       
+    Lf_Sts_T3 (b3)          0.043    0.032    1.321    0.186    0.043    0.059
+  Life_Satisfaction_T2 ~                                                      
+    Jb_Sts_T1 (b4)         -0.001    0.060   -0.009    0.992   -0.001   -0.000
+  Life_Satisfaction_T3 ~                                                      
+    Jb_Sts_T2 (b5)         -0.013    0.059   -0.224    0.822   -0.013   -0.009
+  Life_Satisfaction_T4 ~                                                      
+    Jb_Sts_T3 (b6)          0.024    0.061    0.392    0.695    0.024    0.017
+
+Covariances:
+                         Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+ .Job_Satisfaction_T4 ~~                                                      
+   .Lif_Stsfctn_T4         -0.003    0.133   -0.023    0.981   -0.003   -0.001
+
+Variances:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+   .Job_Stsfctn_T2    2.166    0.137   15.811    0.000    2.166    0.996
+   .Job_Stsfctn_T3    2.144    0.136   15.811    0.000    2.144    0.999
+   .Job_Stsfctn_T4    2.227    0.141   15.811    0.000    2.227    0.996
+   .Lif_Stsfctn_T2    3.727    0.236   15.811    0.000    3.727    0.942
+   .Lif_Stsfctn_T3    3.784    0.239   15.811    0.000    3.784    0.891
+   .Lif_Stsfctn_T4    3.963    0.251   15.811    0.000    3.963    0.975
+
+R-Square:
+                   Estimate
+    Job_Stsfctn_T2    0.004
+    Job_Stsfctn_T3    0.001
+    Job_Stsfctn_T4    0.004
+    Lif_Stsfctn_T2    0.058
+    Lif_Stsfctn_T3    0.109
+    Lif_Stsfctn_T4    0.025</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="interpreting-the-results" class="level3">
+<h3 class="anchored" data-anchor-id="interpreting-the-results">Interpreting the Results</h3>
+<p>An Autoregressive cross-lagged panel model (ARCL) was used to explore the reciprocal relationship between Job Satisfaction and Life Satisfaction across multiple time points. This model allows us to understand how past values of a variable can predict its future values and how one variable can influence the future values of another variable.</p>
+<p>From the <code>sem</code> output, we can interpret: - Autoregressive paths: How past values of Job Satisfaction and Life Satisfaction predict their future values. - Coefficient for Job Satisfaction from T1 to T2: <strong>r round(fit@coef[“a1”], 3)</strong> - Coefficient for Life Satisfaction from T1 to T2: <strong>r round(fit@coef[“a4”], 3)</strong> (and so on for other time points) - Cross-lagged paths: How Job Satisfaction influences future values of Life Satisfaction and vice versa. - Coefficient of Job Satisfaction at T1 influencing Life Satisfaction at T2: <strong>r round(fit@coef[“b4”], 3)</strong> - Coefficient of Life Satisfaction at T1 influencing Job Satisfaction at T2: <strong>r round(fit@coef[“b1”], 3)</strong> (and so on for other time points)</p>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>The ARCL model provides insights into the dynamic relationship between Job Satisfaction and Life Satisfaction. If the coefficients of the cross-lagged paths are significant, it suggests that there’s a reciprocal influence between the two variables over time. The direction (positive or negative) and magnitude of these coefficients offer further understanding about the strength and nature of this relationship.</p>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var filterRegex = new RegExp("https:\/\/swhawes\.github\.io\/abcd-biostats-longitudinal\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          // default icon
+          link.classList.add("external");
+      }
+    }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./7_Tutorials_GeneralizedLinearMixedEffectsModels.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Generalized Linear Mixed Effects Models</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./9_Tutorials_LatentChangeScoresModels.html" class="pagination-link">
+        <span class="nav-page-text">Latent Change Score Models</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb8" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1"></a><span class="co">---</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="an">title:</span><span class="co"> "Autoregressive Crosslagged Panel Models"</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="an">author:</span><span class="co"> "Biostatistics Working Group"</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="co">---</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="fu">## Overview</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a>Autoregressive cross-lagged panel models (ARCL) are advanced statistical techniques tailored for dissecting the dynamic interplay between variables over time. ARCL models have become indispensable in disciplines like psychology, economics, and sociology, as they can unravel the bidirectional relationships and causality between multiple variables across various time points. These models extend the concept of autoregressive models, which predict a variable based on its past values, by also integrating cross-lagged effects, thereby capturing the influence of one variable on another in subsequent time points. Especially potent for longitudinal designs, ARCL models provide a nuanced understanding of how variables evolve and influence each other over time, shedding light on potential causal pathways. In essence, the ARCL framework seizes upon the time-ordered data to not only track how a variable relates to its past self but also how it might affect or be affected by other variables. This dual capability of capturing both autoregressive and cross-lagged effects makes ARCL models a go-to choice for researchers aiming to understand intricate temporal dynamics and reciprocal relationships in their data.</span>
+<span id="cb8-8"><a href="#cb8-8"></a></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="al">![Autoregressive Crosslagged Panel 1_Tutorial](./figures/arcl.png)</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a></span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="fu">### When to use Autoregressive Crosslagged Panel Models?</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a>You should consider autoregressive crosslagged panel models in the following situations:</span>
+<span id="cb8-13"><a href="#cb8-13"></a></span>
+<span id="cb8-14"><a href="#cb8-14"></a><span class="ss">1. </span>You want to understand: The reciprocal relationships between variables over time.</span>
+<span id="cb8-15"><a href="#cb8-15"></a><span class="ss">2. </span>Your variables: Are repeatedly measured across multiple time points.</span>
+<span id="cb8-16"><a href="#cb8-16"></a><span class="ss">3. </span>You aim to: Disentangle the cause-and-effect relationship between these variables over successive time intervals.</span>
+<span id="cb8-17"><a href="#cb8-17"></a></span>
+<span id="cb8-18"><a href="#cb8-18"></a><span class="fu">### Getting Started with Autoregressive Crosslagged Panel Models</span></span>
+<span id="cb8-19"><a href="#cb8-19"></a>In this tutorial, we will guide you through an example of an autoregressive crosslagged panel model using a small dataset. By the time you complete this tutorial, you will be equipped to:</span>
+<span id="cb8-20"><a href="#cb8-20"></a></span>
+<span id="cb8-21"><a href="#cb8-21"></a><span class="ss">1. </span>Understand the basic principles of autoregressive crosslagged panel models.</span>
+<span id="cb8-22"><a href="#cb8-22"></a><span class="ss">2. </span>Implement these models on longitudinal panel data using R.</span>
+<span id="cb8-23"><a href="#cb8-23"></a><span class="ss">3. </span>Analyze and discern the implications derived from the autoregressive crosslagged panel model analysis.</span>
+<span id="cb8-24"><a href="#cb8-24"></a></span>
+<span id="cb8-25"><a href="#cb8-25"></a><span class="fu">## Basic Example</span></span>
+<span id="cb8-26"><a href="#cb8-26"></a>In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you'll likely start by importing your own data.</span>
+<span id="cb8-27"><a href="#cb8-27"></a></span>
+<span id="cb8-28"><a href="#cb8-28"></a>The simulated dataset created for this example consists of scores on a single outcome variable ("Job_Satisfaction") for 500 individuals each measured at four time points: T1-T4. </span>
+<span id="cb8-29"><a href="#cb8-29"></a></span>
+<span id="cb8-30"><a href="#cb8-30"></a><span class="ss">- </span>Subject ID</span>
+<span id="cb8-31"><a href="#cb8-31"></a><span class="ss">- </span>Time (in years)</span>
+<span id="cb8-32"><a href="#cb8-32"></a><span class="ss">- </span>Variable 1 (e.g., job satisfaction)</span>
+<span id="cb8-33"><a href="#cb8-33"></a></span>
+<span id="cb8-34"><a href="#cb8-34"></a><span class="fu">#### Create Example Dataset</span></span>
+<span id="cb8-37"><a href="#cb8-37"></a><span class="in">```{r}</span></span>
+<span id="cb8-38"><a href="#cb8-38"></a><span class="co"># Setting the seed for reproducibility</span></span>
+<span id="cb8-39"><a href="#cb8-39"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb8-40"><a href="#cb8-40"></a></span>
+<span id="cb8-41"><a href="#cb8-41"></a><span class="co"># Setting the number of individuals for our sample data</span></span>
+<span id="cb8-42"><a href="#cb8-42"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
+<span id="cb8-43"><a href="#cb8-43"></a></span>
+<span id="cb8-44"><a href="#cb8-44"></a><span class="co"># Specifying the desired correlation matrix for our data</span></span>
+<span id="cb8-45"><a href="#cb8-45"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, </span>
+<span id="cb8-46"><a href="#cb8-46"></a>                      <span class="fl">0.3</span>, <span class="dv">1</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>,</span>
+<span id="cb8-47"><a href="#cb8-47"></a>                      <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="dv">1</span>, <span class="fl">0.3</span>,</span>
+<span id="cb8-48"><a href="#cb8-48"></a>                      <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="dv">1</span>), </span>
+<span id="cb8-49"><a href="#cb8-49"></a>                      <span class="at">nrow=</span><span class="dv">4</span>)</span>
+<span id="cb8-50"><a href="#cb8-50"></a></span>
+<span id="cb8-51"><a href="#cb8-51"></a><span class="co"># Using Cholesky decomposition to generate correlated data</span></span>
+<span id="cb8-52"><a href="#cb8-52"></a>cholesky <span class="ot">&lt;-</span> <span class="fu">chol</span>(cor_matrix)</span>
+<span id="cb8-53"><a href="#cb8-53"></a></span>
+<span id="cb8-54"><a href="#cb8-54"></a><span class="co"># Generating correlated random data</span></span>
+<span id="cb8-55"><a href="#cb8-55"></a>random_data <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n <span class="sc">*</span> <span class="dv">4</span>), <span class="at">ncol=</span><span class="dv">4</span>)</span>
+<span id="cb8-56"><a href="#cb8-56"></a>correlated_data <span class="ot">&lt;-</span> random_data <span class="sc">%*%</span> cholesky</span>
+<span id="cb8-57"><a href="#cb8-57"></a></span>
+<span id="cb8-58"><a href="#cb8-58"></a><span class="co"># Converting the generated data into a structured data frame in wide format</span></span>
+<span id="cb8-59"><a href="#cb8-59"></a>data_wide <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb8-60"><a href="#cb8-60"></a>  <span class="at">Individual =</span> <span class="dv">1</span><span class="sc">:</span>n,</span>
+<span id="cb8-61"><a href="#cb8-61"></a>  <span class="at">Job_Satisfaction_T1 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
+<span id="cb8-62"><a href="#cb8-62"></a>  <span class="at">Job_Satisfaction_T2 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
+<span id="cb8-63"><a href="#cb8-63"></a>  <span class="at">Job_Satisfaction_T3 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
+<span id="cb8-64"><a href="#cb8-64"></a>  <span class="at">Job_Satisfaction_T4 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
+<span id="cb8-65"><a href="#cb8-65"></a>  <span class="at">Life_Satisfaction_T1 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">1</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>),</span>
+<span id="cb8-66"><a href="#cb8-66"></a>  <span class="at">Life_Satisfaction_T2 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">2</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>),</span>
+<span id="cb8-67"><a href="#cb8-67"></a>  <span class="at">Life_Satisfaction_T3 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">3</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>),</span>
+<span id="cb8-68"><a href="#cb8-68"></a>  <span class="at">Life_Satisfaction_T4 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">4</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>)</span>
+<span id="cb8-69"><a href="#cb8-69"></a>)</span>
+<span id="cb8-70"><a href="#cb8-70"></a></span>
+<span id="cb8-71"><a href="#cb8-71"></a><span class="in">```</span></span>
+<span id="cb8-72"><a href="#cb8-72"></a></span>
+<span id="cb8-73"><a href="#cb8-73"></a><span class="fu">### View Dataset</span></span>
+<span id="cb8-76"><a href="#cb8-76"></a><span class="in">```{r}</span></span>
+<span id="cb8-77"><a href="#cb8-77"></a><span class="fu">head</span>(data_wide)</span>
+<span id="cb8-78"><a href="#cb8-78"></a><span class="in">```</span></span>
+<span id="cb8-79"><a href="#cb8-79"></a></span>
+<span id="cb8-80"><a href="#cb8-80"></a><span class="fu">### Model Specification and Estimation</span></span>
+<span id="cb8-81"><a href="#cb8-81"></a>To specify an Autoregressive Crosslagged Panel Model (ARCL), we will utilize the lavaan syntax to focus on understanding the reciprocal influences between multiple variables over time. This approach allows us to discern how a change in one variable at a given time point can influence changes in another variable at subsequent time points, while also accounting for the autoregressive effects of each variable on itself across time.</span>
+<span id="cb8-82"><a href="#cb8-82"></a></span>
+<span id="cb8-83"><a href="#cb8-83"></a><span class="fu">#### Install and Load Necessary Libraries</span></span>
+<span id="cb8-86"><a href="#cb8-86"></a><span class="in">```{r}</span></span>
+<span id="cb8-87"><a href="#cb8-87"></a><span class="cf">if</span> (<span class="sc">!</span>(<span class="st">"lavaan"</span> <span class="sc">%in%</span> <span class="fu">installed.packages</span>())) <span class="fu">install.packages</span>(<span class="st">"lavaan"</span>)</span>
+<span id="cb8-88"><a href="#cb8-88"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb8-89"><a href="#cb8-89"></a><span class="in">```</span></span>
+<span id="cb8-90"><a href="#cb8-90"></a></span>
+<span id="cb8-91"><a href="#cb8-91"></a><span class="fu">#### Model</span></span>
+<span id="cb8-94"><a href="#cb8-94"></a><span class="in">```{r}</span></span>
+<span id="cb8-95"><a href="#cb8-95"></a>model <span class="ot">&lt;-</span> <span class="st">'</span></span>
+<span id="cb8-96"><a href="#cb8-96"></a><span class="st">  # Autoregressive paths</span></span>
+<span id="cb8-97"><a href="#cb8-97"></a><span class="st">  Job_Satisfaction_T2 ~ a1 * Job_Satisfaction_T1</span></span>
+<span id="cb8-98"><a href="#cb8-98"></a><span class="st">  Job_Satisfaction_T3 ~ a2 * Job_Satisfaction_T2</span></span>
+<span id="cb8-99"><a href="#cb8-99"></a><span class="st">  Job_Satisfaction_T4 ~ a3 * Job_Satisfaction_T3</span></span>
+<span id="cb8-100"><a href="#cb8-100"></a><span class="st">  </span></span>
+<span id="cb8-101"><a href="#cb8-101"></a><span class="st">  Life_Satisfaction_T2 ~ a4 * Life_Satisfaction_T1</span></span>
+<span id="cb8-102"><a href="#cb8-102"></a><span class="st">  Life_Satisfaction_T3 ~ a5 * Life_Satisfaction_T2</span></span>
+<span id="cb8-103"><a href="#cb8-103"></a><span class="st">  Life_Satisfaction_T4 ~ a6 * Life_Satisfaction_T3</span></span>
+<span id="cb8-104"><a href="#cb8-104"></a></span>
+<span id="cb8-105"><a href="#cb8-105"></a><span class="st">  # Cross-lagged paths</span></span>
+<span id="cb8-106"><a href="#cb8-106"></a><span class="st">  Job_Satisfaction_T2 ~ b1 * Life_Satisfaction_T1</span></span>
+<span id="cb8-107"><a href="#cb8-107"></a><span class="st">  Job_Satisfaction_T3 ~ b2 * Life_Satisfaction_T2</span></span>
+<span id="cb8-108"><a href="#cb8-108"></a><span class="st">  Job_Satisfaction_T4 ~ b3 * Life_Satisfaction_T3</span></span>
+<span id="cb8-109"><a href="#cb8-109"></a><span class="st">  </span></span>
+<span id="cb8-110"><a href="#cb8-110"></a><span class="st">  Life_Satisfaction_T2 ~ b4 * Job_Satisfaction_T1</span></span>
+<span id="cb8-111"><a href="#cb8-111"></a><span class="st">  Life_Satisfaction_T3 ~ b5 * Job_Satisfaction_T2</span></span>
+<span id="cb8-112"><a href="#cb8-112"></a><span class="st">  Life_Satisfaction_T4 ~ b6 * Job_Satisfaction_T3</span></span>
+<span id="cb8-113"><a href="#cb8-113"></a><span class="st">'</span></span>
+<span id="cb8-114"><a href="#cb8-114"></a></span>
+<span id="cb8-115"><a href="#cb8-115"></a><span class="in">```</span></span>
+<span id="cb8-116"><a href="#cb8-116"></a></span>
+<span id="cb8-117"><a href="#cb8-117"></a><span class="fu">#### Fit Model</span></span>
+<span id="cb8-120"><a href="#cb8-120"></a><span class="in">```{r}</span></span>
+<span id="cb8-121"><a href="#cb8-121"></a><span class="co"># Fitting the model</span></span>
+<span id="cb8-122"><a href="#cb8-122"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">data =</span> data_wide)</span>
+<span id="cb8-123"><a href="#cb8-123"></a>                </span>
+<span id="cb8-124"><a href="#cb8-124"></a><span class="in">```</span></span>
+<span id="cb8-125"><a href="#cb8-125"></a></span>
+<span id="cb8-126"><a href="#cb8-126"></a><span class="fu">#### Model Summary</span></span>
+<span id="cb8-129"><a href="#cb8-129"></a><span class="in">```{r}</span></span>
+<span id="cb8-130"><a href="#cb8-130"></a><span class="co"># Summarizing the model</span></span>
+<span id="cb8-131"><a href="#cb8-131"></a><span class="fu">summary</span>(fit, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>, <span class="at">standardized =</span> <span class="cn">TRUE</span>, <span class="at">rsquare =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-132"><a href="#cb8-132"></a></span>
+<span id="cb8-133"><a href="#cb8-133"></a><span class="in">```</span></span>
+<span id="cb8-134"><a href="#cb8-134"></a></span>
+<span id="cb8-135"><a href="#cb8-135"></a><span class="fu">### Interpreting the Results</span></span>
+<span id="cb8-136"><a href="#cb8-136"></a>An Autoregressive cross-lagged panel model (ARCL) was used to explore the reciprocal relationship between Job Satisfaction and Life Satisfaction across multiple time points. This model allows us to understand how past values of a variable can predict its future values and how one variable can influence the future values of another variable.</span>
+<span id="cb8-137"><a href="#cb8-137"></a></span>
+<span id="cb8-138"><a href="#cb8-138"></a>From the <span class="in">`sem`</span> output, we can interpret:</span>
+<span id="cb8-139"><a href="#cb8-139"></a><span class="ss">- </span>Autoregressive paths: How past values of Job Satisfaction and Life Satisfaction predict their future values.</span>
+<span id="cb8-140"><a href="#cb8-140"></a><span class="ss">  - </span>Coefficient for Job Satisfaction from T1 to T2: **r round(fit@coef["a1"], 3)**</span>
+<span id="cb8-141"><a href="#cb8-141"></a><span class="ss">  - </span>Coefficient for Life Satisfaction from T1 to T2: **r round(fit@coef["a4"], 3)**</span>
+<span id="cb8-142"><a href="#cb8-142"></a>  (and so on for other time points)</span>
+<span id="cb8-143"><a href="#cb8-143"></a><span class="ss">- </span>Cross-lagged paths: How Job Satisfaction influences future values of Life Satisfaction and vice versa.</span>
+<span id="cb8-144"><a href="#cb8-144"></a><span class="ss">  - </span>Coefficient of Job Satisfaction at T1 influencing Life Satisfaction at T2: **r round(fit@coef["b4"], 3)**</span>
+<span id="cb8-145"><a href="#cb8-145"></a><span class="ss">  - </span>Coefficient of Life Satisfaction at T1 influencing Job Satisfaction at T2: **r round(fit@coef["b1"], 3)**</span>
+<span id="cb8-146"><a href="#cb8-146"></a>  (and so on for other time points)</span>
+<span id="cb8-147"><a href="#cb8-147"></a></span>
+<span id="cb8-148"><a href="#cb8-148"></a><span class="fu">## Conclusion</span></span>
+<span id="cb8-149"><a href="#cb8-149"></a>The ARCL model provides insights into the dynamic relationship between Job Satisfaction and Life Satisfaction. If the coefficients of the cross-lagged paths are significant, it suggests that there's a reciprocal influence between the two variables over time. The direction (positive or negative) and magnitude of these coefficients offer further understanding about the strength and nature of this relationship.</span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="./reference.html">Longitudinal Analysis</a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

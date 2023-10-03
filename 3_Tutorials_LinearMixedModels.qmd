@@ -1,0 +1,95 @@
+---
+title: "Linear Mixed Models"
+author: "Biostatistics Working Group"
+execute:
+  warning: false
+---
+
+## Overview
+Linear mixed models (LMMs) are a powerful statistical tool that allows the analysis of complex data structures that contain both fixed and random effects. LMMs are widely used in various fields, including social sciences, biology, and engineering, due to their ability to handle hierarchical data structures and account for within-subject correlations. LMMs are an extension of the general linear model (GLM), where both fixed and random effects can be included in the model, making them more flexible and robust. These models are particularly useful when analyzing longitudinal data, where measurements are taken repeatedly over time, and correlations between observations must be accounted for. Specifically, the LMM framework accounts for these dependencies among data by extending the general regression "fixed effects" model to allow both, fixed and random effects. This approach simultaneously models an overall sample mean trajectory (fixed effect) and subject-specific (random) effects that vary randomly about the sample mean trajectory. It is this "mixture" of fixed and random effects from which these models derive their name.
+
+![Linear Mixed Models](./figures/Linear Mixed Models.png)
+
+### When to use Longitudinal Linear Mixed Models (LMMs)?
+You should consider using LMMs in the following situations:
+
+1. You want to know: The effects of interventions, time, or other predictors on a continuous outcome over multiple time points.
+2. Your data: Contains repeated measures taken on subjects at different time points or under various conditions.
+3. You have: Both fixed effects (overall population effects) and random effects (individual variations) that need to be accounted for in the analysis.
+
+### Getting Started with Longitudinal Linear Mixed Models
+In this tutorial, we will introduce the concept of longitudinal linear mixed models (LLMMs) and guide you through a simple example using a small dataset. By the end of this tutorial, you will be able to:
+
+1. Understand the basic concepts of longitudinal linear mixed models.
+2. Fit a longitudinal linear mixed model using example data in R.
+3. Interpret the results of the LLMM analysis.
+
+## Basic Example
+In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you'll likely start by importing your own data.
+
+The simulated dataset created for this example consists of scores on a single outcome variable ("Job_Satisfaction") for 500 individuals each measured at four time points: T1-T4. 
+
+#### Create Example Dataset
+```{r}
+
+# This will create a dataset with 2000 rows (4 rows for each of the 500 individuals).
+
+# Setting the number of individuals for our sample data
+n <- 500
+
+# Specifying the desired correlation matrix for our data
+cor_matrix <- matrix(c(1, 0.30, 0.30, 0.30, 
+                      0.30, 1, 0.30, 0.30, 
+                      0.30, 0.30, 1, 0.30,
+                      0.30, 0.30, 0.30, 1),
+                      nrow=4)
+
+# Using Cholesky decomposition to generate correlated data
+cholesky <- chol(cor_matrix)
+
+# Generating correlated random data for 4 timepoints
+random_data <- matrix(rnorm(n * 4), ncol=4)
+correlated_data <- random_data %*% cholesky
+
+# Converting the generated data into a structured data frame
+data_large <- data.frame(
+  Individual = rep(1:n, each=4),
+  TimePoint = rep(c("T1", "T2", "T3", "T4"), times=n),
+  Job_Satisfaction = as.vector(t(correlated_data))
+)
+
+```
+
+#### View Dataset
+```{r}
+head(data_large)
+```
+
+### Model Specification and Estimation
+To specify a Linear Mixed Model (LMM), we will use the `lme4` package in R, specifically the `lmer` function. In LMMs, we account for both fixed effects, which are consistent across individuals, and random effects, which can vary. By doing so, LMMs allow us to model the trajectory of an outcome variable over time while considering the inter-individual differences and intra-individual changes.
+
+#### Install and Load Necessary Libraries
+```{r}
+if (!("lme4" %in% installed.packages())) install.packages("lme4")
+library(lme4)
+```
+
+#### Model
+```{r}
+model <- lmer(Job_Satisfaction ~ TimePoint + (1 | Individual), data = data_large)
+```
+
+#### Model Summary
+```{r}
+summary(model)
+plot(model)
+
+```
+
+### Interpreting the Results
+A Linear mixed model (LMM) was fitted to analyze the Job Satisfaction scores over different time points, accounting for random effects due to individual differences. By using the **summary()** function in R, we can obtain detailed results about the fixed and random effects. The TimePoint effect will indicate how Job Satisfaction varies across different time points. The model's coefficient for TimePoint (**r coef(model)['TimePoint']**) provides insights into the average change in Job Satisfaction for each unit increase in TimePoint. Its associated p-value (**r summary(model)$coefficients['TimePoint','Pr(>|t|)']**) will indicate its significance. Additionally, using the **plot()** function, we can visually inspect the diagnostic plots, which can give insights into the residuals' behavior, influential observations, and the model's overall fit.
+
+## Conclusion
+The LMM allows us to analyze the trend in Job Satisfaction scores across time points while considering individual variability. Depending on the p-value for the TimePoint effect, we can determine if there's a statistically significant change in Job Satisfaction scores over the time points. Moreover, the diagnostic plots can guide potential model refinements or highlight areas for further investigation.
+
+
