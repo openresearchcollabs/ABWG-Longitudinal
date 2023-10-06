@@ -29,33 +29,44 @@ The simulated dataset created for this example consists of scores on a single ou
 
 #### Create Example Dataset
 ```{r}
-set.seed(42)
+
+# Install and load necessary packages
+if (!require(LMest)) install.packages("LMest")
+library(LMest)
+
+set.seed(123)
+
+# Number of individuals
 n <- 500
 
-# Generate three indicators for time 1
-time1_ind1 <- rbinom(n, size = 1, prob = 0.7)
-time1_ind2 <- rbinom(n, size = 1, prob = 0.6)
-time1_ind3 <- rbinom(n, size = 1, prob = 0.5)
+# Transition probabilities
+P <- matrix(c(0.8, 0.2, 0.3, 0.7), ncol=2)
+# Initial state probabilities
+pi <- c(0.6, 0.4)
 
-# Generate three indicators for time 2
-time2_ind1 <- rbinom(n, size = 1, prob = 0.6)
-time2_ind2 <- rbinom(n, size = 1, prob = 0.5)
-time2_ind3 <- rbinom(n, size = 1, prob = 0.4)
+# Function to simulate data based on transition probabilities
+simulate_data <- function(n, pi, P) {
+  states <- matrix(0, nrow=n, ncol=3)
+  states[,1] <- sample(1:2, n, replace=TRUE, prob=pi)
+  
+  for (i in 2:3) {
+    for (j in 1:n) {
+      states[j,i] <- sample(1:2, 1, replace=TRUE, prob=P[states[j,i-1],])
+    }
+  }
+  
+  return(states)
+}
 
-# Generate three indicators for time 3
-time3_ind1 <- rbinom(n, size = 1, prob = 0.5)
-time3_ind2 <- rbinom(n, size = 1, prob = 0.4)
-time3_ind3 <- rbinom(n, size = 1, prob = 0.3)
+data <- simulate_data(n, pi, P)
 
-# Generate three indicators for time 4
-time4_ind1 <- rbinom(n, size = 1, prob = 0.4)
-time4_ind2 <- rbinom(n, size = 1, prob = 0.3)
-time4_ind3 <- rbinom(n, size = 1, prob = 0.2)
+# Fitting a Latent Transition Model using `LMest`
+result <- est_lm_basic(data, nStates=2)
 
-data <- data.frame(time1_ind1, time1_ind2, time1_ind3,
-                   time2_ind1, time2_ind2, time2_ind3,
-                   time3_ind1, time3_ind2, time3_ind3,
-                   time4_ind1, time4_ind2, time4_ind3)
+# Displaying the results
+summary(result)
+
+
 ```
 
 ### Model Specification and Estimation
@@ -64,24 +75,73 @@ To specify a Latent Transition Analysis (LTA), we will use the tidyLPA package t
 #### Install and Load Necessary Libraries
 ```{r}
 # Load necessary packages
-if (!("tidyLPA" %in% installed.packages())) install.packages("tidyLPA")
-library(tidyLPA)
+if (!("lavaan" %in% installed.packages())) install.packages("tidyLPA")
+library(lavaan)
 
 ```
 
 #### Model
 ```{r}
+library(lavaan)
 
-# Estimate the LTA model
-fit <- tidyLPA::estimate_profiles(data, 2, variances = "equal", covariances = "zero")
+# Fit separate latent class models for each time point
+
+# Time 1
+model_T1 <- '
+  # Three latent classes for T1
+  c1 =~ T1
+  c2 =~ T1
+  c3 =~ T1
+'
+fit_T1 <- sem(model_T1, data = data, fixed.x = FALSE, ordered = "T1")
+
+# Time 2
+model_T2 <- '
+  # Three latent classes for T2
+  c1 =~ T2
+  c2 =~ T2
+  c3 =~ T2
+'
+fit_T2 <- sem(model_T2, data = data, fixed.x = FALSE, ordered = "T2")
+
+# Time 3
+model_T3 <- '
+  # Three latent classes for T3
+  c1 =~ T3
+  c2 =~ T3
+  c3 =~ T3
+'
+fit_T3 <- sem(model_T3, data = data, fixed.x = FALSE, ordered = "T3")
+
+# Now, estimate transition probabilities between the latent classes
+
+# Transition from Time 1 to Time 2
+model_transition_12 <- '
+  # From T1 classes to T2 classes
+  T2.c1 ~ c(T1.c1_to_T2.c1, T1.c2_to_T2.c1, T1.c3_to_T2.c1) * c(T1.c1, T1.c2, T1.c3)
+  T2.c2 ~ c(T1.c1_to_T2.c2, T1.c2_to_T2.c2, T1.c3_to_T2.c2) * c(T1.c1, T1.c2, T1.c3)
+  T2.c3 ~ c(T1.c1_to_T2.c3, T1.c2_to_T2.c3, T1.c3_to_T2.c3) * c(T1.c1, T1.c2, T1.c3)
+'
+fit_transition_12 <- sem(model_transition_12, data = data)
+
+# Similarly, you can specify transitions from Time 2 to Time 3.
+
+# Print summaries
+summary(fit_T1)
+summary(fit_T2)
+summary(fit_T3)
+summary(fit_transition_12)
 ```
 
 #### Model Summary
 ```{r}
-summary(fit, fit.measures=TRUE, standardized=TRUE, rsquare=TRUE)
+
+fit_LTA <- sem(model_LTA, data = data, fixed.x = FALSE, ordered = c("T1", "T2", "T3"))
+summary(fit_LTA)
+
 ```
 
-```{r, eval = FALSE}
+```{r}
 plot(fit)
 ```
 

@@ -1,0 +1,146 @@
+---
+title: Experimental_Sandbox
+format: html
+engine: knitr
+webr: 
+  show-startup-message: false
+  show-header-message: false
+  home-dir: '/Users/shawes/git/ABWG-Longitudinal'
+  packages: ['tidyverse','rstatix','DT','ggplot2']
+filters:
+  - webr
+---
+
+```{r config}
+#| echo: FALSE
+#| messages: FALSE
+#| warning: FALSE
+#| output: FALSE
+
+### This code configures knitr code chunk options
+
+knitr::opts_chunk$set(echo = T, message=F, warning=F, error=F, 
+                      comment=NA, cache=T, code_folding=T,
+                      R.options=list(width=220, digits = 3),
+                      fig.align='center', 
+                      out.width='75%', fig.asp=.75)
+```
+
+## WebR Example
+[webr](https://docs.r-wasm.org/webr/latest/)
+
+"WebR makes it possible to run R code in the browser without the need for an R server to execute the code: the R interpreter runs directly on the user’s machine." 
+
+```{webr-r}
+
+# Creating the example dataset
+set.seed(123) # for reproducibility
+
+# Setting the number of individuals for our sample data
+n <- 250
+
+# Specifying the desired correlation matrix for our data
+cor_matrix <- matrix(c(1, 0.30, 
+                      0.30, 1), 
+                      nrow=2)
+
+# Using Cholesky decomposition to generate correlated data
+cholesky <- chol(cor_matrix)
+
+# Generating correlated random data
+random_data <- matrix(rnorm(n * 2), ncol=2)
+correlated_data <- random_data %*% cholesky
+
+# Converting the generated data into a structured data frame
+data_large <- data.frame(
+  Individual = rep(1:n, each=2),
+  TimePoint = rep(c("T1", "T2"), times=n),
+  Job_Satisfaction = round(runif(2*n, 5, 10)), # keeping this random as before
+  Life_Satisfaction = round(correlated_data[,1] * 2 + 7) # scaling and shifting to get values between 5 and 10
+)
+```
+
+```{webr-r}
+head(data_large)
+
+```
+
+```{webr-r}
+
+# Performing the paired t-test to compare Life Satisfaction scores at two time points
+t1_scores_large <- data_large$Life_Satisfaction[data_large$TimePoint == "T1"]
+t2_scores_large <- data_large$Life_Satisfaction[data_large$TimePoint == "T2"]
+test_result <- t.test(t1_scores_large, t2_scores_large, mu = 0, paired = TRUE)
+```
+
+```{webr-r}
+print(test_result)
+
+```
+
+```{webr-r}
+# Loading necessary libraries
+# library(ggplot2)
+# webr::install("ggplot2")
+
+# Plotting paired boxplot
+ggplot(data_large, aes(x = TimePoint, y = Life_Satisfaction)) + 
+  geom_boxplot(aes(fill = TimePoint)) + 
+  labs(title = "Paired Boxplot of Life Satisfaction Scores", 
+       x = "Time Point", y = "Life Satisfaction Score") +
+  theme_minimal()
+```
+
+
+```{webr-r}
+
+meaning_of_life = 42
+
+mat2x2 <- matrix(c(1, 2, 3, 4), nrow = 2)
+mat2x2
+```
+
+```{webr-r}
+
+plot(
+  mpg ~ wt,
+  data = mtcars,
+  col = "blue", 
+  xlab = "Miles/(US) gallon",
+  ylab = "Weight (1000 lbs)",
+  main = "Miles per Gallon and Weight of Cars",
+  sub = "Source: 1974 Motor Trend US magazine."
+)
+```
+
+
+```{=html}
+#<iframe width="780" height="500" src="https://quarto.org/" title="Quarto Documentation"></iframe>
+```
+
+## Observable/D3 examples
+```{=html}
+<div id="observablehq-viewof-svg-05cd2bd3"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@observablehq/inspector@5/dist/inspector.css">
+<script type="module">
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+import define from "https://api.observablehq.com/d/59b19988767e67d6@1083.js?v=3";
+new Runtime().module(define, name => {
+  if (name === "viewof svg") return new Inspector(document.querySelector("#observablehq-viewof-svg-05cd2bd3"));
+});
+</script>
+```
+
+```{=html}
+<div id="observablehq-chart-2cee073f"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@observablehq/inspector@5/dist/inspector.css">
+<script type="module">
+import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+import define from "https://api.observablehq.com/d/968904872e580c18@165.js?v=3";
+new Runtime().module(define, name => {
+  if (name === "chart") return new Inspector(document.querySelector("#observablehq-chart-2cee073f"));
+});
+</script>
+```

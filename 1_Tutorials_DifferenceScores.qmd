@@ -20,7 +20,7 @@ In this tutorial, we will guide you through two simple examples of using differe
 
 1. Understand the basic concepts of difference scores.
 2. Calculate difference scores using example data.
-3. Interpret the results of the difference scores analysis.
+3. Interpret the results of a difference scores analysis.
 
 ## Basic Example
 In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you'll likely start by importing your own data.
@@ -50,7 +50,7 @@ random_data <- matrix(rnorm(n * 2), ncol=2)
 correlated_data <- random_data %*% cholesky
 
 # Converting the generated data into a structured data frame
-data_large <- data.frame(
+data <- data.frame(
   Individual = rep(1:n, each=2),
   TimePoint = rep(c("T1", "T2"), times=n),
   Job_Satisfaction = c(correlated_data[,1], correlated_data[,2])
@@ -60,7 +60,7 @@ data_large <- data.frame(
 
 ### View Dataset
 ```{r}
-head(data_large)
+head(data)
 ```
 
 ### Model Specification and Estimation
@@ -70,23 +70,23 @@ To specify a Difference Score, we will quantify the change in a variable by subt
 ```{r}
 # Performing the paired t-test to compare Life Satisfaction scores at two time points
 # Extracting Job_Satisfaction scores for the two time points
-t1_scores_large <- data_large$Job_Satisfaction[data_large$TimePoint == "T1"]
-t2_scores_large <- data_large$Job_Satisfaction[data_large$TimePoint == "T2"]
+t1_scores <- data$Job_Satisfaction[data$TimePoint == "T1"]
+t2_scores <- data$Job_Satisfaction[data$TimePoint == "T2"]
 
 ```
 
 #### Fit Model
 ```{r}
-test_result <- t.test(t1_scores_large, t2_scores_large, mu = 0, paired = TRUE)
+model <- t.test(t1_scores, t2_scores, mu = 0, paired = TRUE)
 ```
 
 #### Model Summary
 ```{r}
-print(test_result)
+print(model)
 ```
 
 ### Interpreting the Results
-The paired t-test was conducted to compare Job Satisfaction scores at two time points: T1 and T2. The test yielded a t-value of t=`r round(test_result$statistic, 3)` with `r test_result$parameter` degrees of freedom. The associated p-value is p=`r round(test_result$p.value, 3)`. This p-value is greater than the common significance level of 0.05, which means that we do not have enough evidence to reject the null hypothesis. The 95% confidence interval for the mean difference ranges from `r round(test_result$conf.int[1], 3)` to `r round(test_result$conf.int[2], 3)`. The observed mean difference between the two time points is `r round(test_result$estimate, 3)`.
+The paired t-test was conducted to compare Job Satisfaction scores at two time points: T1 and T2. The test yielded a t-value of t=`r round(model$statistic, 3)` with `r model$parameter` degrees of freedom. The associated p-value is p=`r round(model$p.value, 3)`. This p-value is greater than the common significance level of 0.05, which means that we do not have enough evidence to reject the null hypothesis. The 95% confidence interval for the mean difference ranges from `r round(model$conf.int[1], 3)` to `r round(model$conf.int[2], 3)`. The observed mean difference between the two time points is `r round(model$estimate, 3)`.
 
 ## Conclusion
-There is no statistically significant difference in Job Satisfaction scores between the two time points, T1 and T2, based on the paired t-test results. The mean difference, although positive (`r round(test_result$estimate, 3)`), is not significant at the 0.05 level.
+There is no statistically significant difference in Job Satisfaction scores between the two time points, T1 and T2, based on the paired t-test results. The mean difference, although positive (`r round(model$estimate, 3)`), is not significant at the 0.05 level.

@@ -1,0 +1,122 @@
+---
+title: "Multivariate Latent Growth Curves"
+author: "Biostatistics Working Group"
+---
+
+## Overview
+Multivariate latent growth curve models (MLGCMs) are a sophisticated statistical technique that enables the examination of multiple growth trajectories simultaneously within a unified framework. MLGCMs are gaining traction in diverse fields, from psychology to public health and education, due to their capacity to capture the intertwined dynamics of multiple outcomes over time. These models are a natural extension of latent growth curve models, but with the added complexity of modeling multiple correlated growth processes. They are especially potent when studying longitudinal data where several related variables or outcomes evolve concurrently, and the interplay between them is of interest. At its core, the MLGCM approach harnesses the power of structural equation modeling to elucidate both the individual trajectories (fixed effects) and the variability around these trajectories (random effects) for multiple variables. This simultaneous exploration of multiple "latent" growth curves, each capturing a distinct yet related developmental trajectory, is the defining feature of MLGCMs, positioning them as an essential tool for comprehensive longitudinal investigations.
+
+[+add diagrams/figures]
+
+### When to use Multivariate Latent Growth Curves?
+You should consider multivariate latent growth curves in the following situations:
+
+1. You are interested in: Examining the parallel trajectories of multiple measured variables over time.
+2. Your data: Incorporates repeated measures for multiple variables at several time points.
+3. You wish to: Understand the interplay and co-evolution of these variables as they change.
+
+### Getting Started with Multivariate Latent Growth Curves
+In this tutorial, we will guide you through an example of a multivariate latent growth curve model using a small dataset. By the time you complete this tutorial, you will be equipped to:
+
+1. Understand the basic principles of multivariate latent growth curves.
+2. Set up and run these models on your multi-variable longitudinal data with the right statistical software.
+3. Analyze the outputs and make informed decisions based on the multivariate growth trajectories.
+/
+## Basic Example
+In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you'll likely start by importing your own data.
+
+The simulated dataset created for this example consists of scores on two outcome variables ("Job_Satisfaction", "Life_Satisfaction") for 500 individuals each measured at four time points: T1-T4. 
+
+#### Create Example Dataset
+```{r}
+
+# Setting the seed for reproducibility
+set.seed(123)
+
+# Setting the number of individuals for our sample data
+n <- 500
+
+# Specifying the desired correlation matrix for our data
+cor_matrix <- matrix(c(1, 0.3, 0.3, 0.3, 
+                      0.3, 1, 0.3, 0.3,
+                      0.3, 0.3, 1, 0.3,
+                      0.3, 0.3, 0.3, 1), 
+                      nrow=4)
+
+# Using Cholesky decomposition to generate correlated data
+cholesky <- chol(cor_matrix)
+
+# Generating correlated random data
+random_data <- matrix(rnorm(n * 4), ncol=4)
+correlated_data <- random_data %*% cholesky
+
+# Converting the generated data into a structured data frame in wide format
+data_wide <- data.frame(
+  Individual = 1:n,
+  Job_Satisfaction_T1 = round(runif(n, 5, 10)),
+  Job_Satisfaction_T2 = round(runif(n, 5, 10)),
+  Job_Satisfaction_T3 = round(runif(n, 5, 10)),
+  Job_Satisfaction_T4 = round(runif(n, 5, 10)),
+  Life_Satisfaction_T1 = round(correlated_data[,1] * 2 + 7),
+  Life_Satisfaction_T2 = round(correlated_data[,2] * 2 + 7),
+  Life_Satisfaction_T3 = round(correlated_data[,3] * 2 + 7),
+  Life_Satisfaction_T4 = round(correlated_data[,4] * 2 + 7)
+)
+
+```
+
+### View Dataset
+```{r}
+head(data_wide)
+```
+
+### Model Specification and Estimation
+To specify a Multivariate Latent Growth Curve Model (MLGCM), we will utilize the lavaan syntax to outline both the measurement model and the structural model. In an MLGCM, we simultaneously model the trajectories of multiple outcome variables across various time points. This approach allows us to examine the parallel growth patterns of these variables and to explore their interrelationships, capturing shared growth dynamics and distinct individual trajectories.
+
+#### Install and Load Necessary Libraries
+```{r}
+# Load necessary packages
+if (!("lavaan" %in% installed.packages())) install.packages("lavaan")
+library(lavaan)
+```
+
+#### Model
+```{r}
+
+# Specify the multivariate latent growth curve model
+model <- '
+  # Intercept and slope factors for variable 1
+  i_var1 =~ 1*Job_Satisfaction_T1 + 1*Job_Satisfaction_T2 + 1*Job_Satisfaction_T3
+  s_var1 =~ 0*Job_Satisfaction_T1 + 1*Job_Satisfaction_T2 + 2*Job_Satisfaction_T3
+
+  # Intercept and slope factors for variable 2
+  i_var2 =~ 1*Job_Satisfaction_T1 + 1*Job_Satisfaction_T2 + 1*Job_Satisfaction_T3
+  s_var2 =~ 0*Job_Satisfaction_T1 + 1*Job_Satisfaction_T2 + 2*Job_Satisfaction_T3
+'
+```
+
+#### Fit Model
+```{r}
+# Estimate the model
+fit <- lavaan::sem(model, data = data_wide)
+```
+
+#### Model Summary
+```{r}
+summary(fit, fit.measures=TRUE, standardized=TRUE, rsquare=TRUE)
+```
+
+### Interpreting the Results
+A Multivariate Latent Growth Curve Model (MLGCM) was used to understand the trajectories of two variables (`var1` and `var2`) over time. This model creates separate growth curves for each variable and allows for the examination of how the trajectories of the two variables relate to each other.
+
+For each variable, the model separates the growth into two latent factors:
+- **Intercept (i)**: Represents the initial status or starting point.
+- **Slope (s)**: Represents the rate of change over time.
+
+From the `sem` output:
+- For `var1`, the average starting point (intercept) is: **r round(fit@coef["i_var1"], 3)** and the average rate of change (slope) is: **r round(fit@coef["s_var1"], 3)**
+- For `var2`, the average starting point (intercept) is: **r round(fit@coef["i_var2"], 3)** and the average rate of change (slope) is: **r round(fit@coef["s_var2"], 3)**
+
+## Conclusion
+The MLGCM provides insights into how the trajectories of `var1` and `var2` evolve over time. By examining the estimated intercepts and slopes for both variables, we can understand their growth patterns and how they might be related. Further, covariances between the latent factors can provide information on whether the initial status or rate of change in one variable is related to that of the other variable.
+

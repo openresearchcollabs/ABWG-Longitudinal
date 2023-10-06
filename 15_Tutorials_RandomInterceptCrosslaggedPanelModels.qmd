@@ -1,0 +1,142 @@
+---
+title: "Random-Intercept Crosslagged Panel Models"
+author: "Biostatistics Working Group"
+---
+
+## Overview
+Random-Intercept Crosslagged Panel Models (RI-CLPMs) are an advanced statistical method tailored for dissecting the intricate relationships between variables over time, while accounting for individual differences. RI-CLPMs are rapidly gaining recognition in areas such as psychology, sociology, and behavioral research, given their finesse in modeling reciprocal influences between variables across time points. These models build upon traditional crosslagged panel models by introducing a random intercept, which captures the stable, trait-like differences between individuals. This makes RI-CLPMs especially adept at handling longitudinal data, where understanding the dynamic interplay between variables and the role of individual differences is crucial. At their heart, RI-CLPMs emphasize the distinction between within-person variability and between-person differences. This approach allows researchers to simultaneously explore how variables influence each other over time (crosslagged effects) and how these relationships might vary across individuals due to their unique traits. The blend of capturing dynamic relations and individual heterogeneity is the defining feature of RI-CLPMs, positioning them as a paramount tool for detailed longitudinal analyses.
+
+[+add diagrams/figures]
+
+### When to use Random-Intercept Crosslagged Panel Models?
+You should consider Random-Intercept Crosslagged Panel Models in the following situations:
+
+1. You want to understand: The reciprocal relationships between variables over time, considering individual-specific effects.
+2. Your data: Is longitudinal, with repeated measures of at least two variables across several time points.
+3. You aim to: Capture the stable individual differences and understand how one variable can predict changes in another across time.
+
+### Getting Started with Random-Intercept Crosslagged Panel Models
+In this tutorial, we will guide you through an example of a random-intercept crosslagged panel model using a small dataset. By the time you complete this tutorial, you will be equipped to:
+
+1. Understand the basic concepts of random-intercept crosslagged panel models.
+2. Constructing these models to assess the dynamic interplay between variables over time, accounting for individual differences.
+3. Analyzing and interpreting the model's results to make informed conclusions about temporal relationships between the studied variables.
+
+## Basic Example
+In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you'll likely start by importing your own data.
+
+The simulated dataset created for this example consists of scores on two outcome variables ("Job_Satisfaction", "Life_Satisfaction") for 500 individuals each measured at five time points: T1-T5. 
+
+#### Create Example Dataset
+```{r}
+
+# Setting the seed for reproducibility
+set.seed(123)
+
+# Setting the number of individuals for our sample data
+n <- 500
+
+# Specifying the desired correlation matrix for our data (5x5 matrix for 5 timepoints)
+cor_matrix <- matrix(c(1, 0.3, 0.3, 0.3, 0.3,
+                      0.3, 1, 0.3, 0.3, 0.3,
+                      0.3, 0.3, 1, 0.3, 0.3,
+                      0.3, 0.3, 0.3, 1, 0.3,
+                      0.3, 0.3, 0.3, 0.3, 1), 
+                      nrow=5)
+
+# Using Cholesky decomposition to generate correlated data
+cholesky <- chol(cor_matrix)
+
+# Generating correlated random data for 5 timepoints
+random_data <- matrix(rnorm(n * 5), ncol=5)
+correlated_data <- random_data %*% cholesky
+
+# Converting the generated data into a structured data frame in wide format
+data_wide <- data.frame(
+  Individual = 1:n,
+  Job_Satisfaction_T1 = round(runif(n, 5, 10)),
+  Job_Satisfaction_T2 = round(runif(n, 5, 10)),
+  Job_Satisfaction_T3 = round(runif(n, 5, 10)),
+  Job_Satisfaction_T4 = round(runif(n, 5, 10)),
+  Job_Satisfaction_T5 = round(runif(n, 5, 10)),
+  Life_Satisfaction_T1 = round(correlated_data[,1] * 2 + 7),
+  Life_Satisfaction_T2 = round(correlated_data[,2] * 2 + 7),
+  Life_Satisfaction_T3 = round(correlated_data[,3] * 2 + 7),
+  Life_Satisfaction_T4 = round(correlated_data[,4] * 2 + 7),
+  Life_Satisfaction_T5 = round(correlated_data[,5] * 2 + 7)
+)
+
+```
+
+### Model Specification and Estimation
+Now that we have our simulated data, we can fit a Random-Intercept Cross-Lagged Panel Model using the lavaan package.
+
+### Model Specification and Estimation
+To specify a Random-Intercept Cross-Lagged Panel Model (RI-CLPM), we will employ the lavaan syntax. This model allows us to explore the interplay between two variables across multiple time points. While modeling the cross-lagged associations between the variables, the RI-CLPM also accounts for stable individual differences through the inclusion of random intercepts.
+
+#### Install and Load Necessary Libraries
+```{r setup, echo=TRUE, warning=FALSE, message=FALSE}
+# Install the lavaan package if not already installed
+if (!("lavaan" %in% installed.packages())) {
+  install.packages("lavaan")
+}
+
+library(lavaan)
+```
+
+#### Fit Model
+```{r}
+
+# Define the model
+model <- '
+  # Random intercepts
+  i_X =~ 1 * X_t1 + 1 * X_t2 + 1 * X_t3 + 1 * X_t4 + 1 * X_t5
+  i_Y =~ 1 * Y_t1 + 1 * Y_t2 + 1 * Y_t3 + 1 * Y_t4 + 1 * Y_t5
+
+  # Cross-lagged effects
+  Y_t2 ~ beta_YX * X_t1
+  Y_t3 ~ beta_YX * X_t2
+  Y_t4 ~ beta_YX * X_t3
+  Y_t5 ~ beta_YX * X_t4
+
+  X_t2 ~ beta_XY * Y_t1
+  X_t3 ~ beta_XY * Y_t2
+  X_t4 ~ beta_XY * Y_t3
+  X_t5 ~ beta_XY * Y_t4
+
+  # Auto-regressive paths (optional but often included in CLPM)
+  X_t2 ~ alpha_X * X_t1
+  X_t3 ~ alpha_X * X_t2
+  X_t4 ~ alpha_X * X_t3
+  X_t5 ~ alpha_X * X_t4
+
+  Y_t2 ~ alpha_Y * Y_t1
+  Y_t3 ~ alpha_Y * Y_t2
+  Y_t4 ~ alpha_Y * Y_t3
+  Y_t5 ~ alpha_Y * Y_t4
+
+  # Covariances (optional but can be included for model fit)
+  X_t1 ~~ Y_t1
+  i_X ~~ i_Y
+  '
+```
+
+#### Model Summary
+```{r}
+summary(fit, fit.measures=TRUE, standardized=TRUE, rsquare=TRUE)
+```
+
+### Interpreting the Results
+A State-Trait Model was fitted to decompose the observed variance in the repeated measurements into a stable, trait component and a fluctuating, state component. The trait component captures the stable, consistent characteristics of an individual over the different time points, while the state component captures the fluctuations or changes that are specific to each time point.
+
+From the `summary` output:
+- The estimated loadings for the trait component can provide insight into the relative consistency of the trait over time.
+- The estimated loadings for the state component can highlight the relative magnitude of the fluctuating component at each time point.
+- The residual variances provide information on the unexplained variance for each time point after accounting for the trait and state components.
+
+## Conclusion
+The State-Trait Model allows us to understand the proportion of variance in the observed data that can be attributed to stable, trait-like characteristics versus transient, state-like fluctuations. This provides a richer understanding of the dynamics of the measured construct over time, moving beyond a simple comparison of mean levels.
+
+
+
+

@@ -108,9 +108,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="styles.css">
 <meta name="twitter:title" content="Longitudinal Analysis - Residualized Change Scores">
 <meta name="twitter:description" content="">
-<meta name="twitter:image" content="https://swhawes.github.io/abcd-biostats-longitudinal/figures/Difference Score 1_Tutorial.png">
-<meta name="twitter:image-height" content="405">
-<meta name="twitter:image-width" content="1319">
+<meta name="twitter:image" content="https://swhawes.github.io/abcd-biostats-longitudinal/figures/Residualized Change Score.png">
+<meta name="twitter:image-height" content="306">
+<meta name="twitter:image-width" content="726">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -324,16 +324,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </li>
           <li class="sidebar-item">
- <span class="menu-text">11_Tutorials_MultivariateLatentGrowthCurveModels.qmd</span>
-  </li>
-          <li class="sidebar-item">
  <span class="menu-text">12_Tutorials_LatentTransitionAnalysis.qmd</span>
-  </li>
-          <li class="sidebar-item">
- <span class="menu-text">13_Tutorials_GrowthMixtureModels.qmd</span>
-  </li>
-          <li class="sidebar-item">
- <span class="menu-text">14_Tutorials_StateTraitModels.qmd</span>
   </li>
       </ul>
   </li>
@@ -346,12 +337,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           </a> 
       </div>
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
-          <li class="sidebar-item">
- <span class="menu-text">15_Tutorials_RandomInterceptCrosslaggedPanelModels.qmd</span>
-  </li>
-          <li class="sidebar-item">
- <span class="menu-text">16_Tutorials_LatentCurveModelsStructuredResiduals.qmd</span>
-  </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -432,82 +417,81 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>Residualized change scores are a statistical approach that allows for examining the true change in a variable over time by controlling for the initial level of that variable. This method is commonly employed in longitudinal research, especially in fields such as psychology, education, and medicine. Residualized change scores offer a way to address a significant concern in repeated measures: the potential correlation between initial scores and their subsequent change. By using regression analyses, the score at Time 2 is predicted based on the score at Time 1. The residuals from this analysis, which represent the portion of the Time 2 score not predicted by the Time 1 score, give the residualized change score. This score effectively captures the ‘true change’ from Time 1 to Time 2. In essence, this method seeks to answer the question: Given where someone started (Time 1), did they end up higher or lower than expected at Time 2? By removing the influence of initial levels, researchers can gain clearer insights into the factors that drive genuine change over time.</p>
+<p>Residualized change scores are a statistical approach that allows for examining the true change in a variable over time by controlling for the initial level of that variable. This method offers a way to address a significant concern in repeated measures: the potential correlation between initial scores and their subsequent change. By using regression analyses, the score at Time 2 is predicted based on the score at Time 1. The residuals from this analysis, which represent the portion of the Time 2 score not predicted by the Time 1 score, give the residualized change score. This score effectively captures the ‘true change’ from Time 1 to Time 2. In essence, this method seeks to answer the question: Given where someone started (Time 1), did they end up higher or lower than expected at Time 2? By removing the influence of initial levels, researchers can gain clearer insights into the factors that drive change over time.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="./figures/Difference Score 1_Tutorial.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure x. Difference score add explanation or tag</figcaption>
+<p><img src="./figures/Residualized Change Score.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure x. Residualized change score add explanation or tag</figcaption>
 </figure>
 </div>
-<section id="when-to-use-difference-score-models" class="level3">
-<h3 class="anchored" data-anchor-id="when-to-use-difference-score-models">When to use Difference Score Models?</h3>
-<p>You should use difference scores in the following scenario:</p>
+<section id="when-to-use-a-residualized-change-score-model" class="level3">
+<h3 class="anchored" data-anchor-id="when-to-use-a-residualized-change-score-model">When to use a Residualized Change Score Model?</h3>
+<p>You should use residualized change scores in the following scenarios:</p>
 <ol type="1">
-<li>You want to know: The impact of interventions or time on a measured variable.</li>
-<li>Your variable: Has paired measurements, like pre-test and post-test scores.</li>
-<li>You have: Matched data for each set, ensuring valid difference computations.</li>
+<li>You want to know: How much change in a variable, beyond its initial level, is due to another variable.</li>
+<li>Your variable: Has baseline measurements and subsequent measurements to calculate change.</li>
+<li>You have: Data that allows for controlling the initial status, thus focusing on the unique change.</li>
 </ol>
 </section>
-<section id="getting-started-with-difference-score-models" class="level3">
-<h3 class="anchored" data-anchor-id="getting-started-with-difference-score-models">Getting Started with Difference Score Models</h3>
-<p>In this tutorial, we will guide you through two simple examples of using difference scores. By the end of this tutorial, you will be able to:</p>
+<section id="getting-started-with-residualized-change-scores" class="level3">
+<h3 class="anchored" data-anchor-id="getting-started-with-residualized-change-scores">Getting Started with Residualized Change Scores</h3>
+<p>In this tutorial, we will guide you through two simple examples of using residualized change scores. By the end of this tutorial, you will be able to:</p>
 <ol type="1">
-<li>Understand the basic concepts of difference scores.</li>
-<li>Calculate difference scores using example data.</li>
-<li>Interpret the results of the difference scores analysis.</li>
+<li>Understand the basic concepts of residualized change scores.</li>
+<li>Calculate residualized change scores using example data.</li>
+<li>Interpret the results of the residualized change scores analysis.</li>
 </ol>
 </section>
 </section>
 <section id="basic-example" class="level2">
 <h2 class="anchored" data-anchor-id="basic-example">Basic Example</h2>
 <p>In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you’ll likely start by importing your own data.</p>
-<p>The simulated dataset created for this example consists of scores on a single outcome variable (“Job_Satisfaction”) for 500 individuals each measured at two time points: T1-T2.</p>
+<p>The simulated dataset created for this example consists of scores for 500 individuals on an outcome variable (“Job_Satisfaction”) measured at two time points (T1-T2) and a predictor (“Life_Satisfaction”) measured at one time point (T1).</p>
 <section id="create-example-dataset" class="level4">
 <h4 class="anchored" data-anchor-id="create-example-dataset">Create Example Dataset</h4>
-<div class="cell" data-hash="2_Tutorials_ResidualizedChangeScores_cache/html/unnamed-chunk-1_a4f6ec76e9c1b19b295bf71a5624c01e">
+<div class="cell" data-hash="2_Tutorials_ResidualizedChangeScores_cache/html/unnamed-chunk-1_917c4bc82dbf505cea072d3867e750ad">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># This will create a dataset with 1000 rows (2 rows for each of the 500 individuals).</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="co"># Creating the example dataset</span></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) <span class="co"># for reproducibility</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a></span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="co"># Setting the number of individuals for our sample data</span></span>
-<span id="cb1-7"><a href="#cb1-7"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a></span>
-<span id="cb1-9"><a href="#cb1-9"></a><span class="co"># Specifying the desired correlation matrix for our data</span></span>
-<span id="cb1-10"><a href="#cb1-10"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.30</span>, </span>
-<span id="cb1-11"><a href="#cb1-11"></a>                      <span class="fl">0.30</span>, <span class="dv">1</span>), </span>
-<span id="cb1-12"><a href="#cb1-12"></a>                      <span class="at">nrow=</span><span class="dv">2</span>)</span>
-<span id="cb1-13"><a href="#cb1-13"></a></span>
-<span id="cb1-14"><a href="#cb1-14"></a><span class="co"># Using Cholesky decomposition to generate correlated data</span></span>
-<span id="cb1-15"><a href="#cb1-15"></a>cholesky <span class="ot">&lt;-</span> <span class="fu">chol</span>(cor_matrix)</span>
-<span id="cb1-16"><a href="#cb1-16"></a></span>
-<span id="cb1-17"><a href="#cb1-17"></a><span class="co"># Generating correlated random data</span></span>
-<span id="cb1-18"><a href="#cb1-18"></a>random_data <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n <span class="sc">*</span> <span class="dv">2</span>), <span class="at">ncol=</span><span class="dv">2</span>)</span>
-<span id="cb1-19"><a href="#cb1-19"></a>correlated_data <span class="ot">&lt;-</span> random_data <span class="sc">%*%</span> cholesky</span>
-<span id="cb1-20"><a href="#cb1-20"></a></span>
-<span id="cb1-21"><a href="#cb1-21"></a><span class="co"># Converting the generated data into a structured data frame</span></span>
-<span id="cb1-22"><a href="#cb1-22"></a>data_large <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb1-23"><a href="#cb1-23"></a>  <span class="at">Individual =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>n, <span class="at">each=</span><span class="dv">2</span>),</span>
-<span id="cb1-24"><a href="#cb1-24"></a>  <span class="at">TimePoint =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"T1"</span>, <span class="st">"T2"</span>), <span class="at">times=</span>n),</span>
-<span id="cb1-25"><a href="#cb1-25"></a>  <span class="at">Job_Satisfaction =</span> <span class="fu">c</span>(correlated_data[,<span class="dv">1</span>], correlated_data[,<span class="dv">2</span>])</span>
-<span id="cb1-26"><a href="#cb1-26"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Setting the seed for reproducibility</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co"># Setting the number of individuals for our sample data</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co"># Specifying the desired correlation matrix for our data</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.3</span>, </span>
+<span id="cb1-9"><a href="#cb1-9"></a>                      <span class="fl">0.3</span>, <span class="dv">1</span>), </span>
+<span id="cb1-10"><a href="#cb1-10"></a>                      <span class="at">nrow=</span><span class="dv">2</span>)</span>
+<span id="cb1-11"><a href="#cb1-11"></a></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="co"># Using Cholesky decomposition to generate correlated data</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a>cholesky <span class="ot">&lt;-</span> <span class="fu">chol</span>(cor_matrix)</span>
+<span id="cb1-14"><a href="#cb1-14"></a></span>
+<span id="cb1-15"><a href="#cb1-15"></a><span class="co"># Generating correlated random data</span></span>
+<span id="cb1-16"><a href="#cb1-16"></a>random_data <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n <span class="sc">*</span> <span class="dv">2</span>), <span class="at">ncol=</span><span class="dv">2</span>)</span>
+<span id="cb1-17"><a href="#cb1-17"></a>correlated_data <span class="ot">&lt;-</span> random_data <span class="sc">%*%</span> cholesky</span>
+<span id="cb1-18"><a href="#cb1-18"></a></span>
+<span id="cb1-19"><a href="#cb1-19"></a><span class="co"># Converting the generated data into a structured data frame in wide format</span></span>
+<span id="cb1-20"><a href="#cb1-20"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-21"><a href="#cb1-21"></a>  <span class="at">Individual =</span> <span class="dv">1</span><span class="sc">:</span>n,</span>
+<span id="cb1-22"><a href="#cb1-22"></a>  <span class="at">Job_Satisfaction_T1 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
+<span id="cb1-23"><a href="#cb1-23"></a>  <span class="at">Job_Satisfaction_T2 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
+<span id="cb1-24"><a href="#cb1-24"></a>  <span class="at">Life_Satisfaction_T1 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">1</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>)</span>
+<span id="cb1-25"><a href="#cb1-25"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
 <section id="view-dataset" class="level3">
 <h3 class="anchored" data-anchor-id="view-dataset">View Dataset</h3>
-<div class="cell" data-hash="2_Tutorials_ResidualizedChangeScores_cache/html/unnamed-chunk-2_35496c1737ceef22fa94d80599e6098a">
+<div class="cell" data-hash="2_Tutorials_ResidualizedChangeScores_cache/html/unnamed-chunk-2_ffdd94928d2f0997026cc35e824a1d56">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">head</span>(data_large)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">head</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Individual"],"name":[1],"type":["int"],"align":["right"]},{"label":["TimePoint"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Job_Satisfaction"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"T1","3":"-0.56047565","_rn_":"1"},{"1":"1","2":"T2","3":"-0.23017749","_rn_":"2"},{"1":"2","2":"T1","3":"1.55870831","_rn_":"3"},{"1":"2","2":"T2","3":"0.07050839","_rn_":"4"},{"1":"3","2":"T1","3":"0.12928774","_rn_":"5"},{"1":"3","2":"T2","3":"1.71506499","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Individual"],"name":[1],"type":["int"],"align":["right"]},{"label":["Job_Satisfaction_T1"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Job_Satisfaction_T2"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Life_Satisfaction_T1"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"6","3":"9","4":"6","_rn_":"1"},{"1":"2","2":"6","3":"8","4":"7","_rn_":"2"},{"1":"3","2":"6","3":"9","4":"10","_rn_":"3"},{"1":"4","2":"8","3":"7","4":"7","_rn_":"4"},{"1":"5","2":"7","3":"8","4":"7","_rn_":"5"},{"1":"6","2":"8","3":"7","4":"10","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -516,58 +500,70 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="model-specification-and-estimation" class="level3">
 <h3 class="anchored" data-anchor-id="model-specification-and-estimation">Model Specification and Estimation</h3>
 <p>To specify a Residualized Change Score, we will conduct a basic regression analysis using base R. Residualized change scores allow us to estimate the change in an outcome variable after accounting for its initial value, effectively removing the effect of the baseline measurement.</p>
-<section id="model" class="level4">
-<h4 class="anchored" data-anchor-id="model">Model</h4>
-<div class="cell" data-hash="2_Tutorials_ResidualizedChangeScores_cache/html/unnamed-chunk-3_9a1a8e8b9126c903ebbb7e809b0b9497">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Extracting Job_Satisfaction scores for the two time points</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a>t1_scores_large <span class="ot">&lt;-</span> data_large<span class="sc">$</span>Job_Satisfaction[data_large<span class="sc">$</span>TimePoint <span class="sc">==</span> <span class="st">"T1"</span>]</span>
-<span id="cb3-3"><a href="#cb3-3"></a>t2_scores_large <span class="ot">&lt;-</span> data_large<span class="sc">$</span>Job_Satisfaction[data_large<span class="sc">$</span>TimePoint <span class="sc">==</span> <span class="st">"T2"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-</section>
 <section id="fit-model" class="level4">
 <h4 class="anchored" data-anchor-id="fit-model">Fit Model</h4>
-<div class="cell" data-hash="2_Tutorials_ResidualizedChangeScores_cache/html/unnamed-chunk-4_da9baaf1496979e0fa2778c10ce26bf8">
+<div class="cell" data-hash="2_Tutorials_ResidualizedChangeScores_cache/html/unnamed-chunk-3_58a6e780ea60ae106f829035a4794bd1">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Perform the paired t-test</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a>test_result <span class="ot">&lt;-</span> <span class="fu">t.test</span>(t1_scores_large, t2_scores_large, <span class="at">paired =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Estimate the residualized change score model</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(Job_Satisfaction_T2 <span class="sc">~</span> Life_Satisfaction_T1 <span class="sc">+</span> Job_Satisfaction_T1, <span class="at">data =</span> data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
 </section>
 <section id="model-summary" class="level3">
 <h3 class="anchored" data-anchor-id="model-summary">Model Summary</h3>
-<div class="cell" data-hash="2_Tutorials_ResidualizedChangeScores_cache/html/unnamed-chunk-5_b6c54735111f017dda15ac7c93153e05">
+<div class="cell" data-hash="2_Tutorials_ResidualizedChangeScores_cache/html/unnamed-chunk-4_fa812cd24b430a4b3af9e3c307cb4b7d">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">print</span>(test_result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-    Paired t-test
+Call:
+lm(formula = Job_Satisfaction_T2 ~ Life_Satisfaction_T1 + Job_Satisfaction_T1, 
+    data = data)
 
-data:  t1_scores_large and t2_scores_large
-t = 2.2206, df = 499, p-value = 0.02682
-alternative hypothesis: true mean difference is not equal to 0
-95 percent confidence interval:
- 0.01659222 0.27137979
-sample estimates:
-mean difference 
-       0.143986 </code></pre>
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.6641 -1.4583  0.3028  1.3895  2.6599 
+
+Coefficients:
+                     Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)           7.03266    0.41206  17.067   &lt;2e-16 ***
+Life_Satisfaction_T1  0.01653    0.03490   0.473    0.636    
+Job_Satisfaction_T1   0.05158    0.04427   1.165    0.245    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.516 on 497 degrees of freedom
+Multiple R-squared:  0.003237,  Adjusted R-squared:  -0.0007744 
+F-statistic: 0.8069 on 2 and 497 DF,  p-value: 0.4468</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">print</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Job_Satisfaction_T2 ~ Life_Satisfaction_T1 + Job_Satisfaction_T1, 
+    data = data)
+
+Coefficients:
+         (Intercept)  Life_Satisfaction_T1   Job_Satisfaction_T1  
+             7.03266               0.01653               0.05158  </code></pre>
 </div>
 </div>
 </section>
 <section id="interpreting-the-results" class="level3">
 <h3 class="anchored" data-anchor-id="interpreting-the-results">Interpreting the Results</h3>
-<p>The paired t-test was conducted to compare Life Satisfaction scores at two time points: T1 and T2. The test yielded a t-value of t=2.221 with 499 degrees of freedom. The associated p-value is p=0.027. This p-value is greater than the common significance level of 0.05, which means that we do not have enough evidence to reject the null hypothesis. The 95% confidence interval for the mean difference ranges from 0.017 to 0.271. The observed mean difference between the two time points is 0.144.</p>
+<p>The residualized change score model was conducted to examine the effect of <code>Life_Satisfaction_T1</code> on <code>Job_Satisfaction_T2</code> while controlling for <code>Job_Satisfaction_T1</code>. The coefficient for <code>Life_Satisfaction_T1</code> is 0.017, which represents the adjusted change in <code>Job_Satisfaction_T2</code> for each one-unit increase in <code>Life_Satisfaction_T1</code>, keeping <code>Job_Satisfaction_T1</code> constant. The associated p-value for this effect is p=0.636. If this p-value is less than the common significance level of 0.05, it suggests that the effect of <code>Life_Satisfaction_T1</code> on <code>Job_Satisfaction_T2</code> is statistically significant after accounting for initial levels of <code>Job_Satisfaction_T1</code>.</p>
 </section>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>There is no statistically significant difference in Life Satisfaction scores between the two time points, T1 and T2, based on the paired t-test results. The mean difference, although positive (0.144), is not significant at the 0.05 level.</p>
+<p>The residualized change score model provides insights into the relationship between <code>Life_Satisfaction_T1</code> and the change in <code>Job_Satisfaction</code> from T1 to T2, controlling for initial levels of job satisfaction. If the p-value is less than 0.05, we can conclude that there is a statistically significant relationship between initial life satisfaction and the subsequent change in job satisfaction. Otherwise, we do not have enough evidence to assert such a relationship.</p>
 
 
 <!-- -->
@@ -1002,99 +998,93 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb7" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1"></a><span class="co">---</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="an">title:</span><span class="co"> Residualized Change Scores</span></span>
-<span id="cb7-3"><a href="#cb7-3"></a><span class="an">author:</span><span class="co"> "Biostatistics Working Group"</span></span>
-<span id="cb7-4"><a href="#cb7-4"></a><span class="co">---</span></span>
-<span id="cb7-5"><a href="#cb7-5"></a></span>
-<span id="cb7-6"><a href="#cb7-6"></a><span class="fu">## Overview</span></span>
-<span id="cb7-7"><a href="#cb7-7"></a>Residualized change scores are a statistical approach that allows for examining the true change in a variable over time by controlling for the initial level of that variable. This method is commonly employed in longitudinal research, especially in fields such as psychology, education, and medicine. Residualized change scores offer a way to address a significant concern in repeated measures: the potential correlation between initial scores and their subsequent change. By using regression analyses, the score at Time 2 is predicted based on the score at Time 1. The residuals from this analysis, which represent the portion of the Time 2 score not predicted by the Time 1 score, give the residualized change score. This score effectively captures the 'true change' from Time 1 to Time 2. In essence, this method seeks to answer the question: Given where someone started (Time 1), did they end up higher or lower than expected at Time 2? By removing the influence of initial levels, researchers can gain clearer insights into the factors that drive genuine change over time.</span>
-<span id="cb7-8"><a href="#cb7-8"></a></span>
-<span id="cb7-9"><a href="#cb7-9"></a><span class="al">![Figure x. Difference score add explanation or tag](./figures/Difference Score 1_Tutorial.png)</span></span>
-<span id="cb7-10"><a href="#cb7-10"></a></span>
-<span id="cb7-11"><a href="#cb7-11"></a><span class="fu">### When to use Difference Score Models?</span></span>
-<span id="cb7-12"><a href="#cb7-12"></a>You should use difference scores in the following scenario:</span>
-<span id="cb7-13"><a href="#cb7-13"></a></span>
-<span id="cb7-14"><a href="#cb7-14"></a><span class="ss">1. </span>You want to know: The impact of interventions or time on a measured variable.</span>
-<span id="cb7-15"><a href="#cb7-15"></a><span class="ss">2. </span>Your variable: Has paired measurements, like pre-test and post-test scores.</span>
-<span id="cb7-16"><a href="#cb7-16"></a><span class="ss">3. </span>You have: Matched data for each set, ensuring valid difference computations.</span>
-<span id="cb7-17"><a href="#cb7-17"></a></span>
-<span id="cb7-18"><a href="#cb7-18"></a><span class="fu">### Getting Started with Difference Score Models</span></span>
-<span id="cb7-19"><a href="#cb7-19"></a>In this tutorial, we will guide you through two simple examples of using difference scores. By the end of this tutorial, you will be able to:</span>
-<span id="cb7-20"><a href="#cb7-20"></a></span>
-<span id="cb7-21"><a href="#cb7-21"></a><span class="ss">1. </span>Understand the basic concepts of difference scores.</span>
-<span id="cb7-22"><a href="#cb7-22"></a><span class="ss">2. </span>Calculate difference scores using example data.</span>
-<span id="cb7-23"><a href="#cb7-23"></a><span class="ss">3. </span>Interpret the results of the difference scores analysis.</span>
-<span id="cb7-24"><a href="#cb7-24"></a></span>
-<span id="cb7-25"><a href="#cb7-25"></a><span class="fu">## Basic Example</span></span>
-<span id="cb7-26"><a href="#cb7-26"></a>In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you'll likely start by importing your own data.</span>
-<span id="cb7-27"><a href="#cb7-27"></a></span>
-<span id="cb7-28"><a href="#cb7-28"></a>The simulated dataset created for this example consists of scores on a single outcome variable ("Job_Satisfaction") for 500 individuals each measured at two time points: T1-T2. </span>
-<span id="cb7-29"><a href="#cb7-29"></a></span>
-<span id="cb7-30"><a href="#cb7-30"></a><span class="fu">#### Create Example Dataset</span></span>
-<span id="cb7-33"><a href="#cb7-33"></a><span class="in">```{r}</span></span>
-<span id="cb7-34"><a href="#cb7-34"></a><span class="co"># This will create a dataset with 1000 rows (2 rows for each of the 500 individuals).</span></span>
-<span id="cb7-35"><a href="#cb7-35"></a></span>
-<span id="cb7-36"><a href="#cb7-36"></a><span class="co"># Creating the example dataset</span></span>
-<span id="cb7-37"><a href="#cb7-37"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) <span class="co"># for reproducibility</span></span>
-<span id="cb7-38"><a href="#cb7-38"></a></span>
-<span id="cb7-39"><a href="#cb7-39"></a><span class="co"># Setting the number of individuals for our sample data</span></span>
-<span id="cb7-40"><a href="#cb7-40"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
-<span id="cb7-41"><a href="#cb7-41"></a></span>
-<span id="cb7-42"><a href="#cb7-42"></a><span class="co"># Specifying the desired correlation matrix for our data</span></span>
-<span id="cb7-43"><a href="#cb7-43"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.30</span>, </span>
-<span id="cb7-44"><a href="#cb7-44"></a>                      <span class="fl">0.30</span>, <span class="dv">1</span>), </span>
-<span id="cb7-45"><a href="#cb7-45"></a>                      <span class="at">nrow=</span><span class="dv">2</span>)</span>
-<span id="cb7-46"><a href="#cb7-46"></a></span>
-<span id="cb7-47"><a href="#cb7-47"></a><span class="co"># Using Cholesky decomposition to generate correlated data</span></span>
-<span id="cb7-48"><a href="#cb7-48"></a>cholesky <span class="ot">&lt;-</span> <span class="fu">chol</span>(cor_matrix)</span>
-<span id="cb7-49"><a href="#cb7-49"></a></span>
-<span id="cb7-50"><a href="#cb7-50"></a><span class="co"># Generating correlated random data</span></span>
-<span id="cb7-51"><a href="#cb7-51"></a>random_data <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n <span class="sc">*</span> <span class="dv">2</span>), <span class="at">ncol=</span><span class="dv">2</span>)</span>
-<span id="cb7-52"><a href="#cb7-52"></a>correlated_data <span class="ot">&lt;-</span> random_data <span class="sc">%*%</span> cholesky</span>
-<span id="cb7-53"><a href="#cb7-53"></a></span>
-<span id="cb7-54"><a href="#cb7-54"></a><span class="co"># Converting the generated data into a structured data frame</span></span>
-<span id="cb7-55"><a href="#cb7-55"></a>data_large <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb7-56"><a href="#cb7-56"></a>  <span class="at">Individual =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>n, <span class="at">each=</span><span class="dv">2</span>),</span>
-<span id="cb7-57"><a href="#cb7-57"></a>  <span class="at">TimePoint =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"T1"</span>, <span class="st">"T2"</span>), <span class="at">times=</span>n),</span>
-<span id="cb7-58"><a href="#cb7-58"></a>  <span class="at">Job_Satisfaction =</span> <span class="fu">c</span>(correlated_data[,<span class="dv">1</span>], correlated_data[,<span class="dv">2</span>])</span>
-<span id="cb7-59"><a href="#cb7-59"></a>)</span>
-<span id="cb7-60"><a href="#cb7-60"></a></span>
-<span id="cb7-61"><a href="#cb7-61"></a><span class="in">```</span></span>
-<span id="cb7-62"><a href="#cb7-62"></a></span>
-<span id="cb7-63"><a href="#cb7-63"></a><span class="fu">### View Dataset</span></span>
-<span id="cb7-66"><a href="#cb7-66"></a><span class="in">```{r}</span></span>
-<span id="cb7-67"><a href="#cb7-67"></a><span class="fu">head</span>(data_large)</span>
-<span id="cb7-68"><a href="#cb7-68"></a><span class="in">```</span></span>
-<span id="cb7-69"><a href="#cb7-69"></a></span>
-<span id="cb7-70"><a href="#cb7-70"></a><span class="fu">### Model Specification and Estimation</span></span>
-<span id="cb7-71"><a href="#cb7-71"></a>To specify a Residualized Change Score, we will conduct a basic regression analysis using base R. Residualized change scores allow us to estimate the change in an outcome variable after accounting for its initial value, effectively removing the effect of the baseline measurement.</span>
-<span id="cb7-72"><a href="#cb7-72"></a></span>
-<span id="cb7-73"><a href="#cb7-73"></a><span class="fu">#### Model </span></span>
-<span id="cb7-76"><a href="#cb7-76"></a><span class="in">```{r}</span></span>
-<span id="cb7-77"><a href="#cb7-77"></a><span class="co"># Extracting Job_Satisfaction scores for the two time points</span></span>
-<span id="cb7-78"><a href="#cb7-78"></a>t1_scores_large <span class="ot">&lt;-</span> data_large<span class="sc">$</span>Job_Satisfaction[data_large<span class="sc">$</span>TimePoint <span class="sc">==</span> <span class="st">"T1"</span>]</span>
-<span id="cb7-79"><a href="#cb7-79"></a>t2_scores_large <span class="ot">&lt;-</span> data_large<span class="sc">$</span>Job_Satisfaction[data_large<span class="sc">$</span>TimePoint <span class="sc">==</span> <span class="st">"T2"</span>]</span>
-<span id="cb7-80"><a href="#cb7-80"></a></span>
-<span id="cb7-81"><a href="#cb7-81"></a><span class="in">```</span></span>
-<span id="cb7-82"><a href="#cb7-82"></a></span>
-<span id="cb7-83"><a href="#cb7-83"></a><span class="fu">#### Fit Model</span></span>
-<span id="cb7-86"><a href="#cb7-86"></a><span class="in">```{r}</span></span>
-<span id="cb7-87"><a href="#cb7-87"></a><span class="co"># Perform the paired t-test</span></span>
-<span id="cb7-88"><a href="#cb7-88"></a>test_result <span class="ot">&lt;-</span> <span class="fu">t.test</span>(t1_scores_large, t2_scores_large, <span class="at">paired =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb7-89"><a href="#cb7-89"></a><span class="in">```</span></span>
-<span id="cb7-90"><a href="#cb7-90"></a></span>
-<span id="cb7-91"><a href="#cb7-91"></a><span class="fu">### Model Summary</span></span>
-<span id="cb7-94"><a href="#cb7-94"></a><span class="in">```{r}</span></span>
-<span id="cb7-95"><a href="#cb7-95"></a><span class="fu">print</span>(test_result)</span>
-<span id="cb7-96"><a href="#cb7-96"></a><span class="in">```</span></span>
-<span id="cb7-97"><a href="#cb7-97"></a></span>
-<span id="cb7-98"><a href="#cb7-98"></a><span class="fu">### Interpreting the Results</span></span>
-<span id="cb7-99"><a href="#cb7-99"></a>The paired t-test was conducted to compare Life Satisfaction scores at two time points: T1 and T2. The test yielded a t-value of t=<span class="in">`r round(test_result$statistic, 3)`</span> with <span class="in">`r test_result$parameter`</span> degrees of freedom. The associated p-value is p=<span class="in">`r round(test_result$p.value, 3)`</span>. This p-value is greater than the common significance level of 0.05, which means that we do not have enough evidence to reject the null hypothesis. The 95% confidence interval for the mean difference ranges from <span class="in">`r round(test_result$conf.int[1], 3)`</span> to <span class="in">`r round(test_result$conf.int[2], 3)`</span>. The observed mean difference between the two time points is <span class="in">`r round(test_result$estimate, 3)`</span>.</span>
-<span id="cb7-100"><a href="#cb7-100"></a></span>
-<span id="cb7-101"><a href="#cb7-101"></a><span class="fu">## Conclusion</span></span>
-<span id="cb7-102"><a href="#cb7-102"></a>There is no statistically significant difference in Life Satisfaction scores between the two time points, T1 and T2, based on the paired t-test results. The mean difference, although positive (<span class="in">`r round(test_result$estimate, 3)`</span>), is not significant at the 0.05 level.</span>
-<span id="cb7-103"><a href="#cb7-103"></a></span>
+<div class="sourceCode" id="cb8" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1"></a><span class="co">---</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="an">title:</span><span class="co"> Residualized Change Scores</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="an">author:</span><span class="co"> "Biostatistics Working Group"</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="co">---</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="fu">## Overview</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a>Residualized change scores are a statistical approach that allows for examining the true change in a variable over time by controlling for the initial level of that variable. This method offers a way to address a significant concern in repeated measures: the potential correlation between initial scores and their subsequent change. By using regression analyses, the score at Time 2 is predicted based on the score at Time 1. The residuals from this analysis, which represent the portion of the Time 2 score not predicted by the Time 1 score, give the residualized change score. This score effectively captures the 'true change' from Time 1 to Time 2. In essence, this method seeks to answer the question: Given where someone started (Time 1), did they end up higher or lower than expected at Time 2? By removing the influence of initial levels, researchers can gain clearer insights into the factors that drive change over time.</span>
+<span id="cb8-8"><a href="#cb8-8"></a></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="al">![Figure x. Residualized change score add explanation or tag](./figures/Residualized Change Score.png)</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a></span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="fu">### When to use a Residualized Change Score Model?</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a>You should use residualized change scores in the following scenarios:</span>
+<span id="cb8-13"><a href="#cb8-13"></a></span>
+<span id="cb8-14"><a href="#cb8-14"></a><span class="ss">1. </span>You want to know: How much change in a variable, beyond its initial level, is due to another variable.</span>
+<span id="cb8-15"><a href="#cb8-15"></a><span class="ss">2. </span>Your variable: Has baseline measurements and subsequent measurements to calculate change.</span>
+<span id="cb8-16"><a href="#cb8-16"></a><span class="ss">3. </span>You have: Data that allows for controlling the initial status, thus focusing on the unique change.</span>
+<span id="cb8-17"><a href="#cb8-17"></a></span>
+<span id="cb8-18"><a href="#cb8-18"></a><span class="fu">### Getting Started with Residualized Change Scores</span></span>
+<span id="cb8-19"><a href="#cb8-19"></a>In this tutorial, we will guide you through two simple examples of using residualized change scores. By the end of this tutorial, you will be able to:</span>
+<span id="cb8-20"><a href="#cb8-20"></a></span>
+<span id="cb8-21"><a href="#cb8-21"></a><span class="ss">1. </span>Understand the basic concepts of residualized change scores.</span>
+<span id="cb8-22"><a href="#cb8-22"></a><span class="ss">2. </span>Calculate residualized change scores using example data.</span>
+<span id="cb8-23"><a href="#cb8-23"></a><span class="ss">3. </span>Interpret the results of the residualized change scores analysis.</span>
+<span id="cb8-24"><a href="#cb8-24"></a></span>
+<span id="cb8-25"><a href="#cb8-25"></a><span class="fu">## Basic Example</span></span>
+<span id="cb8-26"><a href="#cb8-26"></a>In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you'll likely start by importing your own data.</span>
+<span id="cb8-27"><a href="#cb8-27"></a></span>
+<span id="cb8-28"><a href="#cb8-28"></a>The simulated dataset created for this example consists of scores for 500 individuals on an outcome variable ("Job_Satisfaction") measured at two time points (T1-T2) and a predictor ("Life_Satisfaction") measured at one time point (T1). </span>
+<span id="cb8-29"><a href="#cb8-29"></a></span>
+<span id="cb8-30"><a href="#cb8-30"></a><span class="fu">#### Create Example Dataset</span></span>
+<span id="cb8-33"><a href="#cb8-33"></a><span class="in">```{r}</span></span>
+<span id="cb8-34"><a href="#cb8-34"></a><span class="co"># Setting the seed for reproducibility</span></span>
+<span id="cb8-35"><a href="#cb8-35"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb8-36"><a href="#cb8-36"></a></span>
+<span id="cb8-37"><a href="#cb8-37"></a><span class="co"># Setting the number of individuals for our sample data</span></span>
+<span id="cb8-38"><a href="#cb8-38"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
+<span id="cb8-39"><a href="#cb8-39"></a></span>
+<span id="cb8-40"><a href="#cb8-40"></a><span class="co"># Specifying the desired correlation matrix for our data</span></span>
+<span id="cb8-41"><a href="#cb8-41"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.3</span>, </span>
+<span id="cb8-42"><a href="#cb8-42"></a>                      <span class="fl">0.3</span>, <span class="dv">1</span>), </span>
+<span id="cb8-43"><a href="#cb8-43"></a>                      <span class="at">nrow=</span><span class="dv">2</span>)</span>
+<span id="cb8-44"><a href="#cb8-44"></a></span>
+<span id="cb8-45"><a href="#cb8-45"></a><span class="co"># Using Cholesky decomposition to generate correlated data</span></span>
+<span id="cb8-46"><a href="#cb8-46"></a>cholesky <span class="ot">&lt;-</span> <span class="fu">chol</span>(cor_matrix)</span>
+<span id="cb8-47"><a href="#cb8-47"></a></span>
+<span id="cb8-48"><a href="#cb8-48"></a><span class="co"># Generating correlated random data</span></span>
+<span id="cb8-49"><a href="#cb8-49"></a>random_data <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n <span class="sc">*</span> <span class="dv">2</span>), <span class="at">ncol=</span><span class="dv">2</span>)</span>
+<span id="cb8-50"><a href="#cb8-50"></a>correlated_data <span class="ot">&lt;-</span> random_data <span class="sc">%*%</span> cholesky</span>
+<span id="cb8-51"><a href="#cb8-51"></a></span>
+<span id="cb8-52"><a href="#cb8-52"></a><span class="co"># Converting the generated data into a structured data frame in wide format</span></span>
+<span id="cb8-53"><a href="#cb8-53"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb8-54"><a href="#cb8-54"></a>  <span class="at">Individual =</span> <span class="dv">1</span><span class="sc">:</span>n,</span>
+<span id="cb8-55"><a href="#cb8-55"></a>  <span class="at">Job_Satisfaction_T1 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
+<span id="cb8-56"><a href="#cb8-56"></a>  <span class="at">Job_Satisfaction_T2 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
+<span id="cb8-57"><a href="#cb8-57"></a>  <span class="at">Life_Satisfaction_T1 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">1</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>)</span>
+<span id="cb8-58"><a href="#cb8-58"></a>)</span>
+<span id="cb8-59"><a href="#cb8-59"></a></span>
+<span id="cb8-60"><a href="#cb8-60"></a><span class="in">```</span></span>
+<span id="cb8-61"><a href="#cb8-61"></a></span>
+<span id="cb8-62"><a href="#cb8-62"></a><span class="fu">### View Dataset</span></span>
+<span id="cb8-65"><a href="#cb8-65"></a><span class="in">```{r}</span></span>
+<span id="cb8-66"><a href="#cb8-66"></a><span class="fu">head</span>(data)</span>
+<span id="cb8-67"><a href="#cb8-67"></a><span class="in">```</span></span>
+<span id="cb8-68"><a href="#cb8-68"></a></span>
+<span id="cb8-69"><a href="#cb8-69"></a><span class="fu">### Model Specification and Estimation</span></span>
+<span id="cb8-70"><a href="#cb8-70"></a>To specify a Residualized Change Score, we will conduct a basic regression analysis using base R. Residualized change scores allow us to estimate the change in an outcome variable after accounting for its initial value, effectively removing the effect of the baseline measurement.</span>
+<span id="cb8-71"><a href="#cb8-71"></a></span>
+<span id="cb8-72"><a href="#cb8-72"></a><span class="fu">#### Fit Model </span></span>
+<span id="cb8-75"><a href="#cb8-75"></a><span class="in">```{r}</span></span>
+<span id="cb8-76"><a href="#cb8-76"></a><span class="co"># Estimate the residualized change score model</span></span>
+<span id="cb8-77"><a href="#cb8-77"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(Job_Satisfaction_T2 <span class="sc">~</span> Life_Satisfaction_T1 <span class="sc">+</span> Job_Satisfaction_T1, <span class="at">data =</span> data)</span>
+<span id="cb8-78"><a href="#cb8-78"></a></span>
+<span id="cb8-79"><a href="#cb8-79"></a><span class="in">```</span></span>
+<span id="cb8-80"><a href="#cb8-80"></a></span>
+<span id="cb8-81"><a href="#cb8-81"></a><span class="fu">### Model Summary</span></span>
+<span id="cb8-84"><a href="#cb8-84"></a><span class="in">```{r}</span></span>
+<span id="cb8-85"><a href="#cb8-85"></a><span class="fu">summary</span>(model)</span>
+<span id="cb8-86"><a href="#cb8-86"></a><span class="fu">print</span>(model)</span>
+<span id="cb8-87"><a href="#cb8-87"></a><span class="in">```</span></span>
+<span id="cb8-88"><a href="#cb8-88"></a></span>
+<span id="cb8-89"><a href="#cb8-89"></a><span class="fu">### Interpreting the Results</span></span>
+<span id="cb8-90"><a href="#cb8-90"></a>The residualized change score model was conducted to examine the effect of <span class="in">`Life_Satisfaction_T1`</span> on <span class="in">`Job_Satisfaction_T2`</span> while controlling for <span class="in">`Job_Satisfaction_T1`</span>. The coefficient for <span class="in">`Life_Satisfaction_T1`</span> is <span class="in">`r round(coef(model)[2], 3)`</span>, which represents the adjusted change in <span class="in">`Job_Satisfaction_T2`</span> for each one-unit increase in <span class="in">`Life_Satisfaction_T1`</span>, keeping <span class="in">`Job_Satisfaction_T1`</span> constant. The associated p-value for this effect is p=<span class="in">`r round(summary(model)$coefficients[2,4], 3)`</span>. If this p-value is less than the common significance level of 0.05, it suggests that the effect of <span class="in">`Life_Satisfaction_T1`</span> on <span class="in">`Job_Satisfaction_T2`</span> is statistically significant after accounting for initial levels of <span class="in">`Job_Satisfaction_T1`</span>.</span>
+<span id="cb8-91"><a href="#cb8-91"></a></span>
+<span id="cb8-92"><a href="#cb8-92"></a><span class="fu">## Conclusion</span></span>
+<span id="cb8-93"><a href="#cb8-93"></a>The residualized change score model provides insights into the relationship between <span class="in">`Life_Satisfaction_T1`</span> and the change in <span class="in">`Job_Satisfaction`</span> from T1 to T2, controlling for initial levels of job satisfaction. If the p-value is less than 0.05, we can conclude that there is a statistically significant relationship between initial life satisfaction and the subsequent change in job satisfaction. Otherwise, we do not have enough evidence to assert such a relationship.</span>
+<span id="cb8-94"><a href="#cb8-94"></a></span>
+<span id="cb8-95"><a href="#cb8-95"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
