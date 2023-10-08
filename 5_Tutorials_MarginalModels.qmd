@@ -7,7 +7,7 @@ format:
       theme: forest
 ---
 ## Overview
-Marginal models, often termed population-averaged models, are a statistical method used to analyze longitudinal or clustered data. The marginal model estimates the average effect of the independent variables on the outcome while accounting for the within-subject correlation. These models allow for the estimation of population-averaged effects, in contrast to subject-specific effects estimated by random-effects models. Similar to the GEE approach, marginal models account for correlations within repeated measures, but using a different estimation technique that does not account for subject-specific effects. Marginal models expand upon the general linear model, providing a repeated measures framework that is robust to non-normality and non-constant variance, and can handle unbalanced or unequally spaced data. The term marginal in this context is used to emphasize that the model for the mean response at each occasion depends only on the covariates of interest, and not on any random effects or previous responses. 
+Marginal models, often termed population-averaged models, are a statistical method used to analyze longitudinal or clustered data. A marginal model estimates the average effect of the independent variable(s) on the outcome while accounting for within-subject correlations. These models allow for the estimation of population-averaged effects, in contrast to subject-specific effects estimated by random-effects models. Similar to the GEE approach, marginal models account for correlations within repeated measures, but using a different estimation technique that does not account for subject-specific effects. Marginal models expand upon the general linear model, providing a repeated measures framework that is robust to non-normality and non-constant variance, and can handle unbalanced or unequally spaced data. The term marginal in this context is used to emphasize that the model for the mean response at each occasion depends only on the covariates of interest, and not on any random effects or previous responses. 
 
 ```{mermaid}
 graph LR
@@ -24,7 +24,7 @@ D -- Y3 --> G[square]
 You should use longitudinal marginal models in the following scenario:
 
 1. You want to know: How the average response of a population changes over time or under different conditions.
-2. Your variable: Is measured repeatedly over time or under varying conditions, like multiple visits to a doctor.
+2. Your variable: Is measured repeatedly over time or under varying conditions.
 3. You have: Repeated measures that might be correlated, and you want to account for this correlation without specifying a full covariance structure.
 
 ### Getting Started with Longitudinal Marginal Models
@@ -65,7 +65,7 @@ correlated_probs <- random_probs %*% cholesky
 binary_outcomes <- ifelse(correlated_probs > 0.5, 1, 0)
 
 # Converting the generated data into a structured data frame
-data_large <- data.frame(
+data <- data.frame(
   Individual = rep(1:n, each=4),
   TimePoint = rep(c("T1", "T2", "T3", "T4"), times=n),
   Job_Satisfaction = as.vector(t(binary_outcomes))
@@ -76,7 +76,7 @@ data_large <- data.frame(
 
 #### View Dataset
 ```{r}
-head(data_large)
+head(data)
 ```
 
 ### Model Specification and Estimation
@@ -92,7 +92,7 @@ library(geepack)
 ```{r}
 
 # Fitting the longitudinal marginal model
-model <- geeglm(Job_Satisfaction ~ TimePoint, data = data_large, id = Individual, family = binomial(link = "logit"), corstr = "exchangeable")
+model <- geeglm(Job_Satisfaction ~ TimePoint, data = data, id = Individual, family = binomial(link = "logit"), corstr = "exchangeable")
 
 ```
 
@@ -101,14 +101,24 @@ model <- geeglm(Job_Satisfaction ~ TimePoint, data = data_large, id = Individual
 print(model)
 ```
 
-### Interpreting the Results
-A marginal model was fitted using the Generalized Estimating Equations (GEE) approach to assess the effect of TimePoint on Job Satisfaction while accounting for the correlation of observations within individuals. The model used an exchangeable correlation structure, assuming that observations within the same individual have the same correlation. The output of the `geeglm` function provides estimates for the coefficients, along with their standard errors, Wald statistics, and p-values. The coefficient for `TimePoint` indicates how the log odds of Job Satisfaction change from one time point to another. If the p-value associated with this coefficient is less than 0.05, it suggests that there is a statistically significant change in Job Satisfaction across the time points. For a more detailed interpretation, we would look at the specific values obtained from the `print(model)` output, such as:
+```{r}
+## Creating variable (names) to be used for inline text
 
-- Coefficient (Estimate) for `TimePoint`: `r round(coef(model)["TimePoint"], 3)`
-- Associated p-value: `r round(summary(model)$coefficients["TimePoint", "Pr(>|W|)"], 3)`
+p_value_T2 <- summary(model)$coefficients["TimePointT2", "Pr(>|W|)"]
+p_value_T3 <- summary(model)$coefficients["TimePointT3", "Pr(>|W|)"]
+coeff_T3 <- summary(model)$coefficients["TimePointT3", 3]
+
+```
+
+### Interpreting the Results
+A marginal model was fitted using the Generalized Estimating Equations (GEE) approach to assess the effect of `TimePoint` on `Job_Satisfaction` while accounting for the correlation of observations within individuals. The model used an exchangeable correlation structure, assuming that observations within the same individual have the same correlation. The output of the `geeglm` function provides estimates for the coefficients, along with their standard errors, Wald statistics, and p-values. The coefficient for `TimePoint` indicates how the log odds of Job Satisfaction change from one time point to another. If the p-value associated with this coefficient is less than 0.05, it suggests that there is a statistically significant change in Job Satisfaction across the time points. For a more detailed interpretation, we would look at the specific values obtained from the `print(model)` output, such as:
+
+- Coefficient (Estimate) for `TimePoint`: `r coeff_T3`
+- Associated p-value: `r p_value_T2`)
 
 ## Conclusion
-If the p-value for the `TimePoint` coefficient is less than 0.05, we conclude that there is a statistically significant change in Job Satisfaction scores between the time points. Otherwise, there is no significant change based on the marginal model results. The exact nature (increase/decrease) of the change can be inferred from the sign (+/-) of the coefficient.
+If the p-value for the `TimePoint` coefficient is less than 0.05, we conclude that there is a statistically significant change in `Job_Satisfaction` scores between the time points. Otherwise, there is no significant change based on the marginal model results. The exact nature (increase/decrease) of the change can be inferred from the sign (+/-) of the coefficient.
+
 
 
 

@@ -502,13 +502,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>To specify a Linear Mixed Model (LMM), we will use the <code>lme4</code> package in R, specifically the <code>lmer</code> function. In LMMs, we account for both fixed effects, which are consistent across individuals, and random effects, which can vary. By doing so, LMMs allow us to model the trajectory of an outcome variable over time while considering the inter-individual differences and intra-individual changes.</p>
 <section id="install-load-libraries" class="level4">
 <h4 class="anchored" data-anchor-id="install-load-libraries">Install &amp; Load Libraries</h4>
+<div class="cell" data-hash="3_Tutorials_LinearMixedModels_cache/html/setup_a96cc77f25d78ad27c541a19961da5af">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="cf">if</span> (<span class="sc">!</span>(<span class="st">"lme4"</span> <span class="sc">%in%</span> <span class="fu">installed.packages</span>())) <span class="fu">install.packages</span>(<span class="st">"lme4"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="fu">library</span>(lme4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
 </section>
 <section id="model" class="level4">
 <h4 class="anchored" data-anchor-id="model">Model</h4>
 <div class="cell" data-hash="3_Tutorials_LinearMixedModels_cache/html/unnamed-chunk-3_f2fe025032a060a48002d55f29007770">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(Job_Satisfaction <span class="sc">~</span> TimePoint <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> Individual), <span class="at">data =</span> data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(Job_Satisfaction <span class="sc">~</span> TimePoint <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> Individual), <span class="at">data =</span> data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -517,7 +524,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell" data-hash="3_Tutorials_LinearMixedModels_cache/html/unnamed-chunk-4_4ee9d8c24327eb40c39eef769b9ba6cd">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML ['lmerMod']
@@ -551,20 +558,19 @@ TimePointT4 -0.598  0.500  0.500</code></pre>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">plot</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">plot</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="3_Tutorials_LinearMixedModels_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>-0.025</p>
 <p>In our analysis, we employed a linear mixed model to explore the trend of <code>Job_Satisfaction</code> scores across four distinct time points: T1, T2, T3, and T4. Accounting for the repeated measurements on individual participants, the model assessed the fixed effect of the <code>TimePoint</code> variable and incorporated random intercepts for each individual. The coefficient for <code>TimePoint</code> indicates how the <code>Job_Satisfaction</code> scores shift, on average, across the time points. Specifically, the coefficient for transitioning from T1 to T2 is -0.061, from T1 to T3 is 0.058, and from T1 to T4 is -0.025. These coefficients represent the average change in <code>Job_Satisfaction</code> scores for each subsequent time point relative to T1. In essence, this model allows us to understand both the general trend in <code>Job_Satisfaction</code> over time and the individual variations around this trend.</p>
 </section>
 </section>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>The LMM allows us to analyze the trend in <code>Job Satisfaction</code> scores across time points while considering individual variability. Depending on the p-value for the TimePoint effect, we can determine if there’s a statistically significant change in Job Satisfaction scores over the time points. Moreover, the diagnostic plots can guide potential model refinements or highlight areas for further investigation.</p>
+<p>The LMM allows us to analyze the trend in <code>Job_Satisfaction</code> scores across time points while considering individual variability. Depending on the p-value for the TimePoint effect, we can determine if there’s a statistically significant change in Job Satisfaction scores over the time points. Moreover, the diagnostic plots can guide potential model refinements or highlight areas for further investigation.</p>
 
 
 <!-- -->
@@ -999,102 +1005,98 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb7" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1"></a><span class="co">---</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="an">title:</span><span class="co"> "Linear Mixed Models"</span></span>
-<span id="cb7-3"><a href="#cb7-3"></a><span class="an">author:</span><span class="co"> "Biostatistics Working Group"</span></span>
-<span id="cb7-4"><a href="#cb7-4"></a><span class="an">execute:</span></span>
-<span id="cb7-5"><a href="#cb7-5"></a><span class="co">  warning: false</span></span>
-<span id="cb7-6"><a href="#cb7-6"></a><span class="co">---</span></span>
-<span id="cb7-7"><a href="#cb7-7"></a></span>
-<span id="cb7-8"><a href="#cb7-8"></a><span class="fu">## Overview</span></span>
-<span id="cb7-9"><a href="#cb7-9"></a>Linear mixed models (LMMs) are a powerful statistical tool that allows the analysis of complex data structures that contain both fixed and random effects. LMMs are widely used in various fields, including social sciences, biology, and engineering, due to their ability to handle hierarchical data structures and account for within-subject correlations. LMMs are an extension of the general linear model (GLM), where both fixed and random effects can be included in the model, making them more flexible and robust. These models are particularly useful when analyzing longitudinal data, where measurements are taken repeatedly over time, and correlations between observations must be accounted for. Specifically, the LMM framework accounts for these dependencies among data by extending the general regression "fixed effects" model to allow both, fixed and random effects. This approach simultaneously models an overall sample mean trajectory (fixed effect) and subject-specific (random) effects that vary randomly about the sample mean trajectory. It is this "mixture" of fixed and random effects from which these models derive their name.</span>
-<span id="cb7-10"><a href="#cb7-10"></a></span>
-<span id="cb7-11"><a href="#cb7-11"></a><span class="al">![Linear Mixed Models](./figures/Linear Mixed Models.png)</span></span>
-<span id="cb7-12"><a href="#cb7-12"></a></span>
-<span id="cb7-13"><a href="#cb7-13"></a><span class="fu">### When to use Longitudinal Linear Mixed Models (LMMs)?</span></span>
-<span id="cb7-14"><a href="#cb7-14"></a>You should consider using LMMs in the following situations:</span>
-<span id="cb7-15"><a href="#cb7-15"></a></span>
-<span id="cb7-16"><a href="#cb7-16"></a><span class="ss">1. </span>You want to know: The effects of interventions, time, or other predictors on a continuous outcome over multiple time points.</span>
-<span id="cb7-17"><a href="#cb7-17"></a><span class="ss">2. </span>Your data: Contains repeated measures taken on subjects at different time points or under various conditions.</span>
-<span id="cb7-18"><a href="#cb7-18"></a><span class="ss">3. </span>You have: Both fixed effects (overall population effects) and random effects (individual variations) that need to be accounted for in the analysis.</span>
-<span id="cb7-19"><a href="#cb7-19"></a></span>
-<span id="cb7-20"><a href="#cb7-20"></a><span class="fu">### Getting Started with Longitudinal Linear Mixed Models</span></span>
-<span id="cb7-21"><a href="#cb7-21"></a>In this tutorial, we will introduce the concept of longitudinal linear mixed models (LLMMs) and guide you through a simple example using a small dataset. By the end of this tutorial, you will be able to:</span>
-<span id="cb7-22"><a href="#cb7-22"></a></span>
-<span id="cb7-23"><a href="#cb7-23"></a><span class="ss">1. </span>Understand the basic concepts of longitudinal linear mixed models.</span>
-<span id="cb7-24"><a href="#cb7-24"></a><span class="ss">2. </span>Fit a longitudinal linear mixed model using example data in R.</span>
-<span id="cb7-25"><a href="#cb7-25"></a><span class="ss">3. </span>Interpret the results of the LLMM analysis.</span>
-<span id="cb7-26"><a href="#cb7-26"></a></span>
-<span id="cb7-27"><a href="#cb7-27"></a><span class="fu">## Basic Example</span></span>
-<span id="cb7-28"><a href="#cb7-28"></a>In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you'll likely start by importing your own data.</span>
-<span id="cb7-29"><a href="#cb7-29"></a></span>
-<span id="cb7-30"><a href="#cb7-30"></a>The simulated dataset created for this example consists of scores on a single outcome variable ("Job_Satisfaction") for 500 individuals each measured at four time points: T1-T4. </span>
-<span id="cb7-31"><a href="#cb7-31"></a></span>
-<span id="cb7-32"><a href="#cb7-32"></a><span class="fu">#### Create Example Dataset</span></span>
-<span id="cb7-35"><a href="#cb7-35"></a><span class="in">```{r}</span></span>
-<span id="cb7-36"><a href="#cb7-36"></a><span class="co"># This will create a dataset with 2000 rows (4 rows for each of the 500 individuals).</span></span>
-<span id="cb7-37"><a href="#cb7-37"></a></span>
-<span id="cb7-38"><a href="#cb7-38"></a><span class="co"># Setting the number of individuals for our sample data</span></span>
-<span id="cb7-39"><a href="#cb7-39"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
-<span id="cb7-40"><a href="#cb7-40"></a></span>
-<span id="cb7-41"><a href="#cb7-41"></a><span class="co"># Specifying the desired correlation matrix for our data</span></span>
-<span id="cb7-42"><a href="#cb7-42"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.30</span>, <span class="fl">0.30</span>, <span class="fl">0.30</span>, </span>
-<span id="cb7-43"><a href="#cb7-43"></a>                      <span class="fl">0.30</span>, <span class="dv">1</span>, <span class="fl">0.30</span>, <span class="fl">0.30</span>, </span>
-<span id="cb7-44"><a href="#cb7-44"></a>                      <span class="fl">0.30</span>, <span class="fl">0.30</span>, <span class="dv">1</span>, <span class="fl">0.30</span>,</span>
-<span id="cb7-45"><a href="#cb7-45"></a>                      <span class="fl">0.30</span>, <span class="fl">0.30</span>, <span class="fl">0.30</span>, <span class="dv">1</span>),</span>
-<span id="cb7-46"><a href="#cb7-46"></a>                      <span class="at">nrow=</span><span class="dv">4</span>)</span>
-<span id="cb7-47"><a href="#cb7-47"></a></span>
-<span id="cb7-48"><a href="#cb7-48"></a><span class="co"># Using Cholesky decomposition to generate correlated data</span></span>
-<span id="cb7-49"><a href="#cb7-49"></a>cholesky <span class="ot">&lt;-</span> <span class="fu">chol</span>(cor_matrix)</span>
-<span id="cb7-50"><a href="#cb7-50"></a></span>
-<span id="cb7-51"><a href="#cb7-51"></a><span class="co"># Generating correlated random data for 4 timepoints</span></span>
-<span id="cb7-52"><a href="#cb7-52"></a>random_data <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n <span class="sc">*</span> <span class="dv">4</span>), <span class="at">ncol=</span><span class="dv">4</span>)</span>
-<span id="cb7-53"><a href="#cb7-53"></a>correlated_data <span class="ot">&lt;-</span> random_data <span class="sc">%*%</span> cholesky</span>
-<span id="cb7-54"><a href="#cb7-54"></a></span>
-<span id="cb7-55"><a href="#cb7-55"></a><span class="co"># Converting the generated data into a structured data frame</span></span>
-<span id="cb7-56"><a href="#cb7-56"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb7-57"><a href="#cb7-57"></a>  <span class="at">Individual =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>n, <span class="at">each=</span><span class="dv">4</span>),</span>
-<span id="cb7-58"><a href="#cb7-58"></a>  <span class="at">TimePoint =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"T1"</span>, <span class="st">"T2"</span>, <span class="st">"T3"</span>, <span class="st">"T4"</span>), <span class="at">times=</span>n),</span>
-<span id="cb7-59"><a href="#cb7-59"></a>  <span class="at">Job_Satisfaction =</span> <span class="fu">as.vector</span>(<span class="fu">t</span>(correlated_data))</span>
-<span id="cb7-60"><a href="#cb7-60"></a>)</span>
-<span id="cb7-61"><a href="#cb7-61"></a></span>
-<span id="cb7-62"><a href="#cb7-62"></a><span class="in">```</span></span>
-<span id="cb7-63"><a href="#cb7-63"></a></span>
-<span id="cb7-64"><a href="#cb7-64"></a><span class="fu">#### View Dataset</span></span>
-<span id="cb7-67"><a href="#cb7-67"></a><span class="in">```{r}</span></span>
-<span id="cb7-68"><a href="#cb7-68"></a><span class="fu">head</span>(data)</span>
-<span id="cb7-69"><a href="#cb7-69"></a><span class="in">```</span></span>
-<span id="cb7-70"><a href="#cb7-70"></a></span>
-<span id="cb7-71"><a href="#cb7-71"></a><span class="fu">### Model Specification and Estimation</span></span>
-<span id="cb7-72"><a href="#cb7-72"></a>To specify a Linear Mixed Model (LMM), we will use the <span class="in">`lme4`</span> package in R, specifically the <span class="in">`lmer`</span> function. In LMMs, we account for both fixed effects, which are consistent across individuals, and random effects, which can vary. By doing so, LMMs allow us to model the trajectory of an outcome variable over time while considering the inter-individual differences and intra-individual changes.</span>
-<span id="cb7-73"><a href="#cb7-73"></a></span>
-<span id="cb7-74"><a href="#cb7-74"></a></span>
-<span id="cb7-75"><a href="#cb7-75"></a><span class="fu">#### Install &amp; Load Libraries</span></span>
-<span id="cb7-76"><a href="#cb7-76"></a><span class="in">```{r setup, include=FALSE}</span></span>
-<span id="cb7-77"><a href="#cb7-77"></a></span>
-<span id="cb7-78"><a href="#cb7-78"></a><span class="cf">if</span> (<span class="sc">!</span>(<span class="st">"lme4"</span> <span class="sc">%in%</span> <span class="fu">installed.packages</span>())) <span class="fu">install.packages</span>(<span class="st">"lme4"</span>)</span>
-<span id="cb7-79"><a href="#cb7-79"></a><span class="fu">library</span>(lme4)</span>
-<span id="cb7-80"><a href="#cb7-80"></a><span class="in">```</span></span>
-<span id="cb7-81"><a href="#cb7-81"></a></span>
-<span id="cb7-82"><a href="#cb7-82"></a><span class="fu">#### Model</span></span>
-<span id="cb7-85"><a href="#cb7-85"></a><span class="in">```{r}</span></span>
-<span id="cb7-86"><a href="#cb7-86"></a>model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(Job_Satisfaction <span class="sc">~</span> TimePoint <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> Individual), <span class="at">data =</span> data)</span>
-<span id="cb7-87"><a href="#cb7-87"></a><span class="in">```</span></span>
-<span id="cb7-88"><a href="#cb7-88"></a></span>
-<span id="cb7-89"><a href="#cb7-89"></a><span class="fu">#### Model Summary</span></span>
-<span id="cb7-92"><a href="#cb7-92"></a><span class="in">```{r}</span></span>
-<span id="cb7-93"><a href="#cb7-93"></a><span class="fu">summary</span>(model)</span>
-<span id="cb7-94"><a href="#cb7-94"></a><span class="fu">plot</span>(model)</span>
-<span id="cb7-95"><a href="#cb7-95"></a></span>
-<span id="cb7-96"><a href="#cb7-96"></a><span class="in">```</span></span>
-<span id="cb7-97"><a href="#cb7-97"></a></span>
-<span id="cb7-98"><a href="#cb7-98"></a><span class="in">`r round(fixef(model)[4], 3)`</span></span>
-<span id="cb7-99"><a href="#cb7-99"></a></span>
-<span id="cb7-100"><a href="#cb7-100"></a></span>
-<span id="cb7-101"><a href="#cb7-101"></a>In our analysis, we employed a linear mixed model to explore the trend of <span class="in">`Job_Satisfaction`</span> scores across four distinct time points: T1, T2, T3, and T4. Accounting for the repeated measurements on individual participants, the model assessed the fixed effect of the <span class="in">`TimePoint`</span> variable and incorporated random intercepts for each individual. The coefficient for <span class="in">`TimePoint`</span> indicates how the <span class="in">`Job_Satisfaction`</span> scores shift, on average, across the time points. Specifically, the coefficient for transitioning from T1 to T2 is <span class="in">`r round(fixef(model)[2], 3)`</span>, from T1 to T3 is <span class="in">`r round(fixef(model)[3], 3)`</span>, and from T1 to T4 is <span class="in">`r round(fixef(model)[4], 3)`</span>. These coefficients represent the average change in <span class="in">`Job_Satisfaction`</span> scores for each subsequent time point relative to T1. In essence, this model allows us to understand both the general trend in <span class="in">`Job_Satisfaction`</span> over time and the individual variations around this trend.</span>
-<span id="cb7-102"><a href="#cb7-102"></a></span>
-<span id="cb7-103"><a href="#cb7-103"></a><span class="fu">## Conclusion</span></span>
-<span id="cb7-104"><a href="#cb7-104"></a>The LMM allows us to analyze the trend in <span class="in">`Job Satisfaction`</span> scores across time points while considering individual variability. Depending on the p-value for the TimePoint effect, we can determine if there's a statistically significant change in Job Satisfaction scores over the time points. Moreover, the diagnostic plots can guide potential model refinements or highlight areas for further investigation.</span>
+<div class="sourceCode" id="cb8" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1"></a><span class="co">---</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="an">title:</span><span class="co"> "Linear Mixed Models"</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="an">author:</span><span class="co"> "Biostatistics Working Group"</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="an">execute:</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="co">  warning: false</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="co">---</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="fu">## Overview</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a>Linear mixed models (LMMs) are a powerful statistical tool that allows the analysis of complex data structures that contain both fixed and random effects. LMMs are widely used in various fields, including social sciences, biology, and engineering, due to their ability to handle hierarchical data structures and account for within-subject correlations. LMMs are an extension of the general linear model (GLM), where both fixed and random effects can be included in the model, making them more flexible and robust. These models are particularly useful when analyzing longitudinal data, where measurements are taken repeatedly over time, and correlations between observations must be accounted for. Specifically, the LMM framework accounts for these dependencies among data by extending the general regression "fixed effects" model to allow both, fixed and random effects. This approach simultaneously models an overall sample mean trajectory (fixed effect) and subject-specific (random) effects that vary randomly about the sample mean trajectory. It is this "mixture" of fixed and random effects from which these models derive their name.</span>
+<span id="cb8-10"><a href="#cb8-10"></a></span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="al">![Linear Mixed Models](./figures/Linear Mixed Models.png)</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a></span>
+<span id="cb8-13"><a href="#cb8-13"></a><span class="fu">### When to use Longitudinal Linear Mixed Models (LMMs)?</span></span>
+<span id="cb8-14"><a href="#cb8-14"></a>You should consider using LMMs in the following situations:</span>
+<span id="cb8-15"><a href="#cb8-15"></a></span>
+<span id="cb8-16"><a href="#cb8-16"></a><span class="ss">1. </span>You want to know: The effects of interventions, time, or other predictors on a continuous outcome over multiple time points.</span>
+<span id="cb8-17"><a href="#cb8-17"></a><span class="ss">2. </span>Your data: Contains repeated measures taken on subjects at different time points or under various conditions.</span>
+<span id="cb8-18"><a href="#cb8-18"></a><span class="ss">3. </span>You have: Both fixed effects (overall population effects) and random effects (individual variations) that need to be accounted for in the analysis.</span>
+<span id="cb8-19"><a href="#cb8-19"></a></span>
+<span id="cb8-20"><a href="#cb8-20"></a><span class="fu">### Getting Started with Longitudinal Linear Mixed Models</span></span>
+<span id="cb8-21"><a href="#cb8-21"></a>In this tutorial, we will introduce the concept of longitudinal linear mixed models (LLMMs) and guide you through a simple example using a small dataset. By the end of this tutorial, you will be able to:</span>
+<span id="cb8-22"><a href="#cb8-22"></a></span>
+<span id="cb8-23"><a href="#cb8-23"></a><span class="ss">1. </span>Understand the basic concepts of longitudinal linear mixed models.</span>
+<span id="cb8-24"><a href="#cb8-24"></a><span class="ss">2. </span>Fit a longitudinal linear mixed model using example data in R.</span>
+<span id="cb8-25"><a href="#cb8-25"></a><span class="ss">3. </span>Interpret the results of the LLMM analysis.</span>
+<span id="cb8-26"><a href="#cb8-26"></a></span>
+<span id="cb8-27"><a href="#cb8-27"></a><span class="fu">## Basic Example</span></span>
+<span id="cb8-28"><a href="#cb8-28"></a>In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you'll likely start by importing your own data.</span>
+<span id="cb8-29"><a href="#cb8-29"></a></span>
+<span id="cb8-30"><a href="#cb8-30"></a>The simulated dataset created for this example consists of scores on a single outcome variable ("Job_Satisfaction") for 500 individuals each measured at four time points: T1-T4. </span>
+<span id="cb8-31"><a href="#cb8-31"></a></span>
+<span id="cb8-32"><a href="#cb8-32"></a><span class="fu">#### Create Example Dataset</span></span>
+<span id="cb8-35"><a href="#cb8-35"></a><span class="in">```{r}</span></span>
+<span id="cb8-36"><a href="#cb8-36"></a><span class="co"># This will create a dataset with 2000 rows (4 rows for each of the 500 individuals).</span></span>
+<span id="cb8-37"><a href="#cb8-37"></a></span>
+<span id="cb8-38"><a href="#cb8-38"></a><span class="co"># Setting the number of individuals for our sample data</span></span>
+<span id="cb8-39"><a href="#cb8-39"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
+<span id="cb8-40"><a href="#cb8-40"></a></span>
+<span id="cb8-41"><a href="#cb8-41"></a><span class="co"># Specifying the desired correlation matrix for our data</span></span>
+<span id="cb8-42"><a href="#cb8-42"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.30</span>, <span class="fl">0.30</span>, <span class="fl">0.30</span>, </span>
+<span id="cb8-43"><a href="#cb8-43"></a>                      <span class="fl">0.30</span>, <span class="dv">1</span>, <span class="fl">0.30</span>, <span class="fl">0.30</span>, </span>
+<span id="cb8-44"><a href="#cb8-44"></a>                      <span class="fl">0.30</span>, <span class="fl">0.30</span>, <span class="dv">1</span>, <span class="fl">0.30</span>,</span>
+<span id="cb8-45"><a href="#cb8-45"></a>                      <span class="fl">0.30</span>, <span class="fl">0.30</span>, <span class="fl">0.30</span>, <span class="dv">1</span>),</span>
+<span id="cb8-46"><a href="#cb8-46"></a>                      <span class="at">nrow=</span><span class="dv">4</span>)</span>
+<span id="cb8-47"><a href="#cb8-47"></a></span>
+<span id="cb8-48"><a href="#cb8-48"></a><span class="co"># Using Cholesky decomposition to generate correlated data</span></span>
+<span id="cb8-49"><a href="#cb8-49"></a>cholesky <span class="ot">&lt;-</span> <span class="fu">chol</span>(cor_matrix)</span>
+<span id="cb8-50"><a href="#cb8-50"></a></span>
+<span id="cb8-51"><a href="#cb8-51"></a><span class="co"># Generating correlated random data for 4 timepoints</span></span>
+<span id="cb8-52"><a href="#cb8-52"></a>random_data <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n <span class="sc">*</span> <span class="dv">4</span>), <span class="at">ncol=</span><span class="dv">4</span>)</span>
+<span id="cb8-53"><a href="#cb8-53"></a>correlated_data <span class="ot">&lt;-</span> random_data <span class="sc">%*%</span> cholesky</span>
+<span id="cb8-54"><a href="#cb8-54"></a></span>
+<span id="cb8-55"><a href="#cb8-55"></a><span class="co"># Converting the generated data into a structured data frame</span></span>
+<span id="cb8-56"><a href="#cb8-56"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb8-57"><a href="#cb8-57"></a>  <span class="at">Individual =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>n, <span class="at">each=</span><span class="dv">4</span>),</span>
+<span id="cb8-58"><a href="#cb8-58"></a>  <span class="at">TimePoint =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"T1"</span>, <span class="st">"T2"</span>, <span class="st">"T3"</span>, <span class="st">"T4"</span>), <span class="at">times=</span>n),</span>
+<span id="cb8-59"><a href="#cb8-59"></a>  <span class="at">Job_Satisfaction =</span> <span class="fu">as.vector</span>(<span class="fu">t</span>(correlated_data))</span>
+<span id="cb8-60"><a href="#cb8-60"></a>)</span>
+<span id="cb8-61"><a href="#cb8-61"></a></span>
+<span id="cb8-62"><a href="#cb8-62"></a><span class="in">```</span></span>
+<span id="cb8-63"><a href="#cb8-63"></a></span>
+<span id="cb8-64"><a href="#cb8-64"></a><span class="fu">#### View Dataset</span></span>
+<span id="cb8-67"><a href="#cb8-67"></a><span class="in">```{r}</span></span>
+<span id="cb8-68"><a href="#cb8-68"></a><span class="fu">head</span>(data)</span>
+<span id="cb8-69"><a href="#cb8-69"></a><span class="in">```</span></span>
+<span id="cb8-70"><a href="#cb8-70"></a></span>
+<span id="cb8-71"><a href="#cb8-71"></a><span class="fu">### Model Specification and Estimation</span></span>
+<span id="cb8-72"><a href="#cb8-72"></a>To specify a Linear Mixed Model (LMM), we will use the <span class="in">`lme4`</span> package in R, specifically the <span class="in">`lmer`</span> function. In LMMs, we account for both fixed effects, which are consistent across individuals, and random effects, which can vary. By doing so, LMMs allow us to model the trajectory of an outcome variable over time while considering the inter-individual differences and intra-individual changes.</span>
+<span id="cb8-73"><a href="#cb8-73"></a></span>
+<span id="cb8-74"><a href="#cb8-74"></a></span>
+<span id="cb8-75"><a href="#cb8-75"></a><span class="fu">#### Install &amp; Load Libraries</span></span>
+<span id="cb8-76"><a href="#cb8-76"></a><span class="in">```{r setup}</span></span>
+<span id="cb8-77"><a href="#cb8-77"></a><span class="cf">if</span> (<span class="sc">!</span>(<span class="st">"lme4"</span> <span class="sc">%in%</span> <span class="fu">installed.packages</span>())) <span class="fu">install.packages</span>(<span class="st">"lme4"</span>)</span>
+<span id="cb8-78"><a href="#cb8-78"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb8-79"><a href="#cb8-79"></a><span class="in">```</span></span>
+<span id="cb8-80"><a href="#cb8-80"></a></span>
+<span id="cb8-81"><a href="#cb8-81"></a><span class="fu">#### Model</span></span>
+<span id="cb8-84"><a href="#cb8-84"></a><span class="in">```{r}</span></span>
+<span id="cb8-85"><a href="#cb8-85"></a>model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(Job_Satisfaction <span class="sc">~</span> TimePoint <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> Individual), <span class="at">data =</span> data)</span>
+<span id="cb8-86"><a href="#cb8-86"></a><span class="in">```</span></span>
+<span id="cb8-87"><a href="#cb8-87"></a></span>
+<span id="cb8-88"><a href="#cb8-88"></a><span class="fu">#### Model Summary</span></span>
+<span id="cb8-91"><a href="#cb8-91"></a><span class="in">```{r}</span></span>
+<span id="cb8-92"><a href="#cb8-92"></a><span class="fu">summary</span>(model)</span>
+<span id="cb8-93"><a href="#cb8-93"></a><span class="fu">plot</span>(model)</span>
+<span id="cb8-94"><a href="#cb8-94"></a></span>
+<span id="cb8-95"><a href="#cb8-95"></a><span class="in">```</span></span>
+<span id="cb8-96"><a href="#cb8-96"></a></span>
+<span id="cb8-97"><a href="#cb8-97"></a>In our analysis, we employed a linear mixed model to explore the trend of <span class="in">`Job_Satisfaction`</span> scores across four distinct time points: T1, T2, T3, and T4. Accounting for the repeated measurements on individual participants, the model assessed the fixed effect of the <span class="in">`TimePoint`</span> variable and incorporated random intercepts for each individual. The coefficient for <span class="in">`TimePoint`</span> indicates how the <span class="in">`Job_Satisfaction`</span> scores shift, on average, across the time points. Specifically, the coefficient for transitioning from T1 to T2 is <span class="in">`r round(fixef(model)[2], 3)`</span>, from T1 to T3 is <span class="in">`r round(fixef(model)[3], 3)`</span>, and from T1 to T4 is <span class="in">`r round(fixef(model)[4], 3)`</span>. These coefficients represent the average change in <span class="in">`Job_Satisfaction`</span> scores for each subsequent time point relative to T1. In essence, this model allows us to understand both the general trend in <span class="in">`Job_Satisfaction`</span> over time and the individual variations around this trend.</span>
+<span id="cb8-98"><a href="#cb8-98"></a></span>
+<span id="cb8-99"><a href="#cb8-99"></a><span class="fu">## Conclusion</span></span>
+<span id="cb8-100"><a href="#cb8-100"></a>The LMM allows us to analyze the trend in <span class="in">`Job_Satisfaction`</span> scores across time points while considering individual variability. Depending on the p-value for the TimePoint effect, we can determine if there's a statistically significant change in Job Satisfaction scores over the time points. Moreover, the diagnostic plots can guide potential model refinements or highlight areas for further investigation.</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

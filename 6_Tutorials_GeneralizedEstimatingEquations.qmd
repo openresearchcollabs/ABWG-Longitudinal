@@ -4,10 +4,10 @@ author: "Biostatistics Working Group"
 ---
 
 ## Overview
-Generalized estimating equations (GEEs) are a pivotal statistical methodology, designed specifically to analyze correlated data often encountered in longitudinal studies. GEEs have become a staple in a plethora of disciplines, spanning public health, epidemiology, and social sciences, because of their proficiency in managing repeated measurements on the same subjects. While reminiscent of the general linear model (GLM), GEEs extend their capabilities by addressing correlations within clusters of data, such as measurements within the same individual. This makes GEEs particularly invaluable for longitudinal data, where observations are chronologically ordered and dependencies between them are inherent. The essence of GEEs lies in their population-averaged approach, focusing on modeling the average response over individuals while accounting for within-subject correlations. Unlike models that emphasize subject-specific effects, GEEs provide insights into the broader trends across the population. This emphasis on population-level patterns, coupled with its adeptness at handling correlated data, solidifies GEEs as a cornerstone methodology for longitudinal analyses.
+Generalized estimating equations (GEEs) are designed to analyze correlated data often encountered in longitudinal studies due to their ability to manage repeated measurements on the same subjects. Although similar to the general linear model (GLM), GEEs extend their capabilities by addressing correlations within clusters of data, such as measurements within the same individual. GEEs consist of a population-averaged approach, focusing on modeling the average response over individuals while accounting for within-subject correlations. Unlike models that emphasize subject-specific effects, GEEs provide insights into broader trends across the population (i.e., population-level patterns).
 
 ### When to use Longitudinal Generalized Estimating Equations?
-You should use longitudinal generalized estimating equations in the following scenario:
+You should use generalized estimating equations in the following scenario:
 
 1. You want to know: How the average outcome of a population evolves over time, especially when dealing with correlated or clustered data.
 2. Your variable: Is measured repeatedly across various time points or settings, capturing the inherent correlations within subjects.
@@ -54,7 +54,7 @@ correlated_probs <- plogis(correlated_data)
 binary_outcomes <- ifelse(correlated_probs > 0.5, 1, 0)
 
 # Converting the generated data into a structured data frame
-data_large <- data.frame(
+data <- data.frame(
   Individual = rep(1:n, each=4),
   TimePoint = rep(c("T1", "T2", "T3", "T4"), times=n),
   Job_Satisfaction = as.vector(t(binary_outcomes))
@@ -64,7 +64,7 @@ data_large <- data.frame(
 
 #### View Dataset
 ```{r}
-head(data_large)
+head(data)
 ```
 
 ### Model Specification and Estimation
@@ -79,7 +79,7 @@ library(geepack)
 #### Model
 ```{r}
 # Running the model
-model <- geeglm(Job_Satisfaction ~ TimePoint, data = data_large, id = Individual, family = binomial(link = "logit"), corstr = "exchangeable")
+model <- geeglm(Job_Satisfaction ~ TimePoint, data = data, id = Individual, family = binomial(link = "logit"), corstr = "exchangeable")
 
 ```
 
@@ -88,12 +88,22 @@ model <- geeglm(Job_Satisfaction ~ TimePoint, data = data_large, id = Individual
 print(model)
 ```
 
+
+```{r}
+## Creating variable (names) from output to be used for inline text
+
+p_value_T2 <- summary(model)$coefficients["TimePointT2", "Pr(>|W|)"]
+p_value_T3 <- summary(model)$coefficients["TimePointT3", "Pr(>|W|)"]
+coeff_T3 <- summary(model)$coefficients["TimePointT3", 3]
+
+```
+
 ### Interpreting the Results
 Generalized Estimating Equations (GEE) were used to model the relationship between Job Satisfaction and TimePoint, taking into account the correlation of repeated measures within individuals. The model assumes a binomial distribution for Job Satisfaction with a logit link function and uses an exchangeable correlation structure. The output of the `geeglm` function provides estimates for the coefficients, along with their standard errors, Wald statistics, and p-values. The coefficient for `TimePoint` represents the change in the log odds of Job Satisfaction for a unit change in TimePoint.
 
 For a detailed understanding, we can refer to:
-- Coefficient (Estimate) for `TimePoint`: `r round(coef(model)["TimePoint"], 3)`
-- Associated p-value: `r round(summary(model)$coefficients["TimePoint", "Pr(>|W|)"], 3)`
+- Coefficient (Estimate) for `TimePoint`: `r coeff_T3`
+- Associated p-value: `r p_value_T2`)
 
 ## Conclusion
 If the p-value for the `TimePoint` coefficient is less than 0.05, we can conclude that there is a statistically significant change in Job Satisfaction across the TimePoints according to the GEE model. Otherwise, we do not find evidence for such a change. The direction (increase or decrease) of this change can be determined by the sign of the coefficient for `TimePoint`.

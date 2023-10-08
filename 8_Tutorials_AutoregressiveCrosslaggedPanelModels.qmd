@@ -4,23 +4,23 @@ author: "Biostatistics Working Group"
 ---
 
 ## Overview
-Autoregressive cross-lagged panel models (ARCL) are advanced statistical techniques tailored for dissecting the dynamic interplay between variables over time. ARCL models have become indispensable in disciplines like psychology, economics, and sociology, as they can unravel the bidirectional relationships and causality between multiple variables across various time points. These models extend the concept of autoregressive models, which predict a variable based on its past values, by also integrating cross-lagged effects, thereby capturing the influence of one variable on another in subsequent time points. Especially potent for longitudinal designs, ARCL models provide a nuanced understanding of how variables evolve and influence each other over time, shedding light on potential causal pathways. In essence, the ARCL framework seizes upon the time-ordered data to not only track how a variable relates to its past self but also how it might affect or be affected by other variables. This dual capability of capturing both autoregressive and cross-lagged effects makes ARCL models a go-to choice for researchers aiming to understand intricate temporal dynamics and reciprocal relationships in their data.
+Autoregressive cross-lagged panel models (ARCL) are a statistical techniques used to examine dynamic and reciprocal associations between variables over time. ARCL models can provide insight into the bidirectional relationships between multiple variables over time. These models extend the concept of autoregressive models, which predict a variable based on its prior values, by also integrating cross-lagged effects, thereby capturing the influence of one variable on another in subsequent time points. This dual capability of capturing both autoregressive and cross-lagged effects makes ARCL models a common choice for researchers aiming to understand temporal and reciprocal associations in their data.
 
 ![Autoregressive Crosslagged Panel 1_Tutorial](./figures/arcl.png)
 
 ### When to use Autoregressive Crosslagged Panel Models?
-You should consider autoregressive crosslagged panel models in the following situations:
+You should consider autoregressive crosslagged panel (ARCL) models in the following situations:
 
 1. You want to understand: The reciprocal relationships between variables over time.
 2. Your variables: Are repeatedly measured across multiple time points.
-3. You aim to: Disentangle the cause-and-effect relationship between these variables over successive time intervals.
+3. You aim to: Disentangle the directional relationship between these variables over successive time intervals.
 
 ### Getting Started with Autoregressive Crosslagged Panel Models
 In this tutorial, we will guide you through an example of an autoregressive crosslagged panel model using a small dataset. By the time you complete this tutorial, you will be equipped to:
 
 1. Understand the basic principles of autoregressive crosslagged panel models.
 2. Implement these models on longitudinal panel data using R.
-3. Analyze and discern the implications derived from the autoregressive crosslagged panel model analysis.
+3. Analyze and interpet results from autoregressive crosslagged panel model analysis.
 
 ## Basic Example
 In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you'll likely start by importing your own data.
@@ -54,7 +54,7 @@ random_data <- matrix(rnorm(n * 4), ncol=4)
 correlated_data <- random_data %*% cholesky
 
 # Converting the generated data into a structured data frame in wide format
-data_wide <- data.frame(
+data <- data.frame(
   Individual = 1:n,
   Job_Satisfaction_T1 = round(runif(n, 5, 10)),
   Job_Satisfaction_T2 = round(runif(n, 5, 10)),
@@ -70,7 +70,7 @@ data_wide <- data.frame(
 
 ### View Dataset
 ```{r}
-head(data_wide)
+head(data)
 ```
 
 ### Model Specification and Estimation
@@ -109,7 +109,7 @@ model <- '
 #### Fit Model
 ```{r}
 # Fitting the model
-fit <- sem(model, data = data_wide)
+fit <- sem(model, data = data)
                 
 ```
 
@@ -120,18 +120,33 @@ summary(fit, fit.measures = TRUE, standardized = TRUE, rsquare = TRUE)
 
 ```
 
+```{r}
+## Creating variable (names) from output to be used for inline text
+
+estimates <- parameterEstimates(fit)
+Job_Sat_T1 <- estimates[estimates$lhs == "Job_Satisfaction_T1", "est"]
+Life_Sat_T1 <- estimates[estimates$lhs == "Life_Satisfaction_T1", "est"]
+
+JobT2_to_LifeT1 <- estimates$est[estimates$label == "b1"]
+LifeT2_to_JobT1 <- estimates$est[estimates$label == "a1"]
+
+```
+
 ### Interpreting the Results
 An Autoregressive cross-lagged panel model (ARCL) was used to explore the reciprocal relationship between Job Satisfaction and Life Satisfaction across multiple time points. This model allows us to understand how past values of a variable can predict its future values and how one variable can influence the future values of another variable.
 
 From the `sem` output, we can interpret:
 - Autoregressive paths: How past values of Job Satisfaction and Life Satisfaction predict their future values.
-  - Coefficient for Job Satisfaction from T1 to T2: **r round(fit@coef["a1"], 3)**
-  - Coefficient for Life Satisfaction from T1 to T2: **r round(fit@coef["a4"], 3)**
+  - Coefficient for Job Satisfaction from T1 to T2: `r Job_Sat_T1`
+  - Coefficient for Life Satisfaction from T1 to T2: `r Life_Sat_T1`
   (and so on for other time points)
 - Cross-lagged paths: How Job Satisfaction influences future values of Life Satisfaction and vice versa.
-  - Coefficient of Job Satisfaction at T1 influencing Life Satisfaction at T2: **r round(fit@coef["b4"], 3)**
-  - Coefficient of Life Satisfaction at T1 influencing Job Satisfaction at T2: **r round(fit@coef["b1"], 3)**
+  - Coefficient of Job Satisfaction at T1 influencing Life Satisfaction at T2: `r LifeT2_to_JobT1`
+  - Coefficient of Life Satisfaction at T1 influencing Job Satisfaction at T2: `r JobT2_to_LifeT1`
   (and so on for other time points)
+
+
+
 
 ## Conclusion
 The ARCL model provides insights into the dynamic relationship between Job Satisfaction and Life Satisfaction. If the coefficients of the cross-lagged paths are significant, it suggests that there's a reciprocal influence between the two variables over time. The direction (positive or negative) and magnitude of these coefficients offer further understanding about the strength and nature of this relationship.

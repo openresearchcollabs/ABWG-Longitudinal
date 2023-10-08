@@ -325,16 +325,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </li>
           <li class="sidebar-item">
- <span class="menu-text">11_Tutorials_MultivariateLatentGrowthCurveModels.qmd</span>
-  </li>
-          <li class="sidebar-item">
  <span class="menu-text">12_Tutorials_LatentTransitionAnalysis.qmd</span>
-  </li>
-          <li class="sidebar-item">
- <span class="menu-text">13_Tutorials_GrowthMixtureModels.qmd</span>
-  </li>
-          <li class="sidebar-item">
- <span class="menu-text">14_Tutorials_StateTraitModels.qmd</span>
   </li>
       </ul>
   </li>
@@ -347,12 +338,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           </a> 
       </div>
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
-          <li class="sidebar-item">
- <span class="menu-text">15_Tutorials_RandomInterceptCrosslaggedPanelModels.qmd</span>
-  </li>
-          <li class="sidebar-item">
- <span class="menu-text">16_Tutorials_LatentCurveModelsStructuredResiduals.qmd</span>
-  </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -433,7 +418,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>Marginal models, often termed population-averaged models, are a statistical method used to analyze longitudinal or clustered data. The marginal model estimates the average effect of the independent variables on the outcome while accounting for the within-subject correlation. These models allow for the estimation of population-averaged effects, in contrast to subject-specific effects estimated by random-effects models. Similar to the GEE approach, marginal models account for correlations within repeated measures, but using a different estimation technique that does not account for subject-specific effects. Marginal models expand upon the general linear model, providing a repeated measures framework that is robust to non-normality and non-constant variance, and can handle unbalanced or unequally spaced data. The term marginal in this context is used to emphasize that the model for the mean response at each occasion depends only on the covariates of interest, and not on any random effects or previous responses.</p>
+<p>Marginal models, often termed population-averaged models, are a statistical method used to analyze longitudinal or clustered data. A marginal model estimates the average effect of the independent variable(s) on the outcome while accounting for within-subject correlations. These models allow for the estimation of population-averaged effects, in contrast to subject-specific effects estimated by random-effects models. Similar to the GEE approach, marginal models account for correlations within repeated measures, but using a different estimation technique that does not account for subject-specific effects. Marginal models expand upon the general linear model, providing a repeated measures framework that is robust to non-normality and non-constant variance, and can handle unbalanced or unequally spaced data. The term marginal in this context is used to emphasize that the model for the mean response at each occasion depends only on the covariates of interest, and not on any random effects or previous responses.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -467,7 +452,7 @@ D -- Y3 --&gt; G[square]
 <p>You should use longitudinal marginal models in the following scenario:</p>
 <ol type="1">
 <li>You want to know: How the average response of a population changes over time or under different conditions.</li>
-<li>Your variable: Is measured repeatedly over time or under varying conditions, like multiple visits to a doctor.</li>
+<li>Your variable: Is measured repeatedly over time or under varying conditions.</li>
 <li>You have: Repeated measures that might be correlated, and you want to account for this correlation without specifying a full covariance structure.</li>
 </ol>
 </section>
@@ -487,7 +472,7 @@ D -- Y3 --&gt; G[square]
 <p>The simulated dataset created for this example consists of scores on a single outcome variable (“Job_Satisfaction”) for 500 individuals each measured at four time points: T1-T4.</p>
 <section id="create-example-dataset" class="level4">
 <h4 class="anchored" data-anchor-id="create-example-dataset">Create Example Dataset</h4>
-<div class="cell" data-hash="5_Tutorials_MarginalModels_cache/html/unnamed-chunk-2_200936b41852666be36532d4a939620b">
+<div class="cell" data-hash="5_Tutorials_MarginalModels_cache/html/unnamed-chunk-2_63915af861bd59ffa8eb34c977f21172">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># This will create a dataset with 2000 rows (4 rows for each of the 500 individuals).</span></span>
@@ -513,7 +498,7 @@ D -- Y3 --&gt; G[square]
 <span id="cb2-21"><a href="#cb2-21"></a>binary_outcomes <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(correlated_probs <span class="sc">&gt;</span> <span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
 <span id="cb2-22"><a href="#cb2-22"></a></span>
 <span id="cb2-23"><a href="#cb2-23"></a><span class="co"># Converting the generated data into a structured data frame</span></span>
-<span id="cb2-24"><a href="#cb2-24"></a>data_large <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb2-24"><a href="#cb2-24"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
 <span id="cb2-25"><a href="#cb2-25"></a>  <span class="at">Individual =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>n, <span class="at">each=</span><span class="dv">4</span>),</span>
 <span id="cb2-26"><a href="#cb2-26"></a>  <span class="at">TimePoint =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"T1"</span>, <span class="st">"T2"</span>, <span class="st">"T3"</span>, <span class="st">"T4"</span>), <span class="at">times=</span>n),</span>
 <span id="cb2-27"><a href="#cb2-27"></a>  <span class="at">Job_Satisfaction =</span> <span class="fu">as.vector</span>(<span class="fu">t</span>(binary_outcomes))</span>
@@ -523,16 +508,16 @@ D -- Y3 --&gt; G[square]
 </section>
 <section id="view-dataset" class="level4">
 <h4 class="anchored" data-anchor-id="view-dataset">View Dataset</h4>
-<div class="cell" data-hash="5_Tutorials_MarginalModels_cache/html/unnamed-chunk-3_88f44a109906be327f3345795c70b5e4">
+<div class="cell" data-hash="5_Tutorials_MarginalModels_cache/html/unnamed-chunk-3_8440f913d52f2e248275fbece11095b1">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">head</span>(data_large)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">head</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Individual"],"name":[1],"type":["int"],"align":["right"]},{"label":["TimePoint"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Job_Satisfaction"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"T1","3":"1","_rn_":"1"},{"1":"1","2":"T2","3":"0","_rn_":"2"},{"1":"1","2":"T3","3":"0","_rn_":"3"},{"1":"1","2":"T4","3":"1","_rn_":"4"},{"1":"2","2":"T1","3":"1","_rn_":"5"},{"1":"2","2":"T2","3":"1","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Individual"],"name":[1],"type":["int"],"align":["right"]},{"label":["TimePoint"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Job_Satisfaction"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"T1","3":"0","_rn_":"1"},{"1":"1","2":"T2","3":"1","_rn_":"2"},{"1":"1","2":"T3","3":"1","_rn_":"3"},{"1":"1","2":"T4","3":"0","_rn_":"4"},{"1":"2","2":"T1","3":"1","_rn_":"5"},{"1":"2","2":"T2","3":"1","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -553,11 +538,11 @@ D -- Y3 --&gt; G[square]
 </section>
 <section id="model" class="level4">
 <h4 class="anchored" data-anchor-id="model">Model</h4>
-<div class="cell" data-hash="5_Tutorials_MarginalModels_cache/html/unnamed-chunk-5_7e4d8097e53f2b7437bbba77f0655f74">
+<div class="cell" data-hash="5_Tutorials_MarginalModels_cache/html/unnamed-chunk-5_4a39138b545b739e39599612d223f4f4">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Fitting the longitudinal marginal model</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a>model <span class="ot">&lt;-</span> <span class="fu">geeglm</span>(Job_Satisfaction <span class="sc">~</span> TimePoint, <span class="at">data =</span> data_large, <span class="at">id =</span> Individual, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>), <span class="at">corstr =</span> <span class="st">"exchangeable"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-2"><a href="#cb5-2"></a>model <span class="ot">&lt;-</span> <span class="fu">geeglm</span>(Job_Satisfaction <span class="sc">~</span> TimePoint, <span class="at">data =</span> data, <span class="at">id =</span> Individual, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>), <span class="at">corstr =</span> <span class="st">"exchangeable"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -591,20 +576,30 @@ Estimated Correlation Parameters:
 Number of clusters:   500   Maximum cluster size: 4 </code></pre>
 </div>
 </div>
+<div class="cell" data-hash="5_Tutorials_MarginalModels_cache/html/unnamed-chunk-7_9938089f832533b08d39ac974759ace5">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>p_value_T2 <span class="ot">&lt;-</span> <span class="fu">summary</span>(model)<span class="sc">$</span>coefficients[<span class="st">"TimePointT2"</span>, <span class="st">"Pr(&gt;|W|)"</span>]</span>
+<span id="cb8-2"><a href="#cb8-2"></a>p_value_T3 <span class="ot">&lt;-</span> <span class="fu">summary</span>(model)<span class="sc">$</span>coefficients[<span class="st">"TimePointT3"</span>, <span class="st">"Pr(&gt;|W|)"</span>]</span>
+<span id="cb8-3"><a href="#cb8-3"></a></span>
+<span id="cb8-4"><a href="#cb8-4"></a>coeff_T3 <span class="ot">&lt;-</span> <span class="fu">summary</span>(model)<span class="sc">$</span>coefficients[<span class="st">"TimePointT3"</span>, <span class="dv">3</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
 </section>
 </section>
 <section id="interpreting-the-results" class="level3">
 <h3 class="anchored" data-anchor-id="interpreting-the-results">Interpreting the Results</h3>
-<p>A marginal model was fitted using the Generalized Estimating Equations (GEE) approach to assess the effect of TimePoint on Job Satisfaction while accounting for the correlation of observations within individuals. The model used an exchangeable correlation structure, assuming that observations within the same individual have the same correlation. The output of the <code>geeglm</code> function provides estimates for the coefficients, along with their standard errors, Wald statistics, and p-values. The coefficient for <code>TimePoint</code> indicates how the log odds of Job Satisfaction change from one time point to another. If the p-value associated with this coefficient is less than 0.05, it suggests that there is a statistically significant change in Job Satisfaction across the time points. For a more detailed interpretation, we would look at the specific values obtained from the <code>print(model)</code> output, such as:</p>
+<p>A marginal model was fitted using the Generalized Estimating Equations (GEE) approach to assess the effect of <code>TimePoint</code> on <code>Job_Satisfaction</code> while accounting for the correlation of observations within individuals. The model used an exchangeable correlation structure, assuming that observations within the same individual have the same correlation. The output of the <code>geeglm</code> function provides estimates for the coefficients, along with their standard errors, Wald statistics, and p-values. The coefficient for <code>TimePoint</code> indicates how the log odds of Job Satisfaction change from one time point to another. If the p-value associated with this coefficient is less than 0.05, it suggests that there is a statistically significant change in Job Satisfaction across the time points. For a more detailed interpretation, we would look at the specific values obtained from the <code>print(model)</code> output, such as:</p>
 <ul>
 <li>Coefficient (Estimate) for <code>TimePoint</code>: NA</li>
-<li>Associated p-value: NA</li>
+<li>Associated p-value: 1.3245053^{-8})</li>
 </ul>
+<p>79.015679</p>
 </section>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>If the p-value for the <code>TimePoint</code> coefficient is less than 0.05, we conclude that there is a statistically significant change in Job Satisfaction scores between the time points. Otherwise, there is no significant change based on the marginal model results. The exact nature (increase/decrease) of the change can be inferred from the sign (+/-) of the coefficient.</p>
+<p>If the p-value for the <code>TimePoint</code> coefficient is less than 0.05, we conclude that there is a statistically significant change in <code>Job_Satisfaction</code> scores between the time points. Otherwise, there is no significant change based on the marginal model results. The exact nature (increase/decrease) of the change can be inferred from the sign (+/-) of the coefficient.</p>
 
 
 <!-- -->
@@ -1039,122 +1034,133 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb8" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1"></a><span class="co">---</span></span>
-<span id="cb8-2"><a href="#cb8-2"></a><span class="an">title:</span><span class="co"> "Marginal Models"</span></span>
-<span id="cb8-3"><a href="#cb8-3"></a><span class="an">author:</span><span class="co"> "Biostatistics Working Group"</span></span>
-<span id="cb8-4"><a href="#cb8-4"></a><span class="an">format:</span></span>
-<span id="cb8-5"><a href="#cb8-5"></a><span class="co">  html:</span></span>
-<span id="cb8-6"><a href="#cb8-6"></a><span class="co">    mermaid:</span></span>
-<span id="cb8-7"><a href="#cb8-7"></a><span class="co">      theme: forest</span></span>
-<span id="cb8-8"><a href="#cb8-8"></a><span class="co">---</span></span>
-<span id="cb8-9"><a href="#cb8-9"></a><span class="fu">## Overview</span></span>
-<span id="cb8-10"><a href="#cb8-10"></a>Marginal models, often termed population-averaged models, are a statistical method used to analyze longitudinal or clustered data. The marginal model estimates the average effect of the independent variables on the outcome while accounting for the within-subject correlation. These models allow for the estimation of population-averaged effects, in contrast to subject-specific effects estimated by random-effects models. Similar to the GEE approach, marginal models account for correlations within repeated measures, but using a different estimation technique that does not account for subject-specific effects. Marginal models expand upon the general linear model, providing a repeated measures framework that is robust to non-normality and non-constant variance, and can handle unbalanced or unequally spaced data. The term marginal in this context is used to emphasize that the model for the mean response at each occasion depends only on the covariates of interest, and not on any random effects or previous responses. </span>
-<span id="cb8-11"><a href="#cb8-11"></a></span>
-<span id="cb8-14"><a href="#cb8-14"></a><span class="in">```{mermaid}</span></span>
-<span id="cb8-15"><a href="#cb8-15"></a>graph LR</span>
-<span id="cb8-16"><a href="#cb8-16"></a>A(( )) -- Intercept --&gt; B(( ))</span>
-<span id="cb8-17"><a href="#cb8-17"></a>B -- Slope --&gt; C(( ))</span>
-<span id="cb8-18"><a href="#cb8-18"></a>C -- Quadratic --&gt; D(( ))</span>
-<span id="cb8-19"><a href="#cb8-19"></a></span>
-<span id="cb8-20"><a href="#cb8-20"></a>B -- Y1 --&gt; E[square]</span>
-<span id="cb8-21"><a href="#cb8-21"></a>C -- Y2 --&gt; F[square]</span>
-<span id="cb8-22"><a href="#cb8-22"></a>D -- Y3 --&gt; G[square]</span>
-<span id="cb8-23"><a href="#cb8-23"></a><span class="in">```</span></span>
-<span id="cb8-24"><a href="#cb8-24"></a></span>
-<span id="cb8-25"><a href="#cb8-25"></a><span class="fu">### When to use Longitudinal Marginal Models?</span></span>
-<span id="cb8-26"><a href="#cb8-26"></a>You should use longitudinal marginal models in the following scenario:</span>
-<span id="cb8-27"><a href="#cb8-27"></a></span>
-<span id="cb8-28"><a href="#cb8-28"></a><span class="ss">1. </span>You want to know: How the average response of a population changes over time or under different conditions.</span>
-<span id="cb8-29"><a href="#cb8-29"></a><span class="ss">2. </span>Your variable: Is measured repeatedly over time or under varying conditions, like multiple visits to a doctor.</span>
-<span id="cb8-30"><a href="#cb8-30"></a><span class="ss">3. </span>You have: Repeated measures that might be correlated, and you want to account for this correlation without specifying a full covariance structure.</span>
-<span id="cb8-31"><a href="#cb8-31"></a></span>
-<span id="cb8-32"><a href="#cb8-32"></a><span class="fu">### Getting Started with Longitudinal Marginal Models</span></span>
-<span id="cb8-33"><a href="#cb8-33"></a>In this tutorial, we will introduce the concept of longitudinal marginal models and guide you through a simple example using a small dataset. By the end of this tutorial, you will be able to:</span>
-<span id="cb8-34"><a href="#cb8-34"></a></span>
-<span id="cb8-35"><a href="#cb8-35"></a><span class="ss">1. </span>Understand the basic concepts of longitudinal marginal models.</span>
-<span id="cb8-36"><a href="#cb8-36"></a><span class="ss">2. </span>Fit a marginal model to longitudinal data using an example dataset in R.</span>
-<span id="cb8-37"><a href="#cb8-37"></a><span class="ss">3. </span>Interpret the results and understand the implications of the longitudinal marginal model analysis.</span>
-<span id="cb8-38"><a href="#cb8-38"></a></span>
-<span id="cb8-39"><a href="#cb8-39"></a><span class="fu">## Basic Example</span></span>
-<span id="cb8-40"><a href="#cb8-40"></a>In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you'll likely start by importing your own data.</span>
-<span id="cb8-41"><a href="#cb8-41"></a></span>
-<span id="cb8-42"><a href="#cb8-42"></a>The simulated dataset created for this example consists of scores on a single outcome variable ("Job_Satisfaction") for 500 individuals each measured at four time points: T1-T4. </span>
-<span id="cb8-43"><a href="#cb8-43"></a></span>
-<span id="cb8-44"><a href="#cb8-44"></a><span class="fu">#### Create Example Dataset</span></span>
-<span id="cb8-47"><a href="#cb8-47"></a><span class="in">```{r}</span></span>
-<span id="cb8-48"><a href="#cb8-48"></a><span class="co"># This will create a dataset with 2000 rows (4 rows for each of the 500 individuals).</span></span>
-<span id="cb8-49"><a href="#cb8-49"></a></span>
-<span id="cb8-50"><a href="#cb8-50"></a><span class="co"># Setting the number of individuals for our sample data</span></span>
-<span id="cb8-51"><a href="#cb8-51"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
-<span id="cb8-52"><a href="#cb8-52"></a></span>
-<span id="cb8-53"><a href="#cb8-53"></a><span class="co"># Specifying the desired correlation matrix for our data</span></span>
-<span id="cb8-54"><a href="#cb8-54"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.30</span>, <span class="fl">0.30</span>, <span class="fl">0.30</span>, </span>
-<span id="cb8-55"><a href="#cb8-55"></a>                      <span class="fl">0.30</span>, <span class="dv">1</span>, <span class="fl">0.30</span>, <span class="fl">0.30</span>, </span>
-<span id="cb8-56"><a href="#cb8-56"></a>                      <span class="fl">0.30</span>, <span class="fl">0.30</span>, <span class="dv">1</span>, <span class="fl">0.30</span>,</span>
-<span id="cb8-57"><a href="#cb8-57"></a>                      <span class="fl">0.30</span>, <span class="fl">0.30</span>, <span class="fl">0.30</span>, <span class="dv">1</span>),</span>
-<span id="cb8-58"><a href="#cb8-58"></a>                      <span class="at">nrow=</span><span class="dv">4</span>)</span>
-<span id="cb8-59"><a href="#cb8-59"></a></span>
-<span id="cb8-60"><a href="#cb8-60"></a><span class="co"># Using Cholesky decomposition to generate correlated data</span></span>
-<span id="cb8-61"><a href="#cb8-61"></a>cholesky <span class="ot">&lt;-</span> <span class="fu">chol</span>(cor_matrix)</span>
-<span id="cb8-62"><a href="#cb8-62"></a></span>
-<span id="cb8-63"><a href="#cb8-63"></a><span class="co"># Generating correlated random data for 4 timepoints</span></span>
-<span id="cb8-64"><a href="#cb8-64"></a>random_probs <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(n <span class="sc">*</span> <span class="dv">4</span>), <span class="at">ncol=</span><span class="dv">4</span>)</span>
-<span id="cb8-65"><a href="#cb8-65"></a>correlated_probs <span class="ot">&lt;-</span> random_probs <span class="sc">%*%</span> cholesky</span>
-<span id="cb8-66"><a href="#cb8-66"></a></span>
-<span id="cb8-67"><a href="#cb8-67"></a><span class="co"># Convert the probabilities to binary outcomes (using 0.5 as the threshold)</span></span>
-<span id="cb8-68"><a href="#cb8-68"></a>binary_outcomes <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(correlated_probs <span class="sc">&gt;</span> <span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb8-69"><a href="#cb8-69"></a></span>
-<span id="cb8-70"><a href="#cb8-70"></a><span class="co"># Converting the generated data into a structured data frame</span></span>
-<span id="cb8-71"><a href="#cb8-71"></a>data_large <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb8-72"><a href="#cb8-72"></a>  <span class="at">Individual =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>n, <span class="at">each=</span><span class="dv">4</span>),</span>
-<span id="cb8-73"><a href="#cb8-73"></a>  <span class="at">TimePoint =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"T1"</span>, <span class="st">"T2"</span>, <span class="st">"T3"</span>, <span class="st">"T4"</span>), <span class="at">times=</span>n),</span>
-<span id="cb8-74"><a href="#cb8-74"></a>  <span class="at">Job_Satisfaction =</span> <span class="fu">as.vector</span>(<span class="fu">t</span>(binary_outcomes))</span>
-<span id="cb8-75"><a href="#cb8-75"></a>)</span>
-<span id="cb8-76"><a href="#cb8-76"></a></span>
-<span id="cb8-77"><a href="#cb8-77"></a></span>
-<span id="cb8-78"><a href="#cb8-78"></a><span class="in">```</span></span>
-<span id="cb8-79"><a href="#cb8-79"></a></span>
-<span id="cb8-80"><a href="#cb8-80"></a><span class="fu">#### View Dataset</span></span>
-<span id="cb8-83"><a href="#cb8-83"></a><span class="in">```{r}</span></span>
-<span id="cb8-84"><a href="#cb8-84"></a><span class="fu">head</span>(data_large)</span>
-<span id="cb8-85"><a href="#cb8-85"></a><span class="in">```</span></span>
-<span id="cb8-86"><a href="#cb8-86"></a></span>
-<span id="cb8-87"><a href="#cb8-87"></a><span class="fu">### Model Specification and Estimation</span></span>
-<span id="cb8-88"><a href="#cb8-88"></a>To specify a Longitudinal Marginal Model, we will employ the <span class="in">`geepack`</span> (or <span class="in">`nlme`</span>) package in R. These models are adept at examining changes over time while considering the non-independence of repeated measurements on the same subjects. In a marginal model, we aim to estimate average population effects, taking into account the correlations between repeated measures on the same individuals.</span>
-<span id="cb8-89"><a href="#cb8-89"></a></span>
-<span id="cb8-90"><a href="#cb8-90"></a><span class="fu">#### Install and Load Necessary Libraries</span></span>
-<span id="cb8-93"><a href="#cb8-93"></a><span class="in">```{r}</span></span>
-<span id="cb8-94"><a href="#cb8-94"></a><span class="cf">if</span> (<span class="sc">!</span>(<span class="st">"lme4"</span> <span class="sc">%in%</span> <span class="fu">installed.packages</span>())) <span class="fu">install.packages</span>(<span class="st">"geepack"</span>)</span>
-<span id="cb8-95"><a href="#cb8-95"></a><span class="fu">library</span>(geepack)</span>
-<span id="cb8-96"><a href="#cb8-96"></a><span class="in">```</span></span>
-<span id="cb8-97"><a href="#cb8-97"></a></span>
-<span id="cb8-98"><a href="#cb8-98"></a><span class="fu">#### Model</span></span>
-<span id="cb8-101"><a href="#cb8-101"></a><span class="in">```{r}</span></span>
-<span id="cb8-102"><a href="#cb8-102"></a><span class="co"># Fitting the longitudinal marginal model</span></span>
-<span id="cb8-103"><a href="#cb8-103"></a>model <span class="ot">&lt;-</span> <span class="fu">geeglm</span>(Job_Satisfaction <span class="sc">~</span> TimePoint, <span class="at">data =</span> data_large, <span class="at">id =</span> Individual, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>), <span class="at">corstr =</span> <span class="st">"exchangeable"</span>)</span>
-<span id="cb8-104"><a href="#cb8-104"></a></span>
-<span id="cb8-105"><a href="#cb8-105"></a><span class="in">```</span></span>
-<span id="cb8-106"><a href="#cb8-106"></a></span>
-<span id="cb8-107"><a href="#cb8-107"></a><span class="fu">#### Model Summary</span></span>
-<span id="cb8-110"><a href="#cb8-110"></a><span class="in">```{r}</span></span>
-<span id="cb8-111"><a href="#cb8-111"></a><span class="fu">print</span>(model)</span>
-<span id="cb8-112"><a href="#cb8-112"></a><span class="in">```</span></span>
-<span id="cb8-113"><a href="#cb8-113"></a></span>
-<span id="cb8-114"><a href="#cb8-114"></a><span class="fu">### Interpreting the Results</span></span>
-<span id="cb8-115"><a href="#cb8-115"></a>A marginal model was fitted using the Generalized Estimating Equations (GEE) approach to assess the effect of TimePoint on Job Satisfaction while accounting for the correlation of observations within individuals. The model used an exchangeable correlation structure, assuming that observations within the same individual have the same correlation. The output of the <span class="in">`geeglm`</span> function provides estimates for the coefficients, along with their standard errors, Wald statistics, and p-values. The coefficient for <span class="in">`TimePoint`</span> indicates how the log odds of Job Satisfaction change from one time point to another. If the p-value associated with this coefficient is less than 0.05, it suggests that there is a statistically significant change in Job Satisfaction across the time points. For a more detailed interpretation, we would look at the specific values obtained from the <span class="in">`print(model)`</span> output, such as:</span>
-<span id="cb8-116"><a href="#cb8-116"></a></span>
-<span id="cb8-117"><a href="#cb8-117"></a><span class="ss">- </span>Coefficient (Estimate) for <span class="in">`TimePoint`</span>: <span class="in">`r round(coef(model)["TimePoint"], 3)`</span></span>
-<span id="cb8-118"><a href="#cb8-118"></a><span class="ss">- </span>Associated p-value: <span class="in">`r round(summary(model)$coefficients["TimePoint", "Pr(&gt;|W|)"], 3)`</span></span>
-<span id="cb8-119"><a href="#cb8-119"></a></span>
-<span id="cb8-120"><a href="#cb8-120"></a><span class="fu">## Conclusion</span></span>
-<span id="cb8-121"><a href="#cb8-121"></a>If the p-value for the <span class="in">`TimePoint`</span> coefficient is less than 0.05, we conclude that there is a statistically significant change in Job Satisfaction scores between the time points. Otherwise, there is no significant change based on the marginal model results. The exact nature (increase/decrease) of the change can be inferred from the sign (+/-) of the coefficient.</span>
-<span id="cb8-122"><a href="#cb8-122"></a></span>
-<span id="cb8-123"><a href="#cb8-123"></a></span>
-<span id="cb8-124"><a href="#cb8-124"></a></span>
-<span id="cb8-125"><a href="#cb8-125"></a></span>
-<span id="cb8-126"><a href="#cb8-126"></a></span>
-<span id="cb8-127"><a href="#cb8-127"></a></span>
-<span id="cb8-128"><a href="#cb8-128"></a></span>
+<div class="sourceCode" id="cb9" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1"></a><span class="co">---</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="an">title:</span><span class="co"> "Marginal Models"</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="an">author:</span><span class="co"> "Biostatistics Working Group"</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="an">format:</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="co">  html:</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a><span class="co">    mermaid:</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a><span class="co">      theme: forest</span></span>
+<span id="cb9-8"><a href="#cb9-8"></a><span class="co">---</span></span>
+<span id="cb9-9"><a href="#cb9-9"></a><span class="fu">## Overview</span></span>
+<span id="cb9-10"><a href="#cb9-10"></a>Marginal models, often termed population-averaged models, are a statistical method used to analyze longitudinal or clustered data. A marginal model estimates the average effect of the independent variable(s) on the outcome while accounting for within-subject correlations. These models allow for the estimation of population-averaged effects, in contrast to subject-specific effects estimated by random-effects models. Similar to the GEE approach, marginal models account for correlations within repeated measures, but using a different estimation technique that does not account for subject-specific effects. Marginal models expand upon the general linear model, providing a repeated measures framework that is robust to non-normality and non-constant variance, and can handle unbalanced or unequally spaced data. The term marginal in this context is used to emphasize that the model for the mean response at each occasion depends only on the covariates of interest, and not on any random effects or previous responses. </span>
+<span id="cb9-11"><a href="#cb9-11"></a></span>
+<span id="cb9-14"><a href="#cb9-14"></a><span class="in">```{mermaid}</span></span>
+<span id="cb9-15"><a href="#cb9-15"></a>graph LR</span>
+<span id="cb9-16"><a href="#cb9-16"></a>A(( )) -- Intercept --&gt; B(( ))</span>
+<span id="cb9-17"><a href="#cb9-17"></a>B -- Slope --&gt; C(( ))</span>
+<span id="cb9-18"><a href="#cb9-18"></a>C -- Quadratic --&gt; D(( ))</span>
+<span id="cb9-19"><a href="#cb9-19"></a></span>
+<span id="cb9-20"><a href="#cb9-20"></a>B -- Y1 --&gt; E[square]</span>
+<span id="cb9-21"><a href="#cb9-21"></a>C -- Y2 --&gt; F[square]</span>
+<span id="cb9-22"><a href="#cb9-22"></a>D -- Y3 --&gt; G[square]</span>
+<span id="cb9-23"><a href="#cb9-23"></a><span class="in">```</span></span>
+<span id="cb9-24"><a href="#cb9-24"></a></span>
+<span id="cb9-25"><a href="#cb9-25"></a><span class="fu">### When to use Longitudinal Marginal Models?</span></span>
+<span id="cb9-26"><a href="#cb9-26"></a>You should use longitudinal marginal models in the following scenario:</span>
+<span id="cb9-27"><a href="#cb9-27"></a></span>
+<span id="cb9-28"><a href="#cb9-28"></a><span class="ss">1. </span>You want to know: How the average response of a population changes over time or under different conditions.</span>
+<span id="cb9-29"><a href="#cb9-29"></a><span class="ss">2. </span>Your variable: Is measured repeatedly over time or under varying conditions.</span>
+<span id="cb9-30"><a href="#cb9-30"></a><span class="ss">3. </span>You have: Repeated measures that might be correlated, and you want to account for this correlation without specifying a full covariance structure.</span>
+<span id="cb9-31"><a href="#cb9-31"></a></span>
+<span id="cb9-32"><a href="#cb9-32"></a><span class="fu">### Getting Started with Longitudinal Marginal Models</span></span>
+<span id="cb9-33"><a href="#cb9-33"></a>In this tutorial, we will introduce the concept of longitudinal marginal models and guide you through a simple example using a small dataset. By the end of this tutorial, you will be able to:</span>
+<span id="cb9-34"><a href="#cb9-34"></a></span>
+<span id="cb9-35"><a href="#cb9-35"></a><span class="ss">1. </span>Understand the basic concepts of longitudinal marginal models.</span>
+<span id="cb9-36"><a href="#cb9-36"></a><span class="ss">2. </span>Fit a marginal model to longitudinal data using an example dataset in R.</span>
+<span id="cb9-37"><a href="#cb9-37"></a><span class="ss">3. </span>Interpret the results and understand the implications of the longitudinal marginal model analysis.</span>
+<span id="cb9-38"><a href="#cb9-38"></a></span>
+<span id="cb9-39"><a href="#cb9-39"></a><span class="fu">## Basic Example</span></span>
+<span id="cb9-40"><a href="#cb9-40"></a>In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you'll likely start by importing your own data.</span>
+<span id="cb9-41"><a href="#cb9-41"></a></span>
+<span id="cb9-42"><a href="#cb9-42"></a>The simulated dataset created for this example consists of scores on a single outcome variable ("Job_Satisfaction") for 500 individuals each measured at four time points: T1-T4. </span>
+<span id="cb9-43"><a href="#cb9-43"></a></span>
+<span id="cb9-44"><a href="#cb9-44"></a><span class="fu">#### Create Example Dataset</span></span>
+<span id="cb9-47"><a href="#cb9-47"></a><span class="in">```{r}</span></span>
+<span id="cb9-48"><a href="#cb9-48"></a><span class="co"># This will create a dataset with 2000 rows (4 rows for each of the 500 individuals).</span></span>
+<span id="cb9-49"><a href="#cb9-49"></a></span>
+<span id="cb9-50"><a href="#cb9-50"></a><span class="co"># Setting the number of individuals for our sample data</span></span>
+<span id="cb9-51"><a href="#cb9-51"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
+<span id="cb9-52"><a href="#cb9-52"></a></span>
+<span id="cb9-53"><a href="#cb9-53"></a><span class="co"># Specifying the desired correlation matrix for our data</span></span>
+<span id="cb9-54"><a href="#cb9-54"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.30</span>, <span class="fl">0.30</span>, <span class="fl">0.30</span>, </span>
+<span id="cb9-55"><a href="#cb9-55"></a>                      <span class="fl">0.30</span>, <span class="dv">1</span>, <span class="fl">0.30</span>, <span class="fl">0.30</span>, </span>
+<span id="cb9-56"><a href="#cb9-56"></a>                      <span class="fl">0.30</span>, <span class="fl">0.30</span>, <span class="dv">1</span>, <span class="fl">0.30</span>,</span>
+<span id="cb9-57"><a href="#cb9-57"></a>                      <span class="fl">0.30</span>, <span class="fl">0.30</span>, <span class="fl">0.30</span>, <span class="dv">1</span>),</span>
+<span id="cb9-58"><a href="#cb9-58"></a>                      <span class="at">nrow=</span><span class="dv">4</span>)</span>
+<span id="cb9-59"><a href="#cb9-59"></a></span>
+<span id="cb9-60"><a href="#cb9-60"></a><span class="co"># Using Cholesky decomposition to generate correlated data</span></span>
+<span id="cb9-61"><a href="#cb9-61"></a>cholesky <span class="ot">&lt;-</span> <span class="fu">chol</span>(cor_matrix)</span>
+<span id="cb9-62"><a href="#cb9-62"></a></span>
+<span id="cb9-63"><a href="#cb9-63"></a><span class="co"># Generating correlated random data for 4 timepoints</span></span>
+<span id="cb9-64"><a href="#cb9-64"></a>random_probs <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(n <span class="sc">*</span> <span class="dv">4</span>), <span class="at">ncol=</span><span class="dv">4</span>)</span>
+<span id="cb9-65"><a href="#cb9-65"></a>correlated_probs <span class="ot">&lt;-</span> random_probs <span class="sc">%*%</span> cholesky</span>
+<span id="cb9-66"><a href="#cb9-66"></a></span>
+<span id="cb9-67"><a href="#cb9-67"></a><span class="co"># Convert the probabilities to binary outcomes (using 0.5 as the threshold)</span></span>
+<span id="cb9-68"><a href="#cb9-68"></a>binary_outcomes <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(correlated_probs <span class="sc">&gt;</span> <span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb9-69"><a href="#cb9-69"></a></span>
+<span id="cb9-70"><a href="#cb9-70"></a><span class="co"># Converting the generated data into a structured data frame</span></span>
+<span id="cb9-71"><a href="#cb9-71"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb9-72"><a href="#cb9-72"></a>  <span class="at">Individual =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>n, <span class="at">each=</span><span class="dv">4</span>),</span>
+<span id="cb9-73"><a href="#cb9-73"></a>  <span class="at">TimePoint =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"T1"</span>, <span class="st">"T2"</span>, <span class="st">"T3"</span>, <span class="st">"T4"</span>), <span class="at">times=</span>n),</span>
+<span id="cb9-74"><a href="#cb9-74"></a>  <span class="at">Job_Satisfaction =</span> <span class="fu">as.vector</span>(<span class="fu">t</span>(binary_outcomes))</span>
+<span id="cb9-75"><a href="#cb9-75"></a>)</span>
+<span id="cb9-76"><a href="#cb9-76"></a></span>
+<span id="cb9-77"><a href="#cb9-77"></a></span>
+<span id="cb9-78"><a href="#cb9-78"></a><span class="in">```</span></span>
+<span id="cb9-79"><a href="#cb9-79"></a></span>
+<span id="cb9-80"><a href="#cb9-80"></a><span class="fu">#### View Dataset</span></span>
+<span id="cb9-83"><a href="#cb9-83"></a><span class="in">```{r}</span></span>
+<span id="cb9-84"><a href="#cb9-84"></a><span class="fu">head</span>(data)</span>
+<span id="cb9-85"><a href="#cb9-85"></a><span class="in">```</span></span>
+<span id="cb9-86"><a href="#cb9-86"></a></span>
+<span id="cb9-87"><a href="#cb9-87"></a><span class="fu">### Model Specification and Estimation</span></span>
+<span id="cb9-88"><a href="#cb9-88"></a>To specify a Longitudinal Marginal Model, we will employ the <span class="in">`geepack`</span> (or <span class="in">`nlme`</span>) package in R. These models are adept at examining changes over time while considering the non-independence of repeated measurements on the same subjects. In a marginal model, we aim to estimate average population effects, taking into account the correlations between repeated measures on the same individuals.</span>
+<span id="cb9-89"><a href="#cb9-89"></a></span>
+<span id="cb9-90"><a href="#cb9-90"></a><span class="fu">#### Install and Load Necessary Libraries</span></span>
+<span id="cb9-93"><a href="#cb9-93"></a><span class="in">```{r}</span></span>
+<span id="cb9-94"><a href="#cb9-94"></a><span class="cf">if</span> (<span class="sc">!</span>(<span class="st">"lme4"</span> <span class="sc">%in%</span> <span class="fu">installed.packages</span>())) <span class="fu">install.packages</span>(<span class="st">"geepack"</span>)</span>
+<span id="cb9-95"><a href="#cb9-95"></a><span class="fu">library</span>(geepack)</span>
+<span id="cb9-96"><a href="#cb9-96"></a><span class="in">```</span></span>
+<span id="cb9-97"><a href="#cb9-97"></a></span>
+<span id="cb9-98"><a href="#cb9-98"></a><span class="fu">#### Model</span></span>
+<span id="cb9-101"><a href="#cb9-101"></a><span class="in">```{r}</span></span>
+<span id="cb9-102"><a href="#cb9-102"></a><span class="co"># Fitting the longitudinal marginal model</span></span>
+<span id="cb9-103"><a href="#cb9-103"></a>model <span class="ot">&lt;-</span> <span class="fu">geeglm</span>(Job_Satisfaction <span class="sc">~</span> TimePoint, <span class="at">data =</span> data, <span class="at">id =</span> Individual, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>), <span class="at">corstr =</span> <span class="st">"exchangeable"</span>)</span>
+<span id="cb9-104"><a href="#cb9-104"></a></span>
+<span id="cb9-105"><a href="#cb9-105"></a><span class="in">```</span></span>
+<span id="cb9-106"><a href="#cb9-106"></a></span>
+<span id="cb9-107"><a href="#cb9-107"></a><span class="fu">#### Model Summary</span></span>
+<span id="cb9-110"><a href="#cb9-110"></a><span class="in">```{r}</span></span>
+<span id="cb9-111"><a href="#cb9-111"></a><span class="fu">print</span>(model)</span>
+<span id="cb9-112"><a href="#cb9-112"></a><span class="in">```</span></span>
+<span id="cb9-113"><a href="#cb9-113"></a></span>
+<span id="cb9-116"><a href="#cb9-116"></a><span class="in">```{r}</span></span>
+<span id="cb9-117"><a href="#cb9-117"></a>p_value_T2 <span class="ot">&lt;-</span> <span class="fu">summary</span>(model)<span class="sc">$</span>coefficients[<span class="st">"TimePointT2"</span>, <span class="st">"Pr(&gt;|W|)"</span>]</span>
+<span id="cb9-118"><a href="#cb9-118"></a>p_value_T3 <span class="ot">&lt;-</span> <span class="fu">summary</span>(model)<span class="sc">$</span>coefficients[<span class="st">"TimePointT3"</span>, <span class="st">"Pr(&gt;|W|)"</span>]</span>
+<span id="cb9-119"><a href="#cb9-119"></a></span>
+<span id="cb9-120"><a href="#cb9-120"></a>coeff_T3 <span class="ot">&lt;-</span> <span class="fu">summary</span>(model)<span class="sc">$</span>coefficients[<span class="st">"TimePointT3"</span>, <span class="dv">3</span>]</span>
+<span id="cb9-121"><a href="#cb9-121"></a></span>
+<span id="cb9-122"><a href="#cb9-122"></a><span class="in">```</span></span>
+<span id="cb9-123"><a href="#cb9-123"></a></span>
+<span id="cb9-124"><a href="#cb9-124"></a><span class="fu">### Interpreting the Results</span></span>
+<span id="cb9-125"><a href="#cb9-125"></a>A marginal model was fitted using the Generalized Estimating Equations (GEE) approach to assess the effect of <span class="in">`TimePoint`</span> on <span class="in">`Job_Satisfaction`</span> while accounting for the correlation of observations within individuals. The model used an exchangeable correlation structure, assuming that observations within the same individual have the same correlation. The output of the <span class="in">`geeglm`</span> function provides estimates for the coefficients, along with their standard errors, Wald statistics, and p-values. The coefficient for <span class="in">`TimePoint`</span> indicates how the log odds of Job Satisfaction change from one time point to another. If the p-value associated with this coefficient is less than 0.05, it suggests that there is a statistically significant change in Job Satisfaction across the time points. For a more detailed interpretation, we would look at the specific values obtained from the <span class="in">`print(model)`</span> output, such as:</span>
+<span id="cb9-126"><a href="#cb9-126"></a></span>
+<span id="cb9-127"><a href="#cb9-127"></a><span class="ss">- </span>Coefficient (Estimate) for <span class="in">`TimePoint`</span>: <span class="in">`r round(coef(model)["TimePoint"], 3)`</span></span>
+<span id="cb9-128"><a href="#cb9-128"></a><span class="ss">- </span>Associated p-value: <span class="in">`r p_value_T2`</span>)</span>
+<span id="cb9-129"><a href="#cb9-129"></a></span>
+<span id="cb9-130"><a href="#cb9-130"></a><span class="in">`r coeff_T3`</span></span>
+<span id="cb9-131"><a href="#cb9-131"></a></span>
+<span id="cb9-132"><a href="#cb9-132"></a><span class="fu">## Conclusion</span></span>
+<span id="cb9-133"><a href="#cb9-133"></a>If the p-value for the <span class="in">`TimePoint`</span> coefficient is less than 0.05, we conclude that there is a statistically significant change in <span class="in">`Job_Satisfaction`</span> scores between the time points. Otherwise, there is no significant change based on the marginal model results. The exact nature (increase/decrease) of the change can be inferred from the sign (+/-) of the coefficient.</span>
+<span id="cb9-134"><a href="#cb9-134"></a></span>
+<span id="cb9-135"><a href="#cb9-135"></a></span>
+<span id="cb9-136"><a href="#cb9-136"></a></span>
+<span id="cb9-137"><a href="#cb9-137"></a></span>
+<span id="cb9-138"><a href="#cb9-138"></a></span>
+<span id="cb9-139"><a href="#cb9-139"></a></span>
+<span id="cb9-140"><a href="#cb9-140"></a></span>
+<span id="cb9-141"><a href="#cb9-141"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

@@ -324,16 +324,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </li>
           <li class="sidebar-item">
- <span class="menu-text">11_Tutorials_MultivariateLatentGrowthCurveModels.qmd</span>
-  </li>
-          <li class="sidebar-item">
  <span class="menu-text">12_Tutorials_LatentTransitionAnalysis.qmd</span>
-  </li>
-          <li class="sidebar-item">
- <span class="menu-text">13_Tutorials_GrowthMixtureModels.qmd</span>
-  </li>
-          <li class="sidebar-item">
- <span class="menu-text">14_Tutorials_StateTraitModels.qmd</span>
   </li>
       </ul>
   </li>
@@ -346,12 +337,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           </a> 
       </div>
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
-          <li class="sidebar-item">
- <span class="menu-text">15_Tutorials_RandomInterceptCrosslaggedPanelModels.qmd</span>
-  </li>
-          <li class="sidebar-item">
- <span class="menu-text">16_Tutorials_LatentCurveModelsStructuredResiduals.qmd</span>
-  </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -432,7 +417,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>Autoregressive cross-lagged panel models (ARCL) are advanced statistical techniques tailored for dissecting the dynamic interplay between variables over time. ARCL models have become indispensable in disciplines like psychology, economics, and sociology, as they can unravel the bidirectional relationships and causality between multiple variables across various time points. These models extend the concept of autoregressive models, which predict a variable based on its past values, by also integrating cross-lagged effects, thereby capturing the influence of one variable on another in subsequent time points. Especially potent for longitudinal designs, ARCL models provide a nuanced understanding of how variables evolve and influence each other over time, shedding light on potential causal pathways. In essence, the ARCL framework seizes upon the time-ordered data to not only track how a variable relates to its past self but also how it might affect or be affected by other variables. This dual capability of capturing both autoregressive and cross-lagged effects makes ARCL models a go-to choice for researchers aiming to understand intricate temporal dynamics and reciprocal relationships in their data.</p>
+<p>Autoregressive cross-lagged panel models (ARCL) are a statistical techniques used to examine dynamic and reciprocal associations between variables over time. ARCL models can provide insight into the bidirectional relationships between multiple variables over time. These models extend the concept of autoregressive models, which predict a variable based on its prior values, by also integrating cross-lagged effects, thereby capturing the influence of one variable on another in subsequent time points. This dual capability of capturing both autoregressive and cross-lagged effects makes ARCL models a common choice for researchers aiming to understand temporal and reciprocal associations in their data.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="./figures/arcl.png" class="img-fluid figure-img"></p>
@@ -441,11 +426,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="when-to-use-autoregressive-crosslagged-panel-models" class="level3">
 <h3 class="anchored" data-anchor-id="when-to-use-autoregressive-crosslagged-panel-models">When to use Autoregressive Crosslagged Panel Models?</h3>
-<p>You should consider autoregressive crosslagged panel models in the following situations:</p>
+<p>You should consider autoregressive crosslagged panel (ARCL) models in the following situations:</p>
 <ol type="1">
 <li>You want to understand: The reciprocal relationships between variables over time.</li>
 <li>Your variables: Are repeatedly measured across multiple time points.</li>
-<li>You aim to: Disentangle the cause-and-effect relationship between these variables over successive time intervals.</li>
+<li>You aim to: Disentangle the directional relationship between these variables over successive time intervals.</li>
 </ol>
 </section>
 <section id="getting-started-with-autoregressive-crosslagged-panel-models" class="level3">
@@ -454,7 +439,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ol type="1">
 <li>Understand the basic principles of autoregressive crosslagged panel models.</li>
 <li>Implement these models on longitudinal panel data using R.</li>
-<li>Analyze and discern the implications derived from the autoregressive crosslagged panel model analysis.</li>
+<li>Analyze and interpet results from autoregressive crosslagged panel model analysis.</li>
 </ol>
 </section>
 </section>
@@ -469,7 +454,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <section id="create-example-dataset" class="level4">
 <h4 class="anchored" data-anchor-id="create-example-dataset">Create Example Dataset</h4>
-<div class="cell" data-hash="8_Tutorials_AutoregressiveCrosslaggedPanelModels_cache/html/unnamed-chunk-1_5c5891e65aa9b91ba18dd4f8c26cd836">
+<div class="cell" data-hash="8_Tutorials_AutoregressiveCrosslaggedPanelModels_cache/html/unnamed-chunk-1_8c1933c72aaac8d778b7e47c27bf90a8">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Setting the seed for reproducibility</span></span>
@@ -493,7 +478,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-19"><a href="#cb1-19"></a>correlated_data <span class="ot">&lt;-</span> random_data <span class="sc">%*%</span> cholesky</span>
 <span id="cb1-20"><a href="#cb1-20"></a></span>
 <span id="cb1-21"><a href="#cb1-21"></a><span class="co"># Converting the generated data into a structured data frame in wide format</span></span>
-<span id="cb1-22"><a href="#cb1-22"></a>data_wide <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-22"><a href="#cb1-22"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
 <span id="cb1-23"><a href="#cb1-23"></a>  <span class="at">Individual =</span> <span class="dv">1</span><span class="sc">:</span>n,</span>
 <span id="cb1-24"><a href="#cb1-24"></a>  <span class="at">Job_Satisfaction_T1 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
 <span id="cb1-25"><a href="#cb1-25"></a>  <span class="at">Job_Satisfaction_T2 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
@@ -509,10 +494,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="view-dataset" class="level3">
 <h3 class="anchored" data-anchor-id="view-dataset">View Dataset</h3>
-<div class="cell" data-hash="8_Tutorials_AutoregressiveCrosslaggedPanelModels_cache/html/unnamed-chunk-2_2ada69b4709d804899ffc6924d00fee1">
+<div class="cell" data-hash="8_Tutorials_AutoregressiveCrosslaggedPanelModels_cache/html/unnamed-chunk-2_7a07926a1cb03a6e514d6d20c523fe9c">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">head</span>(data_wide)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">head</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 
@@ -566,11 +551,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="fit-model" class="level4">
 <h4 class="anchored" data-anchor-id="fit-model">Fit Model</h4>
-<div class="cell" data-hash="8_Tutorials_AutoregressiveCrosslaggedPanelModels_cache/html/unnamed-chunk-5_6b08e68f698fe54341a1f8e8c5c1c925">
+<div class="cell" data-hash="8_Tutorials_AutoregressiveCrosslaggedPanelModels_cache/html/unnamed-chunk-5_87c986ecf88191762bff870016cf1f41">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Fitting the model</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">data =</span> data_wide)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-2"><a href="#cb5-2"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">data =</span> data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -686,12 +671,25 @@ R-Square:
     Lif_Stsfctn_T4    0.025</code></pre>
 </div>
 </div>
+<div class="cell" data-hash="8_Tutorials_AutoregressiveCrosslaggedPanelModels_cache/html/unnamed-chunk-7_143dd5d76a0998cde2891298887ab41b">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="do">## Creating variable (names) from output to be used for inline text</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a></span>
+<span id="cb8-3"><a href="#cb8-3"></a>estimates <span class="ot">&lt;-</span> <span class="fu">parameterEstimates</span>(fit)</span>
+<span id="cb8-4"><a href="#cb8-4"></a>Job_Sat_T1 <span class="ot">&lt;-</span> estimates[estimates<span class="sc">$</span>lhs <span class="sc">==</span> <span class="st">"Job_Satisfaction_T1"</span>, <span class="st">"est"</span>]</span>
+<span id="cb8-5"><a href="#cb8-5"></a>Life_Sat_T1 <span class="ot">&lt;-</span> estimates[estimates<span class="sc">$</span>lhs <span class="sc">==</span> <span class="st">"Life_Satisfaction_T1"</span>, <span class="st">"est"</span>]</span>
+<span id="cb8-6"><a href="#cb8-6"></a></span>
+<span id="cb8-7"><a href="#cb8-7"></a>JobT2_to_LifeT1 <span class="ot">&lt;-</span> estimates<span class="sc">$</span>est[estimates<span class="sc">$</span>label <span class="sc">==</span> <span class="st">"b1"</span>]</span>
+<span id="cb8-8"><a href="#cb8-8"></a>LifeT2_to_JobT1 <span class="ot">&lt;-</span> estimates<span class="sc">$</span>est[estimates<span class="sc">$</span>label <span class="sc">==</span> <span class="st">"a1"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
 </section>
 </section>
 <section id="interpreting-the-results" class="level3">
 <h3 class="anchored" data-anchor-id="interpreting-the-results">Interpreting the Results</h3>
 <p>An Autoregressive cross-lagged panel model (ARCL) was used to explore the reciprocal relationship between Job Satisfaction and Life Satisfaction across multiple time points. This model allows us to understand how past values of a variable can predict its future values and how one variable can influence the future values of another variable.</p>
-<p>From the <code>sem</code> output, we can interpret: - Autoregressive paths: How past values of Job Satisfaction and Life Satisfaction predict their future values. - Coefficient for Job Satisfaction from T1 to T2: <strong>r round(fit@coef[“a1”], 3)</strong> - Coefficient for Life Satisfaction from T1 to T2: <strong>r round(fit@coef[“a4”], 3)</strong> (and so on for other time points) - Cross-lagged paths: How Job Satisfaction influences future values of Life Satisfaction and vice versa. - Coefficient of Job Satisfaction at T1 influencing Life Satisfaction at T2: <strong>r round(fit@coef[“b4”], 3)</strong> - Coefficient of Life Satisfaction at T1 influencing Job Satisfaction at T2: <strong>r round(fit@coef[“b1”], 3)</strong> (and so on for other time points)</p>
+<p>From the <code>sem</code> output, we can interpret: - Autoregressive paths: How past values of Job Satisfaction and Life Satisfaction predict their future values. - Coefficient for Job Satisfaction from T1 to T2: 2.076064, -0.302096 - Coefficient for Life Satisfaction from T1 to T2: 3.777644 (and so on for other time points) - Cross-lagged paths: How Job Satisfaction influences future values of Life Satisfaction and vice versa. - Coefficient of Job Satisfaction at T1 influencing Life Satisfaction at T2: -0.0424807 - Coefficient of Life Satisfaction at T1 influencing Job Satisfaction at T2: -0.0424257 (and so on for other time points)</p>
 </section>
 </section>
 <section id="conclusion" class="level2">
@@ -1131,143 +1129,158 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb8" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1"></a><span class="co">---</span></span>
-<span id="cb8-2"><a href="#cb8-2"></a><span class="an">title:</span><span class="co"> "Autoregressive Crosslagged Panel Models"</span></span>
-<span id="cb8-3"><a href="#cb8-3"></a><span class="an">author:</span><span class="co"> "Biostatistics Working Group"</span></span>
-<span id="cb8-4"><a href="#cb8-4"></a><span class="co">---</span></span>
-<span id="cb8-5"><a href="#cb8-5"></a></span>
-<span id="cb8-6"><a href="#cb8-6"></a><span class="fu">## Overview</span></span>
-<span id="cb8-7"><a href="#cb8-7"></a>Autoregressive cross-lagged panel models (ARCL) are advanced statistical techniques tailored for dissecting the dynamic interplay between variables over time. ARCL models have become indispensable in disciplines like psychology, economics, and sociology, as they can unravel the bidirectional relationships and causality between multiple variables across various time points. These models extend the concept of autoregressive models, which predict a variable based on its past values, by also integrating cross-lagged effects, thereby capturing the influence of one variable on another in subsequent time points. Especially potent for longitudinal designs, ARCL models provide a nuanced understanding of how variables evolve and influence each other over time, shedding light on potential causal pathways. In essence, the ARCL framework seizes upon the time-ordered data to not only track how a variable relates to its past self but also how it might affect or be affected by other variables. This dual capability of capturing both autoregressive and cross-lagged effects makes ARCL models a go-to choice for researchers aiming to understand intricate temporal dynamics and reciprocal relationships in their data.</span>
-<span id="cb8-8"><a href="#cb8-8"></a></span>
-<span id="cb8-9"><a href="#cb8-9"></a><span class="al">![Autoregressive Crosslagged Panel 1_Tutorial](./figures/arcl.png)</span></span>
-<span id="cb8-10"><a href="#cb8-10"></a></span>
-<span id="cb8-11"><a href="#cb8-11"></a><span class="fu">### When to use Autoregressive Crosslagged Panel Models?</span></span>
-<span id="cb8-12"><a href="#cb8-12"></a>You should consider autoregressive crosslagged panel models in the following situations:</span>
-<span id="cb8-13"><a href="#cb8-13"></a></span>
-<span id="cb8-14"><a href="#cb8-14"></a><span class="ss">1. </span>You want to understand: The reciprocal relationships between variables over time.</span>
-<span id="cb8-15"><a href="#cb8-15"></a><span class="ss">2. </span>Your variables: Are repeatedly measured across multiple time points.</span>
-<span id="cb8-16"><a href="#cb8-16"></a><span class="ss">3. </span>You aim to: Disentangle the cause-and-effect relationship between these variables over successive time intervals.</span>
-<span id="cb8-17"><a href="#cb8-17"></a></span>
-<span id="cb8-18"><a href="#cb8-18"></a><span class="fu">### Getting Started with Autoregressive Crosslagged Panel Models</span></span>
-<span id="cb8-19"><a href="#cb8-19"></a>In this tutorial, we will guide you through an example of an autoregressive crosslagged panel model using a small dataset. By the time you complete this tutorial, you will be equipped to:</span>
-<span id="cb8-20"><a href="#cb8-20"></a></span>
-<span id="cb8-21"><a href="#cb8-21"></a><span class="ss">1. </span>Understand the basic principles of autoregressive crosslagged panel models.</span>
-<span id="cb8-22"><a href="#cb8-22"></a><span class="ss">2. </span>Implement these models on longitudinal panel data using R.</span>
-<span id="cb8-23"><a href="#cb8-23"></a><span class="ss">3. </span>Analyze and discern the implications derived from the autoregressive crosslagged panel model analysis.</span>
-<span id="cb8-24"><a href="#cb8-24"></a></span>
-<span id="cb8-25"><a href="#cb8-25"></a><span class="fu">## Basic Example</span></span>
-<span id="cb8-26"><a href="#cb8-26"></a>In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you'll likely start by importing your own data.</span>
-<span id="cb8-27"><a href="#cb8-27"></a></span>
-<span id="cb8-28"><a href="#cb8-28"></a>The simulated dataset created for this example consists of scores on a single outcome variable ("Job_Satisfaction") for 500 individuals each measured at four time points: T1-T4. </span>
-<span id="cb8-29"><a href="#cb8-29"></a></span>
-<span id="cb8-30"><a href="#cb8-30"></a><span class="ss">- </span>Subject ID</span>
-<span id="cb8-31"><a href="#cb8-31"></a><span class="ss">- </span>Time (in years)</span>
-<span id="cb8-32"><a href="#cb8-32"></a><span class="ss">- </span>Variable 1 (e.g., job satisfaction)</span>
-<span id="cb8-33"><a href="#cb8-33"></a></span>
-<span id="cb8-34"><a href="#cb8-34"></a><span class="fu">#### Create Example Dataset</span></span>
-<span id="cb8-37"><a href="#cb8-37"></a><span class="in">```{r}</span></span>
-<span id="cb8-38"><a href="#cb8-38"></a><span class="co"># Setting the seed for reproducibility</span></span>
-<span id="cb8-39"><a href="#cb8-39"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb8-40"><a href="#cb8-40"></a></span>
-<span id="cb8-41"><a href="#cb8-41"></a><span class="co"># Setting the number of individuals for our sample data</span></span>
-<span id="cb8-42"><a href="#cb8-42"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
-<span id="cb8-43"><a href="#cb8-43"></a></span>
-<span id="cb8-44"><a href="#cb8-44"></a><span class="co"># Specifying the desired correlation matrix for our data</span></span>
-<span id="cb8-45"><a href="#cb8-45"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, </span>
-<span id="cb8-46"><a href="#cb8-46"></a>                      <span class="fl">0.3</span>, <span class="dv">1</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>,</span>
-<span id="cb8-47"><a href="#cb8-47"></a>                      <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="dv">1</span>, <span class="fl">0.3</span>,</span>
-<span id="cb8-48"><a href="#cb8-48"></a>                      <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="dv">1</span>), </span>
-<span id="cb8-49"><a href="#cb8-49"></a>                      <span class="at">nrow=</span><span class="dv">4</span>)</span>
-<span id="cb8-50"><a href="#cb8-50"></a></span>
-<span id="cb8-51"><a href="#cb8-51"></a><span class="co"># Using Cholesky decomposition to generate correlated data</span></span>
-<span id="cb8-52"><a href="#cb8-52"></a>cholesky <span class="ot">&lt;-</span> <span class="fu">chol</span>(cor_matrix)</span>
-<span id="cb8-53"><a href="#cb8-53"></a></span>
-<span id="cb8-54"><a href="#cb8-54"></a><span class="co"># Generating correlated random data</span></span>
-<span id="cb8-55"><a href="#cb8-55"></a>random_data <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n <span class="sc">*</span> <span class="dv">4</span>), <span class="at">ncol=</span><span class="dv">4</span>)</span>
-<span id="cb8-56"><a href="#cb8-56"></a>correlated_data <span class="ot">&lt;-</span> random_data <span class="sc">%*%</span> cholesky</span>
-<span id="cb8-57"><a href="#cb8-57"></a></span>
-<span id="cb8-58"><a href="#cb8-58"></a><span class="co"># Converting the generated data into a structured data frame in wide format</span></span>
-<span id="cb8-59"><a href="#cb8-59"></a>data_wide <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb8-60"><a href="#cb8-60"></a>  <span class="at">Individual =</span> <span class="dv">1</span><span class="sc">:</span>n,</span>
-<span id="cb8-61"><a href="#cb8-61"></a>  <span class="at">Job_Satisfaction_T1 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
-<span id="cb8-62"><a href="#cb8-62"></a>  <span class="at">Job_Satisfaction_T2 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
-<span id="cb8-63"><a href="#cb8-63"></a>  <span class="at">Job_Satisfaction_T3 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
-<span id="cb8-64"><a href="#cb8-64"></a>  <span class="at">Job_Satisfaction_T4 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
-<span id="cb8-65"><a href="#cb8-65"></a>  <span class="at">Life_Satisfaction_T1 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">1</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>),</span>
-<span id="cb8-66"><a href="#cb8-66"></a>  <span class="at">Life_Satisfaction_T2 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">2</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>),</span>
-<span id="cb8-67"><a href="#cb8-67"></a>  <span class="at">Life_Satisfaction_T3 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">3</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>),</span>
-<span id="cb8-68"><a href="#cb8-68"></a>  <span class="at">Life_Satisfaction_T4 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">4</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>)</span>
-<span id="cb8-69"><a href="#cb8-69"></a>)</span>
-<span id="cb8-70"><a href="#cb8-70"></a></span>
-<span id="cb8-71"><a href="#cb8-71"></a><span class="in">```</span></span>
-<span id="cb8-72"><a href="#cb8-72"></a></span>
-<span id="cb8-73"><a href="#cb8-73"></a><span class="fu">### View Dataset</span></span>
-<span id="cb8-76"><a href="#cb8-76"></a><span class="in">```{r}</span></span>
-<span id="cb8-77"><a href="#cb8-77"></a><span class="fu">head</span>(data_wide)</span>
-<span id="cb8-78"><a href="#cb8-78"></a><span class="in">```</span></span>
-<span id="cb8-79"><a href="#cb8-79"></a></span>
-<span id="cb8-80"><a href="#cb8-80"></a><span class="fu">### Model Specification and Estimation</span></span>
-<span id="cb8-81"><a href="#cb8-81"></a>To specify an Autoregressive Crosslagged Panel Model (ARCL), we will utilize the lavaan syntax to focus on understanding the reciprocal influences between multiple variables over time. This approach allows us to discern how a change in one variable at a given time point can influence changes in another variable at subsequent time points, while also accounting for the autoregressive effects of each variable on itself across time.</span>
-<span id="cb8-82"><a href="#cb8-82"></a></span>
-<span id="cb8-83"><a href="#cb8-83"></a><span class="fu">#### Install and Load Necessary Libraries</span></span>
-<span id="cb8-86"><a href="#cb8-86"></a><span class="in">```{r}</span></span>
-<span id="cb8-87"><a href="#cb8-87"></a><span class="cf">if</span> (<span class="sc">!</span>(<span class="st">"lavaan"</span> <span class="sc">%in%</span> <span class="fu">installed.packages</span>())) <span class="fu">install.packages</span>(<span class="st">"lavaan"</span>)</span>
-<span id="cb8-88"><a href="#cb8-88"></a><span class="fu">library</span>(lavaan)</span>
-<span id="cb8-89"><a href="#cb8-89"></a><span class="in">```</span></span>
-<span id="cb8-90"><a href="#cb8-90"></a></span>
-<span id="cb8-91"><a href="#cb8-91"></a><span class="fu">#### Model</span></span>
-<span id="cb8-94"><a href="#cb8-94"></a><span class="in">```{r}</span></span>
-<span id="cb8-95"><a href="#cb8-95"></a>model <span class="ot">&lt;-</span> <span class="st">'</span></span>
-<span id="cb8-96"><a href="#cb8-96"></a><span class="st">  # Autoregressive paths</span></span>
-<span id="cb8-97"><a href="#cb8-97"></a><span class="st">  Job_Satisfaction_T2 ~ a1 * Job_Satisfaction_T1</span></span>
-<span id="cb8-98"><a href="#cb8-98"></a><span class="st">  Job_Satisfaction_T3 ~ a2 * Job_Satisfaction_T2</span></span>
-<span id="cb8-99"><a href="#cb8-99"></a><span class="st">  Job_Satisfaction_T4 ~ a3 * Job_Satisfaction_T3</span></span>
-<span id="cb8-100"><a href="#cb8-100"></a><span class="st">  </span></span>
-<span id="cb8-101"><a href="#cb8-101"></a><span class="st">  Life_Satisfaction_T2 ~ a4 * Life_Satisfaction_T1</span></span>
-<span id="cb8-102"><a href="#cb8-102"></a><span class="st">  Life_Satisfaction_T3 ~ a5 * Life_Satisfaction_T2</span></span>
-<span id="cb8-103"><a href="#cb8-103"></a><span class="st">  Life_Satisfaction_T4 ~ a6 * Life_Satisfaction_T3</span></span>
-<span id="cb8-104"><a href="#cb8-104"></a></span>
-<span id="cb8-105"><a href="#cb8-105"></a><span class="st">  # Cross-lagged paths</span></span>
-<span id="cb8-106"><a href="#cb8-106"></a><span class="st">  Job_Satisfaction_T2 ~ b1 * Life_Satisfaction_T1</span></span>
-<span id="cb8-107"><a href="#cb8-107"></a><span class="st">  Job_Satisfaction_T3 ~ b2 * Life_Satisfaction_T2</span></span>
-<span id="cb8-108"><a href="#cb8-108"></a><span class="st">  Job_Satisfaction_T4 ~ b3 * Life_Satisfaction_T3</span></span>
-<span id="cb8-109"><a href="#cb8-109"></a><span class="st">  </span></span>
-<span id="cb8-110"><a href="#cb8-110"></a><span class="st">  Life_Satisfaction_T2 ~ b4 * Job_Satisfaction_T1</span></span>
-<span id="cb8-111"><a href="#cb8-111"></a><span class="st">  Life_Satisfaction_T3 ~ b5 * Job_Satisfaction_T2</span></span>
-<span id="cb8-112"><a href="#cb8-112"></a><span class="st">  Life_Satisfaction_T4 ~ b6 * Job_Satisfaction_T3</span></span>
-<span id="cb8-113"><a href="#cb8-113"></a><span class="st">'</span></span>
-<span id="cb8-114"><a href="#cb8-114"></a></span>
-<span id="cb8-115"><a href="#cb8-115"></a><span class="in">```</span></span>
-<span id="cb8-116"><a href="#cb8-116"></a></span>
-<span id="cb8-117"><a href="#cb8-117"></a><span class="fu">#### Fit Model</span></span>
-<span id="cb8-120"><a href="#cb8-120"></a><span class="in">```{r}</span></span>
-<span id="cb8-121"><a href="#cb8-121"></a><span class="co"># Fitting the model</span></span>
-<span id="cb8-122"><a href="#cb8-122"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">data =</span> data_wide)</span>
-<span id="cb8-123"><a href="#cb8-123"></a>                </span>
-<span id="cb8-124"><a href="#cb8-124"></a><span class="in">```</span></span>
-<span id="cb8-125"><a href="#cb8-125"></a></span>
-<span id="cb8-126"><a href="#cb8-126"></a><span class="fu">#### Model Summary</span></span>
-<span id="cb8-129"><a href="#cb8-129"></a><span class="in">```{r}</span></span>
-<span id="cb8-130"><a href="#cb8-130"></a><span class="co"># Summarizing the model</span></span>
-<span id="cb8-131"><a href="#cb8-131"></a><span class="fu">summary</span>(fit, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>, <span class="at">standardized =</span> <span class="cn">TRUE</span>, <span class="at">rsquare =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb8-132"><a href="#cb8-132"></a></span>
-<span id="cb8-133"><a href="#cb8-133"></a><span class="in">```</span></span>
-<span id="cb8-134"><a href="#cb8-134"></a></span>
-<span id="cb8-135"><a href="#cb8-135"></a><span class="fu">### Interpreting the Results</span></span>
-<span id="cb8-136"><a href="#cb8-136"></a>An Autoregressive cross-lagged panel model (ARCL) was used to explore the reciprocal relationship between Job Satisfaction and Life Satisfaction across multiple time points. This model allows us to understand how past values of a variable can predict its future values and how one variable can influence the future values of another variable.</span>
-<span id="cb8-137"><a href="#cb8-137"></a></span>
-<span id="cb8-138"><a href="#cb8-138"></a>From the <span class="in">`sem`</span> output, we can interpret:</span>
-<span id="cb8-139"><a href="#cb8-139"></a><span class="ss">- </span>Autoregressive paths: How past values of Job Satisfaction and Life Satisfaction predict their future values.</span>
-<span id="cb8-140"><a href="#cb8-140"></a><span class="ss">  - </span>Coefficient for Job Satisfaction from T1 to T2: **r round(fit@coef["a1"], 3)**</span>
-<span id="cb8-141"><a href="#cb8-141"></a><span class="ss">  - </span>Coefficient for Life Satisfaction from T1 to T2: **r round(fit@coef["a4"], 3)**</span>
-<span id="cb8-142"><a href="#cb8-142"></a>  (and so on for other time points)</span>
-<span id="cb8-143"><a href="#cb8-143"></a><span class="ss">- </span>Cross-lagged paths: How Job Satisfaction influences future values of Life Satisfaction and vice versa.</span>
-<span id="cb8-144"><a href="#cb8-144"></a><span class="ss">  - </span>Coefficient of Job Satisfaction at T1 influencing Life Satisfaction at T2: **r round(fit@coef["b4"], 3)**</span>
-<span id="cb8-145"><a href="#cb8-145"></a><span class="ss">  - </span>Coefficient of Life Satisfaction at T1 influencing Job Satisfaction at T2: **r round(fit@coef["b1"], 3)**</span>
-<span id="cb8-146"><a href="#cb8-146"></a>  (and so on for other time points)</span>
-<span id="cb8-147"><a href="#cb8-147"></a></span>
-<span id="cb8-148"><a href="#cb8-148"></a><span class="fu">## Conclusion</span></span>
-<span id="cb8-149"><a href="#cb8-149"></a>The ARCL model provides insights into the dynamic relationship between Job Satisfaction and Life Satisfaction. If the coefficients of the cross-lagged paths are significant, it suggests that there's a reciprocal influence between the two variables over time. The direction (positive or negative) and magnitude of these coefficients offer further understanding about the strength and nature of this relationship.</span>
+<div class="sourceCode" id="cb9" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1"></a><span class="co">---</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="an">title:</span><span class="co"> "Autoregressive Crosslagged Panel Models"</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="an">author:</span><span class="co"> "Biostatistics Working Group"</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="co">---</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a></span>
+<span id="cb9-6"><a href="#cb9-6"></a><span class="fu">## Overview</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a>Autoregressive cross-lagged panel models (ARCL) are a statistical techniques used to examine dynamic and reciprocal associations between variables over time. ARCL models can provide insight into the bidirectional relationships between multiple variables over time. These models extend the concept of autoregressive models, which predict a variable based on its prior values, by also integrating cross-lagged effects, thereby capturing the influence of one variable on another in subsequent time points. This dual capability of capturing both autoregressive and cross-lagged effects makes ARCL models a common choice for researchers aiming to understand temporal and reciprocal associations in their data.</span>
+<span id="cb9-8"><a href="#cb9-8"></a></span>
+<span id="cb9-9"><a href="#cb9-9"></a><span class="al">![Autoregressive Crosslagged Panel 1_Tutorial](./figures/arcl.png)</span></span>
+<span id="cb9-10"><a href="#cb9-10"></a></span>
+<span id="cb9-11"><a href="#cb9-11"></a><span class="fu">### When to use Autoregressive Crosslagged Panel Models?</span></span>
+<span id="cb9-12"><a href="#cb9-12"></a>You should consider autoregressive crosslagged panel (ARCL) models in the following situations:</span>
+<span id="cb9-13"><a href="#cb9-13"></a></span>
+<span id="cb9-14"><a href="#cb9-14"></a><span class="ss">1. </span>You want to understand: The reciprocal relationships between variables over time.</span>
+<span id="cb9-15"><a href="#cb9-15"></a><span class="ss">2. </span>Your variables: Are repeatedly measured across multiple time points.</span>
+<span id="cb9-16"><a href="#cb9-16"></a><span class="ss">3. </span>You aim to: Disentangle the directional relationship between these variables over successive time intervals.</span>
+<span id="cb9-17"><a href="#cb9-17"></a></span>
+<span id="cb9-18"><a href="#cb9-18"></a><span class="fu">### Getting Started with Autoregressive Crosslagged Panel Models</span></span>
+<span id="cb9-19"><a href="#cb9-19"></a>In this tutorial, we will guide you through an example of an autoregressive crosslagged panel model using a small dataset. By the time you complete this tutorial, you will be equipped to:</span>
+<span id="cb9-20"><a href="#cb9-20"></a></span>
+<span id="cb9-21"><a href="#cb9-21"></a><span class="ss">1. </span>Understand the basic principles of autoregressive crosslagged panel models.</span>
+<span id="cb9-22"><a href="#cb9-22"></a><span class="ss">2. </span>Implement these models on longitudinal panel data using R.</span>
+<span id="cb9-23"><a href="#cb9-23"></a><span class="ss">3. </span>Analyze and interpet results from autoregressive crosslagged panel model analysis.</span>
+<span id="cb9-24"><a href="#cb9-24"></a></span>
+<span id="cb9-25"><a href="#cb9-25"></a><span class="fu">## Basic Example</span></span>
+<span id="cb9-26"><a href="#cb9-26"></a>In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you'll likely start by importing your own data.</span>
+<span id="cb9-27"><a href="#cb9-27"></a></span>
+<span id="cb9-28"><a href="#cb9-28"></a>The simulated dataset created for this example consists of scores on a single outcome variable ("Job_Satisfaction") for 500 individuals each measured at four time points: T1-T4. </span>
+<span id="cb9-29"><a href="#cb9-29"></a></span>
+<span id="cb9-30"><a href="#cb9-30"></a><span class="ss">- </span>Subject ID</span>
+<span id="cb9-31"><a href="#cb9-31"></a><span class="ss">- </span>Time (in years)</span>
+<span id="cb9-32"><a href="#cb9-32"></a><span class="ss">- </span>Variable 1 (e.g., job satisfaction)</span>
+<span id="cb9-33"><a href="#cb9-33"></a></span>
+<span id="cb9-34"><a href="#cb9-34"></a><span class="fu">#### Create Example Dataset</span></span>
+<span id="cb9-37"><a href="#cb9-37"></a><span class="in">```{r}</span></span>
+<span id="cb9-38"><a href="#cb9-38"></a><span class="co"># Setting the seed for reproducibility</span></span>
+<span id="cb9-39"><a href="#cb9-39"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb9-40"><a href="#cb9-40"></a></span>
+<span id="cb9-41"><a href="#cb9-41"></a><span class="co"># Setting the number of individuals for our sample data</span></span>
+<span id="cb9-42"><a href="#cb9-42"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
+<span id="cb9-43"><a href="#cb9-43"></a></span>
+<span id="cb9-44"><a href="#cb9-44"></a><span class="co"># Specifying the desired correlation matrix for our data</span></span>
+<span id="cb9-45"><a href="#cb9-45"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, </span>
+<span id="cb9-46"><a href="#cb9-46"></a>                      <span class="fl">0.3</span>, <span class="dv">1</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>,</span>
+<span id="cb9-47"><a href="#cb9-47"></a>                      <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="dv">1</span>, <span class="fl">0.3</span>,</span>
+<span id="cb9-48"><a href="#cb9-48"></a>                      <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="dv">1</span>), </span>
+<span id="cb9-49"><a href="#cb9-49"></a>                      <span class="at">nrow=</span><span class="dv">4</span>)</span>
+<span id="cb9-50"><a href="#cb9-50"></a></span>
+<span id="cb9-51"><a href="#cb9-51"></a><span class="co"># Using Cholesky decomposition to generate correlated data</span></span>
+<span id="cb9-52"><a href="#cb9-52"></a>cholesky <span class="ot">&lt;-</span> <span class="fu">chol</span>(cor_matrix)</span>
+<span id="cb9-53"><a href="#cb9-53"></a></span>
+<span id="cb9-54"><a href="#cb9-54"></a><span class="co"># Generating correlated random data</span></span>
+<span id="cb9-55"><a href="#cb9-55"></a>random_data <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n <span class="sc">*</span> <span class="dv">4</span>), <span class="at">ncol=</span><span class="dv">4</span>)</span>
+<span id="cb9-56"><a href="#cb9-56"></a>correlated_data <span class="ot">&lt;-</span> random_data <span class="sc">%*%</span> cholesky</span>
+<span id="cb9-57"><a href="#cb9-57"></a></span>
+<span id="cb9-58"><a href="#cb9-58"></a><span class="co"># Converting the generated data into a structured data frame in wide format</span></span>
+<span id="cb9-59"><a href="#cb9-59"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb9-60"><a href="#cb9-60"></a>  <span class="at">Individual =</span> <span class="dv">1</span><span class="sc">:</span>n,</span>
+<span id="cb9-61"><a href="#cb9-61"></a>  <span class="at">Job_Satisfaction_T1 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
+<span id="cb9-62"><a href="#cb9-62"></a>  <span class="at">Job_Satisfaction_T2 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
+<span id="cb9-63"><a href="#cb9-63"></a>  <span class="at">Job_Satisfaction_T3 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
+<span id="cb9-64"><a href="#cb9-64"></a>  <span class="at">Job_Satisfaction_T4 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
+<span id="cb9-65"><a href="#cb9-65"></a>  <span class="at">Life_Satisfaction_T1 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">1</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>),</span>
+<span id="cb9-66"><a href="#cb9-66"></a>  <span class="at">Life_Satisfaction_T2 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">2</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>),</span>
+<span id="cb9-67"><a href="#cb9-67"></a>  <span class="at">Life_Satisfaction_T3 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">3</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>),</span>
+<span id="cb9-68"><a href="#cb9-68"></a>  <span class="at">Life_Satisfaction_T4 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">4</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>)</span>
+<span id="cb9-69"><a href="#cb9-69"></a>)</span>
+<span id="cb9-70"><a href="#cb9-70"></a></span>
+<span id="cb9-71"><a href="#cb9-71"></a><span class="in">```</span></span>
+<span id="cb9-72"><a href="#cb9-72"></a></span>
+<span id="cb9-73"><a href="#cb9-73"></a><span class="fu">### View Dataset</span></span>
+<span id="cb9-76"><a href="#cb9-76"></a><span class="in">```{r}</span></span>
+<span id="cb9-77"><a href="#cb9-77"></a><span class="fu">head</span>(data)</span>
+<span id="cb9-78"><a href="#cb9-78"></a><span class="in">```</span></span>
+<span id="cb9-79"><a href="#cb9-79"></a></span>
+<span id="cb9-80"><a href="#cb9-80"></a><span class="fu">### Model Specification and Estimation</span></span>
+<span id="cb9-81"><a href="#cb9-81"></a>To specify an Autoregressive Crosslagged Panel Model (ARCL), we will utilize the lavaan syntax to focus on understanding the reciprocal influences between multiple variables over time. This approach allows us to discern how a change in one variable at a given time point can influence changes in another variable at subsequent time points, while also accounting for the autoregressive effects of each variable on itself across time.</span>
+<span id="cb9-82"><a href="#cb9-82"></a></span>
+<span id="cb9-83"><a href="#cb9-83"></a><span class="fu">#### Install and Load Necessary Libraries</span></span>
+<span id="cb9-86"><a href="#cb9-86"></a><span class="in">```{r}</span></span>
+<span id="cb9-87"><a href="#cb9-87"></a><span class="cf">if</span> (<span class="sc">!</span>(<span class="st">"lavaan"</span> <span class="sc">%in%</span> <span class="fu">installed.packages</span>())) <span class="fu">install.packages</span>(<span class="st">"lavaan"</span>)</span>
+<span id="cb9-88"><a href="#cb9-88"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb9-89"><a href="#cb9-89"></a><span class="in">```</span></span>
+<span id="cb9-90"><a href="#cb9-90"></a></span>
+<span id="cb9-91"><a href="#cb9-91"></a><span class="fu">#### Model</span></span>
+<span id="cb9-94"><a href="#cb9-94"></a><span class="in">```{r}</span></span>
+<span id="cb9-95"><a href="#cb9-95"></a>model <span class="ot">&lt;-</span> <span class="st">'</span></span>
+<span id="cb9-96"><a href="#cb9-96"></a><span class="st">  # Autoregressive paths</span></span>
+<span id="cb9-97"><a href="#cb9-97"></a><span class="st">  Job_Satisfaction_T2 ~ a1 * Job_Satisfaction_T1</span></span>
+<span id="cb9-98"><a href="#cb9-98"></a><span class="st">  Job_Satisfaction_T3 ~ a2 * Job_Satisfaction_T2</span></span>
+<span id="cb9-99"><a href="#cb9-99"></a><span class="st">  Job_Satisfaction_T4 ~ a3 * Job_Satisfaction_T3</span></span>
+<span id="cb9-100"><a href="#cb9-100"></a><span class="st">  </span></span>
+<span id="cb9-101"><a href="#cb9-101"></a><span class="st">  Life_Satisfaction_T2 ~ a4 * Life_Satisfaction_T1</span></span>
+<span id="cb9-102"><a href="#cb9-102"></a><span class="st">  Life_Satisfaction_T3 ~ a5 * Life_Satisfaction_T2</span></span>
+<span id="cb9-103"><a href="#cb9-103"></a><span class="st">  Life_Satisfaction_T4 ~ a6 * Life_Satisfaction_T3</span></span>
+<span id="cb9-104"><a href="#cb9-104"></a></span>
+<span id="cb9-105"><a href="#cb9-105"></a><span class="st">  # Cross-lagged paths</span></span>
+<span id="cb9-106"><a href="#cb9-106"></a><span class="st">  Job_Satisfaction_T2 ~ b1 * Life_Satisfaction_T1</span></span>
+<span id="cb9-107"><a href="#cb9-107"></a><span class="st">  Job_Satisfaction_T3 ~ b2 * Life_Satisfaction_T2</span></span>
+<span id="cb9-108"><a href="#cb9-108"></a><span class="st">  Job_Satisfaction_T4 ~ b3 * Life_Satisfaction_T3</span></span>
+<span id="cb9-109"><a href="#cb9-109"></a><span class="st">  </span></span>
+<span id="cb9-110"><a href="#cb9-110"></a><span class="st">  Life_Satisfaction_T2 ~ b4 * Job_Satisfaction_T1</span></span>
+<span id="cb9-111"><a href="#cb9-111"></a><span class="st">  Life_Satisfaction_T3 ~ b5 * Job_Satisfaction_T2</span></span>
+<span id="cb9-112"><a href="#cb9-112"></a><span class="st">  Life_Satisfaction_T4 ~ b6 * Job_Satisfaction_T3</span></span>
+<span id="cb9-113"><a href="#cb9-113"></a><span class="st">'</span></span>
+<span id="cb9-114"><a href="#cb9-114"></a></span>
+<span id="cb9-115"><a href="#cb9-115"></a><span class="in">```</span></span>
+<span id="cb9-116"><a href="#cb9-116"></a></span>
+<span id="cb9-117"><a href="#cb9-117"></a><span class="fu">#### Fit Model</span></span>
+<span id="cb9-120"><a href="#cb9-120"></a><span class="in">```{r}</span></span>
+<span id="cb9-121"><a href="#cb9-121"></a><span class="co"># Fitting the model</span></span>
+<span id="cb9-122"><a href="#cb9-122"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">data =</span> data)</span>
+<span id="cb9-123"><a href="#cb9-123"></a>                </span>
+<span id="cb9-124"><a href="#cb9-124"></a><span class="in">```</span></span>
+<span id="cb9-125"><a href="#cb9-125"></a></span>
+<span id="cb9-126"><a href="#cb9-126"></a><span class="fu">#### Model Summary</span></span>
+<span id="cb9-129"><a href="#cb9-129"></a><span class="in">```{r}</span></span>
+<span id="cb9-130"><a href="#cb9-130"></a><span class="co"># Summarizing the model</span></span>
+<span id="cb9-131"><a href="#cb9-131"></a><span class="fu">summary</span>(fit, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>, <span class="at">standardized =</span> <span class="cn">TRUE</span>, <span class="at">rsquare =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-132"><a href="#cb9-132"></a></span>
+<span id="cb9-133"><a href="#cb9-133"></a><span class="in">```</span></span>
+<span id="cb9-134"><a href="#cb9-134"></a></span>
+<span id="cb9-137"><a href="#cb9-137"></a><span class="in">```{r}</span></span>
+<span id="cb9-138"><a href="#cb9-138"></a><span class="do">## Creating variable (names) from output to be used for inline text</span></span>
+<span id="cb9-139"><a href="#cb9-139"></a></span>
+<span id="cb9-140"><a href="#cb9-140"></a>estimates <span class="ot">&lt;-</span> <span class="fu">parameterEstimates</span>(fit)</span>
+<span id="cb9-141"><a href="#cb9-141"></a>Job_Sat_T1 <span class="ot">&lt;-</span> estimates[estimates<span class="sc">$</span>lhs <span class="sc">==</span> <span class="st">"Job_Satisfaction_T1"</span>, <span class="st">"est"</span>]</span>
+<span id="cb9-142"><a href="#cb9-142"></a>Life_Sat_T1 <span class="ot">&lt;-</span> estimates[estimates<span class="sc">$</span>lhs <span class="sc">==</span> <span class="st">"Life_Satisfaction_T1"</span>, <span class="st">"est"</span>]</span>
+<span id="cb9-143"><a href="#cb9-143"></a></span>
+<span id="cb9-144"><a href="#cb9-144"></a>JobT2_to_LifeT1 <span class="ot">&lt;-</span> estimates<span class="sc">$</span>est[estimates<span class="sc">$</span>label <span class="sc">==</span> <span class="st">"b1"</span>]</span>
+<span id="cb9-145"><a href="#cb9-145"></a>LifeT2_to_JobT1 <span class="ot">&lt;-</span> estimates<span class="sc">$</span>est[estimates<span class="sc">$</span>label <span class="sc">==</span> <span class="st">"a1"</span>]</span>
+<span id="cb9-146"><a href="#cb9-146"></a></span>
+<span id="cb9-147"><a href="#cb9-147"></a><span class="in">```</span></span>
+<span id="cb9-148"><a href="#cb9-148"></a></span>
+<span id="cb9-149"><a href="#cb9-149"></a><span class="fu">### Interpreting the Results</span></span>
+<span id="cb9-150"><a href="#cb9-150"></a>An Autoregressive cross-lagged panel model (ARCL) was used to explore the reciprocal relationship between Job Satisfaction and Life Satisfaction across multiple time points. This model allows us to understand how past values of a variable can predict its future values and how one variable can influence the future values of another variable.</span>
+<span id="cb9-151"><a href="#cb9-151"></a></span>
+<span id="cb9-152"><a href="#cb9-152"></a>From the <span class="in">`sem`</span> output, we can interpret:</span>
+<span id="cb9-153"><a href="#cb9-153"></a><span class="ss">- </span>Autoregressive paths: How past values of Job Satisfaction and Life Satisfaction predict their future values.</span>
+<span id="cb9-154"><a href="#cb9-154"></a><span class="ss">  - </span>Coefficient for Job Satisfaction from T1 to T2: <span class="in">`r Job_Sat_T1`</span></span>
+<span id="cb9-155"><a href="#cb9-155"></a><span class="ss">  - </span>Coefficient for Life Satisfaction from T1 to T2: <span class="in">`r Life_Sat_T1`</span></span>
+<span id="cb9-156"><a href="#cb9-156"></a>  (and so on for other time points)</span>
+<span id="cb9-157"><a href="#cb9-157"></a><span class="ss">- </span>Cross-lagged paths: How Job Satisfaction influences future values of Life Satisfaction and vice versa.</span>
+<span id="cb9-158"><a href="#cb9-158"></a><span class="ss">  - </span>Coefficient of Job Satisfaction at T1 influencing Life Satisfaction at T2: <span class="in">`r LifeT2_to_JobT1`</span></span>
+<span id="cb9-159"><a href="#cb9-159"></a><span class="ss">  - </span>Coefficient of Life Satisfaction at T1 influencing Job Satisfaction at T2: <span class="in">`r JobT2_to_LifeT1`</span></span>
+<span id="cb9-160"><a href="#cb9-160"></a>  (and so on for other time points)</span>
+<span id="cb9-161"><a href="#cb9-161"></a></span>
+<span id="cb9-162"><a href="#cb9-162"></a></span>
+<span id="cb9-163"><a href="#cb9-163"></a></span>
+<span id="cb9-164"><a href="#cb9-164"></a></span>
+<span id="cb9-165"><a href="#cb9-165"></a><span class="fu">## Conclusion</span></span>
+<span id="cb9-166"><a href="#cb9-166"></a>The ARCL model provides insights into the dynamic relationship between Job Satisfaction and Life Satisfaction. If the coefficients of the cross-lagged paths are significant, it suggests that there's a reciprocal influence between the two variables over time. The direction (positive or negative) and magnitude of these coefficients offer further understanding about the strength and nature of this relationship.</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

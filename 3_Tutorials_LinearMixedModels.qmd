@@ -70,8 +70,7 @@ To specify a Linear Mixed Model (LMM), we will use the `lme4` package in R, spec
 
 
 #### Install & Load Libraries
-```{r setup, include=FALSE}
-
+```{r setup}
 if (!("lme4" %in% installed.packages())) install.packages("lme4")
 library(lme4)
 ```
@@ -91,4 +90,4 @@ plot(model)
 In our analysis, we employed a linear mixed model to explore the trend of `Job_Satisfaction` scores across four distinct time points: T1, T2, T3, and T4. Accounting for the repeated measurements on individual participants, the model assessed the fixed effect of the `TimePoint` variable and incorporated random intercepts for each individual. The coefficient for `TimePoint` indicates how the `Job_Satisfaction` scores shift, on average, across the time points. Specifically, the coefficient for transitioning from T1 to T2 is `r round(fixef(model)[2], 3)`, from T1 to T3 is `r round(fixef(model)[3], 3)`, and from T1 to T4 is `r round(fixef(model)[4], 3)`. These coefficients represent the average change in `Job_Satisfaction` scores for each subsequent time point relative to T1. In essence, this model allows us to understand both the general trend in `Job_Satisfaction` over time and the individual variations around this trend.
 
 ## Conclusion
-The LMM allows us to analyze the trend in `Job Satisfaction` scores across time points while considering individual variability. Depending on the p-value for the TimePoint effect, we can determine if there's a statistically significant change in Job Satisfaction scores over the time points. Moreover, the diagnostic plots can guide potential model refinements or highlight areas for further investigation.
+The LMM allows us to analyze the trend in `Job_Satisfaction` scores across time points while considering individual variability. Depending on the p-value for the TimePoint effect, we can determine if there's a statistically significant change in Job Satisfaction scores over the time points. Moreover, the diagnostic plots can guide potential model refinements or highlight areas for further investigation.
