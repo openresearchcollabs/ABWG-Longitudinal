@@ -4,7 +4,7 @@ author: "Biostatistics Working Group"
 ---
 
 ## Overview
-Latent change score models (LCSMs) are a sophisticated statistical method designed to delve deep into the intricacies of individual change over time. LCSMs have gained prominence in fields such as psychology, health sciences, and education for their ability to decipher the underlying structure and magnitude of change. These models represent an evolution of traditional growth curve models, emphasizing the differences between consecutive time points to capture the essence of change. Particularly adept for longitudinal data, LCSMs shine when there's a need to understand how and why individuals change over multiple time points, offering insights into both the rate and direction of change. At their core, LCSMs utilize a latent variable framework to model the difference scores, ensuring that the observed change is disentangled from measurement error. This unique approach to modeling change, by focusing on the "latent" or hidden aspects of growth or decline, is what lends the method its distinctive name.
+Latent change score models (LCSMs) are a statistical method used to assess individual change over time. These models are an extension of traditional growth curve models and provide insight into the underlying structure and magnitude of change. The LCSM framework utilizes a latent variable approach to model difference scores, ensuring that the observed change is disentangled from measurement error.
 
 [+add diagrams/figures]
 
@@ -50,7 +50,7 @@ random_data <- matrix(rnorm(n * 4), ncol=4)
 correlated_data <- random_data %*% cholesky
 
 # Converting the generated data into a structured data frame in wide format
-data_wide <- data.frame(
+data <- data.frame(
   Individual = 1:n,
   Job_Satisfaction_T1 = round(runif(n, 5, 10)),
   Job_Satisfaction_T2 = round(runif(n, 5, 10)),
@@ -62,7 +62,7 @@ data_wide <- data.frame(
 
 ### View Dataset
 ```{r}
-head(data_wide)
+head(data)
 ```
 
 ### Model Specification and Estimation
@@ -106,7 +106,7 @@ model <- '
 #### Fit Model
 ```{r}
 # Fit the model
-fit <- sem(model, data = data_wide)
+fit <- sem(model, data = data)
 
 ```
 
@@ -117,12 +117,21 @@ summary(fit, fit.measures=TRUE, standardized=TRUE, rsquare=TRUE)
 
 ```
 
+```{r}
+## Creating variable (names) from output to be used for inline text
+
+estimates <- parameterEstimates(fit)
+delta12 <- estimates[estimates$lhs == "delta12", "est"]
+delta23 <- estimates$est[estimates$rhs == "delta23"]
+
+```
+
 ### Interpreting the Results
 A Latent Change Score Model (LCSM) was employed to understand the dynamic changes in scores over time. This model captures the latent change (or difference) between consecutive time points, allowing for a detailed analysis of the trajectory of change.
 
 From the `sem` output, we can interpret:
-- The estimated change score from T1 to T2: **r round(fit@coef["delta12"], 3)**
-- The estimated change score from T2 to T3: **r round(fit@coef["delta23"], 3)**
+- The estimated change score from T1 to T2: `r delta12`
+- The estimated change score from T2 to T3: `r delta23`
 
 These coefficients represent the latent change in scores from one time point to the next. A positive coefficient suggests an increase, while a negative coefficient indicates a decrease.
 

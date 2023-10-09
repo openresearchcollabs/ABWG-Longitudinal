@@ -64,6 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./11_Tutorials_MultivariateLatentGrowthCurveModels.qmd" rel="next">
 <link href="./9_Tutorials_LatentChangeScoresModels.html" rel="prev">
 <link href="././figures/lights.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
@@ -323,16 +324,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </li>
           <li class="sidebar-item">
- <span class="menu-text">11_Tutorials_MultivariateLatentGrowthCurveModels.qmd</span>
-  </li>
-          <li class="sidebar-item">
  <span class="menu-text">12_Tutorials_LatentTransitionAnalysis.qmd</span>
-  </li>
-          <li class="sidebar-item">
- <span class="menu-text">13_Tutorials_GrowthMixtureModels.qmd</span>
-  </li>
-          <li class="sidebar-item">
- <span class="menu-text">14_Tutorials_StateTraitModels.qmd</span>
   </li>
       </ul>
   </li>
@@ -345,12 +337,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           </a> 
       </div>
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
-          <li class="sidebar-item">
- <span class="menu-text">15_Tutorials_RandomInterceptCrosslaggedPanelModels.qmd</span>
-  </li>
-          <li class="sidebar-item">
- <span class="menu-text">16_Tutorials_LatentCurveModelsStructuredResiduals.qmd</span>
-  </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -431,7 +417,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>Latent growth curve models (LGCMs) are an advanced statistical approach that allows researchers to explore the trajectory of growth, decline, or stability over time within individuals. LGCMs have become indispensable in disciplines such as psychology, public health, and developmental research, owing to their capability to model individual differences in change trajectories and capture the underlying structure of growth. These models are an enhancement of structural equation modeling, designed specifically for longitudinal data, where the essence of change across multiple time points is of interest. LGCMs offer a flexible framework that can model both the average trajectory in the population (fixed effects) and individual deviations from this average (random effects). By representing time as a latent construct, these models capture the nuances of individual change while accounting for measurement error. This combination of capturing overarching growth patterns while also emphasizing individual differences is the hallmark of the “latent” growth curve models, making them a vital tool for understanding longitudinal patterns.</p>
+<p>Latent growth curve models (LGCMs) are a statistical approach that allows researchers to explore the trajectory of growth, decline, or stability over time within individuals. LGCMs allow for modeling individual differences in change trajectories and capturing the underlying structure of growth. These models are a form of structural equation modeling, designed specifically for longitudinal data, where characterizing change across multiple time points is of interest. LGCMs offer a flexible framework that can model both the average trajectory in the population (fixed effects) and individual deviations from this average (random effects). By representing time as a latent construct, these models capture overarching growth patterns while also emphasizing individual differences in patterns of growth.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="./figures/lgcm.png" class="img-fluid figure-img"></p>
@@ -463,7 +449,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The simulated dataset created for this example consists of scores on a single outcome variable (“Job_Satisfaction”) for 500 individuals each measured at four time points: T1-T4.</p>
 <section id="create-example-dataset" class="level4">
 <h4 class="anchored" data-anchor-id="create-example-dataset">Create Example Dataset</h4>
-<div class="cell" data-hash="10_Tutorials_LatentGrowthCurveModels_cache/html/unnamed-chunk-1_36bf354013f790ca75e6bd20b45295be">
+<div class="cell" data-hash="10_Tutorials_LatentGrowthCurveModels_cache/html/unnamed-chunk-1_4767982b77888a5638f8c6e8bec0642f">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Setting the seed for reproducibility</span></span>
@@ -487,7 +473,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-19"><a href="#cb1-19"></a>correlated_data <span class="ot">&lt;-</span> random_data <span class="sc">%*%</span> cholesky</span>
 <span id="cb1-20"><a href="#cb1-20"></a></span>
 <span id="cb1-21"><a href="#cb1-21"></a><span class="co"># Converting the generated data into a structured data frame in wide format</span></span>
-<span id="cb1-22"><a href="#cb1-22"></a>data_wide <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-22"><a href="#cb1-22"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
 <span id="cb1-23"><a href="#cb1-23"></a>  <span class="at">Individual =</span> <span class="dv">1</span><span class="sc">:</span>n,</span>
 <span id="cb1-24"><a href="#cb1-24"></a>  <span class="at">Job_Satisfaction_T1 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
 <span id="cb1-25"><a href="#cb1-25"></a>  <span class="at">Job_Satisfaction_T2 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
@@ -499,10 +485,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="view-dataset" class="level3">
 <h3 class="anchored" data-anchor-id="view-dataset">View Dataset</h3>
-<div class="cell" data-hash="10_Tutorials_LatentGrowthCurveModels_cache/html/unnamed-chunk-2_50433b9a400f87ad9d8f7f35753c305f">
+<div class="cell" data-hash="10_Tutorials_LatentGrowthCurveModels_cache/html/unnamed-chunk-2_a35c951e47d99223f740d9b253ec3c25">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">head</span>(data_wide)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">head</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 
@@ -532,7 +518,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="model" class="level4">
 <h4 class="anchored" data-anchor-id="model">Model</h4>
-<div class="cell" data-hash="10_Tutorials_LatentGrowthCurveModels_cache/html/unnamed-chunk-4_0bf3626ef60d649ecb0ad6938ef3c92c">
+<div class="cell" data-hash="10_Tutorials_LatentGrowthCurveModels_cache/html/unnamed-chunk-4_d1cdcd190204579b81e4c7642a758237">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Define the Latent Growth Curve Model</span></span>
@@ -547,119 +533,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-10"><a href="#cb4-10"></a></span>
 <span id="cb4-11"><a href="#cb4-11"></a><span class="st">  # Covariance</span></span>
 <span id="cb4-12"><a href="#cb4-12"></a><span class="st">    i ~~ cov_is * s</span></span>
-<span id="cb4-13"><a href="#cb4-13"></a><span class="st">'</span></span>
-<span id="cb4-14"><a href="#cb4-14"></a></span>
-<span id="cb4-15"><a href="#cb4-15"></a><span class="co"># Fit the model</span></span>
-<span id="cb4-16"><a href="#cb4-16"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">data =</span> data_wide)</span>
-<span id="cb4-17"><a href="#cb4-17"></a></span>
-<span id="cb4-18"><a href="#cb4-18"></a><span class="co"># Summary of the model</span></span>
-<span id="cb4-19"><a href="#cb4-19"></a><span class="fu">summary</span>(fit, <span class="at">fit.measures=</span><span class="cn">TRUE</span>, <span class="at">standardized=</span><span class="cn">TRUE</span>, <span class="at">rsquare=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="st">'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>lavaan 0.6.16 ended normally after 31 iterations
-
-  Estimator                                         ML
-  Optimization method                           NLMINB
-  Number of model parameters                         7
-
-  Number of observations                           500
-
-Model Test User Model:
-                                                      
-  Test statistic                                 1.904
-  Degrees of freedom                                 3
-  P-value (Chi-square)                           0.593
-
-Model Test Baseline Model:
-
-  Test statistic                                 4.780
-  Degrees of freedom                                 6
-  P-value                                        0.572
-
-User Model versus Baseline Model:
-
-  Comparative Fit Index (CFI)                    1.000
-  Tucker-Lewis Index (TLI)                      -0.797
-
-Loglikelihood and Information Criteria:
-
-  Loglikelihood user model (H0)              -3605.325
-  Loglikelihood unrestricted model (H1)      -3604.373
-                                                      
-  Akaike (AIC)                                7224.650
-  Bayesian (BIC)                              7254.153
-  Sample-size adjusted Bayesian (SABIC)       7231.934
-
-Root Mean Square Error of Approximation:
-
-  RMSEA                                          0.000
-  90 Percent confidence interval - lower         0.000
-  90 Percent confidence interval - upper         0.063
-  P-value H_0: RMSEA &lt;= 0.050                    0.887
-  P-value H_0: RMSEA &gt;= 0.080                    0.013
-
-Standardized Root Mean Square Residual:
-
-  SRMR                                           0.020
-
-Parameter Estimates:
-
-  Standard errors                             Standard
-  Information                                 Expected
-  Information saturated (h1) model          Structured
-
-Latent Variables:
-                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-  i =~                                                                  
-    Job_Stsfctn_T1    1.000                                  NA       NA
-    Job_Stsfctn_T2    1.000                                  NA       NA
-    Job_Stsfctn_T3    1.000                                  NA       NA
-    Job_Stsfctn_T4    1.000                                  NA       NA
-  s =~                                                                  
-    Job_Stsfctn_T1    0.000                                  NA       NA
-    Job_Stsfctn_T2    1.000                                  NA       NA
-    Job_Stsfctn_T3    2.000                                  NA       NA
-    Job_Stsfctn_T4    3.000                                  NA       NA
-
-Covariances:
-                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-  i ~~                                                                  
-    s       (cv_s)    0.085    0.064    1.322    0.186    0.843    0.843
-
-Variances:
-                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
-    i       (var_)   -0.168    0.140   -1.201    0.230       NA       NA
-    s       (vr_s)   -0.060    0.038   -1.573    0.116       NA       NA
-   .Jb_S_T1           2.241    0.199   11.287    0.000    2.241    1.081
-   .Jb_S_T2           2.234    0.151   14.813    0.000    2.234    1.027
-   .Jb_S_T3           2.220    0.150   14.752    0.000    2.220    1.032
-   .Jb_S_T4           2.433    0.209   11.642    0.000    2.433    1.089
-
-R-Square:
-                   Estimate
-    Job_Stsfctn_T1   -0.081
-    Job_Stsfctn_T2   -0.027
-    Job_Stsfctn_T3   -0.032
-    Job_Stsfctn_T4   -0.089</code></pre>
-</div>
 </div>
 </section>
 <section id="fit-model" class="level4">
 <h4 class="anchored" data-anchor-id="fit-model">Fit Model</h4>
-<div class="cell" data-hash="10_Tutorials_LatentGrowthCurveModels_cache/html/unnamed-chunk-5_1ada3bdee7e9d313391d87e1a8f385d3">
+<div class="cell" data-hash="10_Tutorials_LatentGrowthCurveModels_cache/html/unnamed-chunk-5_ff97907868064967194372427a75cfb9">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Fit the model</span></span>
-<span id="cb6-2"><a href="#cb6-2"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">data =</span> data_wide, <span class="at">missing =</span> <span class="st">"FIML"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Fit the model</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">data =</span> data, <span class="at">missing =</span> <span class="st">"FIML"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
 <section id="model-summary" class="level4">
 <h4 class="anchored" data-anchor-id="model-summary">Model Summary</h4>
-<div class="cell" data-hash="10_Tutorials_LatentGrowthCurveModels_cache/html/unnamed-chunk-6_e128bd9ea1aed3ac0a7b518481a0fdfe">
+<div class="cell" data-hash="10_Tutorials_LatentGrowthCurveModels_cache/html/unnamed-chunk-6_c4fe74b2e187f3ea5285375dd8650ca7">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">summary</span>(fit, <span class="at">fit.measures=</span><span class="cn">TRUE</span>, <span class="at">standardized=</span><span class="cn">TRUE</span>, <span class="at">rsquare=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">summary</span>(fit, <span class="at">fit.measures=</span><span class="cn">TRUE</span>, <span class="at">standardized=</span><span class="cn">TRUE</span>, <span class="at">rsquare=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>lavaan 0.6.16 ended normally after 31 iterations
@@ -768,13 +661,49 @@ R-Square:
     Job_Stsfctn_T4   -0.089</code></pre>
 </div>
 </div>
+<div class="cell" data-hash="10_Tutorials_LatentGrowthCurveModels_cache/html/unnamed-chunk-7_cd716446d53c547396d19b04ee98bd9f">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="do">## Creating variable (names) from output to be used for inline text</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="fu">library</span>(broom)</span>
+<span id="cb8-4"><a href="#cb8-4"></a>tidyfit <span class="ot">&lt;-</span> <span class="fu">tidy</span>(fit)</span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="co">#augmentfit &lt;- augment(fit)</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a>glancefit <span class="ot">&lt;-</span> <span class="fu">glance</span>(fit)</span>
+<span id="cb8-7"><a href="#cb8-7"></a></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="co"># Extract column data</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a>p_values <span class="ot">&lt;-</span> tidyfit<span class="sc">$</span>p.value</span>
+<span id="cb8-10"><a href="#cb8-10"></a>estimate <span class="ot">&lt;-</span> tidyfit<span class="sc">$</span>estimate</span>
+<span id="cb8-11"><a href="#cb8-11"></a></span>
+<span id="cb8-12"><a href="#cb8-12"></a><span class="co"># Extract p-values for specific terms into tibbles</span></span>
+<span id="cb8-13"><a href="#cb8-13"></a>intercept_variance_pvalue <span class="ot">&lt;-</span> <span class="fu">round</span>(tidyfit[tidyfit<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"i ~~ i"</span>, <span class="st">"p.value"</span>], <span class="dv">3</span>)</span>
+<span id="cb8-14"><a href="#cb8-14"></a>slope_variance_pvalue <span class="ot">&lt;-</span> <span class="fu">round</span>(tidyfit[tidyfit<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"s ~~ s"</span>, <span class="st">"p.value"</span>], <span class="dv">3</span>)</span>
+<span id="cb8-15"><a href="#cb8-15"></a>intercept_estimate <span class="ot">&lt;-</span> <span class="fu">round</span>(tidyfit[tidyfit<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"i ~~ i"</span>, <span class="st">"estimate"</span>], <span class="dv">3</span>)</span>
+<span id="cb8-16"><a href="#cb8-16"></a>slope_estimate <span class="ot">&lt;-</span> <span class="fu">round</span>(tidyfit[tidyfit<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"s ~~ s"</span>, <span class="st">"estimate"</span>], <span class="dv">3</span>)</span>
+<span id="cb8-17"><a href="#cb8-17"></a></span>
+<span id="cb8-18"><a href="#cb8-18"></a>intercept_slope_covariance <span class="ot">&lt;-</span> <span class="fu">round</span>(tidyfit[tidyfit<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"i ~~ s"</span>, <span class="st">"estimate"</span>], <span class="dv">3</span>)</span>
+<span id="cb8-19"><a href="#cb8-19"></a></span>
+<span id="cb8-20"><a href="#cb8-20"></a>rmsea <span class="ot">&lt;-</span> glancefit<span class="sc">$</span>rmsea</span>
+<span id="cb8-21"><a href="#cb8-21"></a>bic <span class="ot">&lt;-</span> glancefit<span class="sc">$</span>BIC</span>
+<span id="cb8-22"><a href="#cb8-22"></a></span>
+<span id="cb8-23"><a href="#cb8-23"></a><span class="co"># Extract values from the tibble for inline text</span></span>
+<span id="cb8-24"><a href="#cb8-24"></a>var_i_pval <span class="ot">&lt;-</span> intercept_variance_pvalue<span class="sc">$</span>p.value</span>
+<span id="cb8-25"><a href="#cb8-25"></a>var_s_pval <span class="ot">&lt;-</span> slope_variance_pvalue<span class="sc">$</span>p.value</span>
+<span id="cb8-26"><a href="#cb8-26"></a>int_est <span class="ot">&lt;-</span> intercept_estimate<span class="sc">$</span>estimate</span>
+<span id="cb8-27"><a href="#cb8-27"></a>slp_est <span class="ot">&lt;-</span> slope_estimate<span class="sc">$</span>estimate </span>
+<span id="cb8-28"><a href="#cb8-28"></a>is_cov <span class="ot">&lt;-</span> intercept_slope_covariance</span>
+<span id="cb8-29"><a href="#cb8-29"></a></span>
+<span id="cb8-30"><a href="#cb8-30"></a><span class="co">#model_list &lt;- split(tidyfit, tidyfit$term)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
 </section>
 </section>
 <section id="interpreting-the-results" class="level3">
 <h3 class="anchored" data-anchor-id="interpreting-the-results">Interpreting the Results</h3>
-<p>A Latent Growth Curve Model (LGCM) was used to understand the trajectory of scores over time. This model separates the growth into two latent factors: - <strong>Intercept (i)</strong>: Represents the initial status or starting point. - <strong>Slope (s)</strong>: Represents the rate of change over time.</p>
-<p>From the <code>sem</code> output, we can interpret: - The average starting point (intercept) for the scores: <strong>r round(fit@coef[“mu_i”], 3)</strong> - The average rate of change (slope) for the scores: <strong>r round(fit@coef[“mu_s”], 3)</strong></p>
-<p>The variance in the intercept and slope, <strong>r round(fit@coef[“var_i”], 3)</strong> and <strong>r round(fit@coef[“var_s”], 3)</strong> respectively, gives us information on individual differences in the initial status and rate of change. Additionally, the covariance between the intercept and slope, <strong>r round(fit@coef[“cov_is”], 3)</strong>, informs us about the relationship between the initial status and the rate of change.</p>
+<p>A Latent Growth Curve Model (LGCM) was used to understand the trajectory of scores over time. This model separates the growth into two latent factors: - <code>intercept</code>: Represents the initial status or starting point. - <code>slope</code>: Represents the rate of change over time.</p>
+<p>From the <code>sem</code> output, we can interpret: - The average starting point (intercept) for the scores: -0.168 - The average rate of change (slope) for the scores: -0.06</p>
+<p>The variance in the intercept and slope, 0.227 and 0.11 respectively, gives us information on individual differences in the initial status and rate of change. Additionally, the covariance between the intercept and slope 0.085, informs us about the relationship between the initial status and the rate of change.</p>
+<p>The RMSEA of the model is 0. The BIC of the model is 7279.011.</p>
 </section>
 </section>
 <section id="conclusion" class="level2">
@@ -1209,6 +1138,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./11_Tutorials_MultivariateLatentGrowthCurveModels.qmd" class="pagination-link">
+        <span class="nav-page-text"></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="sourceCode" id="cb9" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1"></a><span class="co">---</span></span>
@@ -1217,7 +1149,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb9-4"><a href="#cb9-4"></a><span class="co">---</span></span>
 <span id="cb9-5"><a href="#cb9-5"></a></span>
 <span id="cb9-6"><a href="#cb9-6"></a><span class="fu">## Overview</span></span>
-<span id="cb9-7"><a href="#cb9-7"></a>Latent growth curve models (LGCMs) are an advanced statistical approach that allows researchers to explore the trajectory of growth, decline, or stability over time within individuals. LGCMs have become indispensable in disciplines such as psychology, public health, and developmental research, owing to their capability to model individual differences in change trajectories and capture the underlying structure of growth. These models are an enhancement of structural equation modeling, designed specifically for longitudinal data, where the essence of change across multiple time points is of interest. LGCMs offer a flexible framework that can model both the average trajectory in the population (fixed effects) and individual deviations from this average (random effects). By representing time as a latent construct, these models capture the nuances of individual change while accounting for measurement error. This combination of capturing overarching growth patterns while also emphasizing individual differences is the hallmark of the "latent" growth curve models, making them a vital tool for understanding longitudinal patterns.</span>
+<span id="cb9-7"><a href="#cb9-7"></a>Latent growth curve models (LGCMs) are a statistical approach that allows researchers to explore the trajectory of growth, decline, or stability over time within individuals. LGCMs allow for modeling individual differences in change trajectories and capturing the underlying structure of growth. These models are a form of structural equation modeling, designed specifically for longitudinal data, where characterizing change across multiple time points is of interest. LGCMs offer a flexible framework that can model both the average trajectory in the population (fixed effects) and individual deviations from this average (random effects). By representing time as a latent construct, these models capture overarching growth patterns while also emphasizing individual differences in patterns of growth.</span>
 <span id="cb9-8"><a href="#cb9-8"></a></span>
 <span id="cb9-9"><a href="#cb9-9"></a><span class="al">![Latent Growth Curve Model 1_Tutorial](./figures/lgcm.png)</span></span>
 <span id="cb9-10"><a href="#cb9-10"></a></span>
@@ -1263,7 +1195,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb9-52"><a href="#cb9-52"></a>correlated_data <span class="ot">&lt;-</span> random_data <span class="sc">%*%</span> cholesky</span>
 <span id="cb9-53"><a href="#cb9-53"></a></span>
 <span id="cb9-54"><a href="#cb9-54"></a><span class="co"># Converting the generated data into a structured data frame in wide format</span></span>
-<span id="cb9-55"><a href="#cb9-55"></a>data_wide <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb9-55"><a href="#cb9-55"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
 <span id="cb9-56"><a href="#cb9-56"></a>  <span class="at">Individual =</span> <span class="dv">1</span><span class="sc">:</span>n,</span>
 <span id="cb9-57"><a href="#cb9-57"></a>  <span class="at">Job_Satisfaction_T1 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
 <span id="cb9-58"><a href="#cb9-58"></a>  <span class="at">Job_Satisfaction_T2 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
@@ -1275,7 +1207,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb9-64"><a href="#cb9-64"></a></span>
 <span id="cb9-65"><a href="#cb9-65"></a><span class="fu">### View Dataset</span></span>
 <span id="cb9-68"><a href="#cb9-68"></a><span class="in">```{r}</span></span>
-<span id="cb9-69"><a href="#cb9-69"></a><span class="fu">head</span>(data_wide)</span>
+<span id="cb9-69"><a href="#cb9-69"></a><span class="fu">head</span>(data)</span>
 <span id="cb9-70"><a href="#cb9-70"></a><span class="in">```</span></span>
 <span id="cb9-71"><a href="#cb9-71"></a></span>
 <span id="cb9-72"><a href="#cb9-72"></a><span class="fu">### Model Specification and Estimation</span></span>
@@ -1307,42 +1239,75 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb9-102"><a href="#cb9-102"></a><span class="st">    i ~~ cov_is * s</span></span>
 <span id="cb9-103"><a href="#cb9-103"></a><span class="st">'</span></span>
 <span id="cb9-104"><a href="#cb9-104"></a></span>
-<span id="cb9-105"><a href="#cb9-105"></a><span class="co"># Fit the model</span></span>
-<span id="cb9-106"><a href="#cb9-106"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">data =</span> data_wide)</span>
-<span id="cb9-107"><a href="#cb9-107"></a></span>
-<span id="cb9-108"><a href="#cb9-108"></a><span class="co"># Summary of the model</span></span>
-<span id="cb9-109"><a href="#cb9-109"></a><span class="fu">summary</span>(fit, <span class="at">fit.measures=</span><span class="cn">TRUE</span>, <span class="at">standardized=</span><span class="cn">TRUE</span>, <span class="at">rsquare=</span><span class="cn">TRUE</span>)</span>
-<span id="cb9-110"><a href="#cb9-110"></a></span>
-<span id="cb9-111"><a href="#cb9-111"></a></span>
-<span id="cb9-112"><a href="#cb9-112"></a><span class="in">```</span></span>
+<span id="cb9-105"><a href="#cb9-105"></a><span class="in">```</span></span>
+<span id="cb9-106"><a href="#cb9-106"></a></span>
+<span id="cb9-107"><a href="#cb9-107"></a><span class="fu">#### Fit Model</span></span>
+<span id="cb9-110"><a href="#cb9-110"></a><span class="in">```{r}</span></span>
+<span id="cb9-111"><a href="#cb9-111"></a><span class="co"># Fit the model</span></span>
+<span id="cb9-112"><a href="#cb9-112"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">data =</span> data, <span class="at">missing =</span> <span class="st">"FIML"</span>)</span>
 <span id="cb9-113"><a href="#cb9-113"></a></span>
-<span id="cb9-114"><a href="#cb9-114"></a><span class="fu">#### Fit Model</span></span>
-<span id="cb9-117"><a href="#cb9-117"></a><span class="in">```{r}</span></span>
-<span id="cb9-118"><a href="#cb9-118"></a><span class="co"># Fit the model</span></span>
-<span id="cb9-119"><a href="#cb9-119"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(model, <span class="at">data =</span> data_wide, <span class="at">missing =</span> <span class="st">"FIML"</span>)</span>
-<span id="cb9-120"><a href="#cb9-120"></a></span>
-<span id="cb9-121"><a href="#cb9-121"></a><span class="in">```</span></span>
-<span id="cb9-122"><a href="#cb9-122"></a></span>
-<span id="cb9-123"><a href="#cb9-123"></a><span class="fu">#### Model Summary</span></span>
+<span id="cb9-114"><a href="#cb9-114"></a><span class="in">```</span></span>
+<span id="cb9-115"><a href="#cb9-115"></a></span>
+<span id="cb9-116"><a href="#cb9-116"></a><span class="fu">#### Model Summary</span></span>
+<span id="cb9-119"><a href="#cb9-119"></a><span class="in">```{r}</span></span>
+<span id="cb9-120"><a href="#cb9-120"></a><span class="fu">summary</span>(fit, <span class="at">fit.measures=</span><span class="cn">TRUE</span>, <span class="at">standardized=</span><span class="cn">TRUE</span>, <span class="at">rsquare=</span><span class="cn">TRUE</span>)</span>
+<span id="cb9-121"><a href="#cb9-121"></a></span>
+<span id="cb9-122"><a href="#cb9-122"></a><span class="in">```</span></span>
+<span id="cb9-123"><a href="#cb9-123"></a></span>
 <span id="cb9-126"><a href="#cb9-126"></a><span class="in">```{r}</span></span>
-<span id="cb9-127"><a href="#cb9-127"></a><span class="fu">summary</span>(fit, <span class="at">fit.measures=</span><span class="cn">TRUE</span>, <span class="at">standardized=</span><span class="cn">TRUE</span>, <span class="at">rsquare=</span><span class="cn">TRUE</span>)</span>
-<span id="cb9-128"><a href="#cb9-128"></a><span class="in">```</span></span>
-<span id="cb9-129"><a href="#cb9-129"></a></span>
-<span id="cb9-130"><a href="#cb9-130"></a><span class="fu">### Interpreting the Results</span></span>
-<span id="cb9-131"><a href="#cb9-131"></a>A Latent Growth Curve Model (LGCM) was used to understand the trajectory of scores over time. This model separates the growth into two latent factors:</span>
-<span id="cb9-132"><a href="#cb9-132"></a><span class="ss">- </span>**Intercept (i)**: Represents the initial status or starting point.</span>
-<span id="cb9-133"><a href="#cb9-133"></a><span class="ss">- </span>**Slope (s)**: Represents the rate of change over time.</span>
-<span id="cb9-134"><a href="#cb9-134"></a></span>
-<span id="cb9-135"><a href="#cb9-135"></a>From the <span class="in">`sem`</span> output, we can interpret:</span>
-<span id="cb9-136"><a href="#cb9-136"></a><span class="ss">- </span>The average starting point (intercept) for the scores: **r round(fit@coef["mu_i"], 3)**</span>
-<span id="cb9-137"><a href="#cb9-137"></a><span class="ss">- </span>The average rate of change (slope) for the scores: **r round(fit@coef["mu_s"], 3)**</span>
-<span id="cb9-138"><a href="#cb9-138"></a></span>
-<span id="cb9-139"><a href="#cb9-139"></a>The variance in the intercept and slope, **r round(fit@coef["var_i"], 3)** and **r round(fit@coef["var_s"], 3)** respectively, gives us information on individual differences in the initial status and rate of change. Additionally, the covariance between the intercept and slope, **r round(fit@coef["cov_is"], 3)**, informs us about the relationship between the initial status and the rate of change.</span>
-<span id="cb9-140"><a href="#cb9-140"></a></span>
-<span id="cb9-141"><a href="#cb9-141"></a><span class="fu">## Conclusion</span></span>
-<span id="cb9-142"><a href="#cb9-142"></a>The LGCM provides a comprehensive understanding of the trajectory of scores over time. By examining the estimated intercept and slope, we can determine the general trend of scores across time points. Additionally, the variance and covariance parameters provide insights into individual differences in growth trajectories.</span>
+<span id="cb9-127"><a href="#cb9-127"></a><span class="do">## Creating variable (names) from output to be used for inline text</span></span>
+<span id="cb9-128"><a href="#cb9-128"></a></span>
+<span id="cb9-129"><a href="#cb9-129"></a><span class="fu">library</span>(broom)</span>
+<span id="cb9-130"><a href="#cb9-130"></a>tidyfit <span class="ot">&lt;-</span> <span class="fu">tidy</span>(fit)</span>
+<span id="cb9-131"><a href="#cb9-131"></a><span class="co">#augmentfit &lt;- augment(fit)</span></span>
+<span id="cb9-132"><a href="#cb9-132"></a>glancefit <span class="ot">&lt;-</span> <span class="fu">glance</span>(fit)</span>
+<span id="cb9-133"><a href="#cb9-133"></a></span>
+<span id="cb9-134"><a href="#cb9-134"></a><span class="co"># Extract column data</span></span>
+<span id="cb9-135"><a href="#cb9-135"></a>p_values <span class="ot">&lt;-</span> tidyfit<span class="sc">$</span>p.value</span>
+<span id="cb9-136"><a href="#cb9-136"></a>estimate <span class="ot">&lt;-</span> tidyfit<span class="sc">$</span>estimate</span>
+<span id="cb9-137"><a href="#cb9-137"></a></span>
+<span id="cb9-138"><a href="#cb9-138"></a><span class="co"># Extract p-values for specific terms into tibbles</span></span>
+<span id="cb9-139"><a href="#cb9-139"></a>intercept_variance_pvalue <span class="ot">&lt;-</span> <span class="fu">round</span>(tidyfit[tidyfit<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"i ~~ i"</span>, <span class="st">"p.value"</span>], <span class="dv">3</span>)</span>
+<span id="cb9-140"><a href="#cb9-140"></a>slope_variance_pvalue <span class="ot">&lt;-</span> <span class="fu">round</span>(tidyfit[tidyfit<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"s ~~ s"</span>, <span class="st">"p.value"</span>], <span class="dv">3</span>)</span>
+<span id="cb9-141"><a href="#cb9-141"></a>intercept_estimate <span class="ot">&lt;-</span> <span class="fu">round</span>(tidyfit[tidyfit<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"i ~~ i"</span>, <span class="st">"estimate"</span>], <span class="dv">3</span>)</span>
+<span id="cb9-142"><a href="#cb9-142"></a>slope_estimate <span class="ot">&lt;-</span> <span class="fu">round</span>(tidyfit[tidyfit<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"s ~~ s"</span>, <span class="st">"estimate"</span>], <span class="dv">3</span>)</span>
 <span id="cb9-143"><a href="#cb9-143"></a></span>
-<span id="cb9-144"><a href="#cb9-144"></a></span>
+<span id="cb9-144"><a href="#cb9-144"></a>intercept_slope_covariance <span class="ot">&lt;-</span> <span class="fu">round</span>(tidyfit[tidyfit<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"i ~~ s"</span>, <span class="st">"estimate"</span>], <span class="dv">3</span>)</span>
+<span id="cb9-145"><a href="#cb9-145"></a></span>
+<span id="cb9-146"><a href="#cb9-146"></a>rmsea <span class="ot">&lt;-</span> glancefit<span class="sc">$</span>rmsea</span>
+<span id="cb9-147"><a href="#cb9-147"></a>bic <span class="ot">&lt;-</span> glancefit<span class="sc">$</span>BIC</span>
+<span id="cb9-148"><a href="#cb9-148"></a></span>
+<span id="cb9-149"><a href="#cb9-149"></a><span class="co"># Extract values from the tibble for inline text</span></span>
+<span id="cb9-150"><a href="#cb9-150"></a>var_i_pval <span class="ot">&lt;-</span> intercept_variance_pvalue<span class="sc">$</span>p.value</span>
+<span id="cb9-151"><a href="#cb9-151"></a>var_s_pval <span class="ot">&lt;-</span> slope_variance_pvalue<span class="sc">$</span>p.value</span>
+<span id="cb9-152"><a href="#cb9-152"></a>int_est <span class="ot">&lt;-</span> intercept_estimate<span class="sc">$</span>estimate</span>
+<span id="cb9-153"><a href="#cb9-153"></a>slp_est <span class="ot">&lt;-</span> slope_estimate<span class="sc">$</span>estimate </span>
+<span id="cb9-154"><a href="#cb9-154"></a>is_cov <span class="ot">&lt;-</span> intercept_slope_covariance</span>
+<span id="cb9-155"><a href="#cb9-155"></a></span>
+<span id="cb9-156"><a href="#cb9-156"></a><span class="co">#model_list &lt;- split(tidyfit, tidyfit$term)</span></span>
+<span id="cb9-157"><a href="#cb9-157"></a></span>
+<span id="cb9-158"><a href="#cb9-158"></a><span class="in">```</span></span>
+<span id="cb9-159"><a href="#cb9-159"></a></span>
+<span id="cb9-160"><a href="#cb9-160"></a><span class="fu">### Interpreting the Results</span></span>
+<span id="cb9-161"><a href="#cb9-161"></a>A Latent Growth Curve Model (LGCM) was used to understand the trajectory of scores over time. This model separates the growth into two latent factors:</span>
+<span id="cb9-162"><a href="#cb9-162"></a><span class="ss">- </span><span class="in">`intercept`</span>: Represents the initial status or starting point.</span>
+<span id="cb9-163"><a href="#cb9-163"></a><span class="ss">- </span><span class="in">`slope`</span>: Represents the rate of change over time.</span>
+<span id="cb9-164"><a href="#cb9-164"></a></span>
+<span id="cb9-165"><a href="#cb9-165"></a>From the <span class="in">`sem`</span> output, we can interpret:</span>
+<span id="cb9-166"><a href="#cb9-166"></a><span class="ss">- </span>The average starting point (intercept) for the scores: <span class="in">`r int_est`</span></span>
+<span id="cb9-167"><a href="#cb9-167"></a><span class="ss">- </span>The average rate of change (slope) for the scores: <span class="in">`r slp_est`</span></span>
+<span id="cb9-168"><a href="#cb9-168"></a></span>
+<span id="cb9-169"><a href="#cb9-169"></a>The variance in the intercept and slope, <span class="in">`r var_i_pval`</span> and <span class="in">`r var_s_pval`</span> respectively, gives us information on individual differences in the initial status and rate of change. Additionally, the covariance between the intercept and slope <span class="in">`r (is_cov$estimate)`</span>, informs us about the relationship between the initial status and the rate of change.</span>
+<span id="cb9-170"><a href="#cb9-170"></a></span>
+<span id="cb9-171"><a href="#cb9-171"></a>The RMSEA of the model is <span class="in">`r rmsea`</span>.</span>
+<span id="cb9-172"><a href="#cb9-172"></a>The BIC of the model is <span class="in">`r round(bic, 3)`</span>.</span>
+<span id="cb9-173"><a href="#cb9-173"></a></span>
+<span id="cb9-174"><a href="#cb9-174"></a></span>
+<span id="cb9-175"><a href="#cb9-175"></a></span>
+<span id="cb9-176"><a href="#cb9-176"></a><span class="fu">## Conclusion</span></span>
+<span id="cb9-177"><a href="#cb9-177"></a>The LGCM provides a comprehensive understanding of the trajectory of scores over time. By examining the estimated intercept and slope, we can determine the general trend of scores across time points. Additionally, the variance and covariance parameters provide insights into individual differences in growth trajectories.</span>
+<span id="cb9-178"><a href="#cb9-178"></a></span>
+<span id="cb9-179"><a href="#cb9-179"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

@@ -111,53 +111,41 @@ summary(fit, fit.measures=TRUE, standardized=TRUE, rsquare=TRUE)
 ```
 
 ```{r}
-
 ## Creating variable (names) from output to be used for inline text
 
-library(broom)
-tidyfit <- tidy(fit)
-#augmentfit <- augment(fit)
-glancefit <- glance(fit)
+# Extract parameter estimates
+param_estimates <- parameterEstimates(fit)
 
-# Extract column data
-p_values <- tidyfit$p.value
-estimate <- tidyfit$estimate
+# Extract the intercept
+intercept_value <- param_estimates$est[param_estimates$label == "(Intercept)"]
 
-# Extract p-values for specific terms into tibbles
-intercept_variance_pvalue <- round(tidyfit[tidyfit$term == "i ~~ i", "p.value"], 3)
-slope_variance_pvalue <- round(tidyfit[tidyfit$term == "s ~~ s", "p.value"], 3)
-intercept_estimate <- round(tidyfit[tidyfit$term == "i ~~ i", "estimate"], 3)
-slope_estimate <- round(tidyfit[tidyfit$term == "s ~~ s", "estimate"], 3)
-
-intercept_slope_covariance <- round(tidyfit[tidyfit$term == "i ~~ s", "estimate"], 3)
-
-rmsea <- glancefit$rmsea
-bic <- glancefit$BIC
-
-# Extract values from the tibble for inline text
-var_i_pval <- intercept_variance_pvalue$p.value
-var_s_pval <- slope_variance_pvalue$p.value
-int_est <- intercept_estimate$estimate
-slp_est <- slope_estimate$estimate 
-is_cov <- intercept_slope_covariance
-
-#model_list <- split(tidyfit, tidyfit$term)
+# Extract the slope
+slope_value <- param_estimates$est[param_estimates$label == "(Slope)"]
 
 ```
 
+`r parameterEstimates(fit)`
+
+
+The estimate for the relationship between the slope and `Job_Satisfaction_T2` is `r parameterEstimates(fit)$est[parameterEstimates(fit)$label == "a2"]`.
+
+The RMSEA of the model is `r fitMeasures(fit)["rmsea"]`.
+
+`r param_estimates`
+
+The estimate for the relationship between the slope and `Job_Satisfaction_T2` is `r param_estimates$est[param_estimates$label == "a2"]`.
+
+
 ### Interpreting the Results
 A Latent Growth Curve Model (LGCM) was used to understand the trajectory of scores over time. This model separates the growth into two latent factors:
-- `intercept`: Represents the initial status or starting point.
-- `slope`: Represents the rate of change over time.
+- `r intercept_value`: Represents the initial status or starting point.
+- `r slope_value`: Represents the rate of change over time.
 
 From the `sem` output, we can interpret:
-- The average starting point (intercept) for the scores: `r int_est`
-- The average rate of change (slope) for the scores: `r slp_est`
+- The average starting point (intercept) for the scores: **r round(coef["mu_i"], 3)**
+- The average rate of change (slope) for the scores: **r round(fit@coef["mu_s"], 3)**
 
-The variance in the intercept and slope, `r var_i_pval` and `r var_s_pval` respectively, gives us information on individual differences in the initial status and rate of change. Additionally, the covariance between the intercept and slope `r (is_cov$estimate)`, informs us about the relationship between the initial status and the rate of change.
-
-The RMSEA of the model is `r rmsea`.
-The BIC of the model is `r round(bic, 3)`.
+The variance in the intercept and slope, **r round(fit@coef["var_i"], 3)** and **r round(fit@coef["var_s"], 3)** respectively, gives us information on individual differences in the initial status and rate of change. Additionally, the covariance between the intercept and slope, **r round(fit@coef["cov_is"], 3)**, informs us about the relationship between the initial status and the rate of change.
 
 ## Conclusion
 The LGCM provides a comprehensive understanding of the trajectory of scores over time. By examining the estimated intercept and slope, we can determine the general trend of scores across time points. Additionally, the variance and covariance parameters provide insights into individual differences in growth trajectories.
