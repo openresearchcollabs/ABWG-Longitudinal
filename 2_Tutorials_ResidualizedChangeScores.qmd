@@ -78,8 +78,29 @@ summary(model)
 print(model)
 ```
 
+```{r}
+#| echo: false
+
+## Creating variable (names) from output to be used for inline text
+
+library(broom)
+tidyfit <- tidy(model)
+tidyaugment <- augment(model)
+tidyglance <- glance(model)
+
+
+Life_Satisfaction_T1_estimate <- round(tidyfit[tidyfit$term == "Life_Satisfaction_T1", "estimate"], 3)
+
+Life_Satisfaction_T1_pvalue <- round(tidyfit[tidyfit$term == "Life_Satisfaction_T1", "p.value"], 3)
+
+# Extract values from the tibble for inline text
+Life_Satisfaction_T1_estimate <- Life_Satisfaction_T1_estimate$estimate
+Life_Satisfaction_T1_pvalue <- Life_Satisfaction_T1_pvalue$p.value
+
+```
+
 ### Interpreting the Results
-The residualized change score model was conducted to examine the effect of `Life_Satisfaction_T1` on `Job_Satisfaction_T2` while controlling for `Job_Satisfaction_T1`. The coefficient for `Life_Satisfaction_T1` is `r round(coef(model)[2], 3)`, which represents the adjusted change in `Job_Satisfaction_T2` for each one-unit increase in `Life_Satisfaction_T1`, keeping `Job_Satisfaction_T1` constant. The associated p-value for this effect is p=`r round(summary(model)$coefficients[2,4], 3)`. If this p-value is less than the common significance level of 0.05, it suggests that the effect of `Life_Satisfaction_T1` on `Job_Satisfaction_T2` is statistically significant after accounting for initial levels of `Job_Satisfaction_T1`.
+The residualized change score model was conducted to examine the effect of `Life_Satisfaction_T1` on `Job_Satisfaction_T2` while controlling for `Job_Satisfaction_T1`. The coefficient for `Life_Satisfaction_T1` is `r Life_Satisfaction_T1_estimate`, which represents the adjusted change in `Job_Satisfaction_T2` for each one-unit increase in `Life_Satisfaction_T1`, keeping `Job_Satisfaction_T1` constant. The associated p-value for this effect is p=`r Life_Satisfaction_T1_pvalue`. If this p-value is less than the common significance level of 0.05, it suggests that the effect of `Life_Satisfaction_T1` on `Job_Satisfaction_T2` is statistically significant after accounting for initial levels of `Job_Satisfaction_T1`.
 
 ## Conclusion
 The residualized change score model provides insights into the relationship between `Life_Satisfaction_T1` and the change in `Job_Satisfaction` from T1 to T2, controlling for initial levels of job satisfaction. If the p-value is less than 0.05, we can conclude that there is a statistically significant relationship between initial life satisfaction and the subsequent change in job satisfaction. Otherwise, we do not have enough evidence to assert such a relationship.

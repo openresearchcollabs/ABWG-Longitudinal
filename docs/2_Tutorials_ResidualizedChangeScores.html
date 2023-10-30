@@ -65,19 +65,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./3_Tutorials_LinearMixedModels.html" rel="next">
-<link href="./1_Tutorials_DifferenceScores.html" rel="prev">
+<link href="./subfoldertest/1_Tutorials_DifferenceScores.qmd" rel="prev">
 <link href="././figures/lights.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -106,6 +104,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="Longitudinal Analysis - Residualized Change Scores">
+<meta property="og:description" content="">
+<meta property="og:image" content="https://swhawes.github.io/abcd-biostats-longitudinal/figures/Residualized Change Score.png">
+<meta property="og:site-name" content="Longitudinal Analysis">
+<meta property="og:image:height" content="306">
+<meta property="og:image:width" content="726">
 <meta name="twitter:title" content="Longitudinal Analysis - Residualized Change Scores">
 <meta name="twitter:description" content="">
 <meta name="twitter:image" content="https://swhawes.github.io/abcd-biostats-longitudinal/figures/Residualized Change Score.png">
@@ -156,7 +160,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Reference</span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools ms-auto tools-wide">
+            <div class="quarto-navbar-tools ms-auto">
     <a href="https://twitter.com" rel="" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
     <div class="dropdown">
       <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
@@ -173,7 +177,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           </li>
       </ul>
     </div>
-  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
           </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
@@ -183,7 +186,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./1_Tutorials_DifferenceScores.html">Traditional Linear Models</a></li><li class="breadcrumb-item"><a href="./2_Tutorials_ResidualizedChangeScores.html">Residualized Change Scores</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./subfoldertest/1_Tutorials_DifferenceScores.qmd">Traditional Linear Models</a></li><li class="breadcrumb-item"><a href="./2_Tutorials_ResidualizedChangeScores.html">Residualized Change Scores</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -229,7 +232,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./tutorials.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Tutorials: A Brief Overview</span></a>
+ <span class="menu-text"><i class="bi bi-book"></i> What are Tutorials?</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -241,12 +244,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./1_Tutorials_DifferenceScores.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Difference Scores</span></a>
-  </div>
-</li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./2_Tutorials_ResidualizedChangeScores.html" class="sidebar-item-text sidebar-link active">
@@ -591,121 +588,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
-  const disableStylesheet = (stylesheets) => {
-    for (let i=0; i < stylesheets.length; i++) {
-      const stylesheet = stylesheets[i];
-      stylesheet.rel = 'prefetch';
-    }
-  }
-  const enableStylesheet = (stylesheets) => {
-    for (let i=0; i < stylesheets.length; i++) {
-      const stylesheet = stylesheets[i];
-      stylesheet.rel = 'stylesheet';
-    }
-  }
-  const manageTransitions = (selector, allowTransitions) => {
-    const els = window.document.querySelectorAll(selector);
-    for (let i=0; i < els.length; i++) {
-      const el = els[i];
-      if (allowTransitions) {
-        el.classList.remove('notransition');
-      } else {
-        el.classList.add('notransition');
-      }
-    }
-  }
-  const toggleColorMode = (alternate) => {
-    // Switch the stylesheets
-    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
-    manageTransitions('#quarto-margin-sidebar .nav-link', false);
-    if (alternate) {
-      enableStylesheet(alternateStylesheets);
-      for (const sheetNode of alternateStylesheets) {
-        if (sheetNode.id === "quarto-bootstrap") {
-          toggleBodyColorMode(sheetNode);
-        }
-      }
-    } else {
-      disableStylesheet(alternateStylesheets);
-      toggleBodyColorPrimary();
-    }
-    manageTransitions('#quarto-margin-sidebar .nav-link', true);
-    // Switch the toggles
-    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
-    for (let i=0; i < toggles.length; i++) {
-      const toggle = toggles[i];
-      if (toggle) {
-        if (alternate) {
-          toggle.classList.add("alternate");     
-        } else {
-          toggle.classList.remove("alternate");
-        }
-      }
-    }
-    // Hack to workaround the fact that safari doesn't
-    // properly recolor the scrollbar when toggling (#1455)
-    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
-      manageTransitions("body", false);
-      window.scrollTo(0, 1);
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-        manageTransitions("body", true);
-      }, 40);  
-    }
-  }
-  const isFileUrl = () => { 
-    return window.location.protocol === 'file:';
-  }
-  const hasAlternateSentinel = () => {  
-    let styleSentinel = getColorSchemeSentinel();
-    if (styleSentinel !== null) {
-      return styleSentinel === "alternate";
-    } else {
-      return false;
-    }
-  }
-  const setStyleSentinel = (alternate) => {
-    const value = alternate ? "alternate" : "default";
-    if (!isFileUrl()) {
-      window.localStorage.setItem("quarto-color-scheme", value);
-    } else {
-      localAlternateSentinel = value;
-    }
-  }
-  const getColorSchemeSentinel = () => {
-    if (!isFileUrl()) {
-      const storageValue = window.localStorage.getItem("quarto-color-scheme");
-      return storageValue != null ? storageValue : localAlternateSentinel;
-    } else {
-      return localAlternateSentinel;
-    }
-  }
-  let localAlternateSentinel = 'default';
-  // Dark / light mode switch
-  window.quartoToggleColorScheme = () => {
-    // Read the current dark / light value 
-    let toAlternate = !hasAlternateSentinel();
-    toggleColorMode(toAlternate);
-    setStyleSentinel(toAlternate);
-  };
-  // Ensure there is a toggle, if there isn't float one in the top right
-  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
-    const a = window.document.createElement('a');
-    a.classList.add('top-right');
-    a.classList.add('quarto-color-scheme-toggle');
-    a.href = "";
-    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
-    const i = window.document.createElement("i");
-    i.classList.add('bi');
-    a.appendChild(i);
-    window.document.body.appendChild(a);
-  }
-  // Switch to dark mode if need be
-  if (hasAlternateSentinel()) {
-    toggleColorMode(true);
-  } else {
-    toggleColorMode(false);
-  }
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -988,8 +870,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./1_Tutorials_DifferenceScores.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Difference Scores</span>
+      <a href="./subfoldertest/1_Tutorials_DifferenceScores.qmd" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
@@ -1078,13 +960,34 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb8-86"><a href="#cb8-86"></a><span class="fu">print</span>(model)</span>
 <span id="cb8-87"><a href="#cb8-87"></a><span class="in">```</span></span>
 <span id="cb8-88"><a href="#cb8-88"></a></span>
-<span id="cb8-89"><a href="#cb8-89"></a><span class="fu">### Interpreting the Results</span></span>
-<span id="cb8-90"><a href="#cb8-90"></a>The residualized change score model was conducted to examine the effect of <span class="in">`Life_Satisfaction_T1`</span> on <span class="in">`Job_Satisfaction_T2`</span> while controlling for <span class="in">`Job_Satisfaction_T1`</span>. The coefficient for <span class="in">`Life_Satisfaction_T1`</span> is <span class="in">`r round(coef(model)[2], 3)`</span>, which represents the adjusted change in <span class="in">`Job_Satisfaction_T2`</span> for each one-unit increase in <span class="in">`Life_Satisfaction_T1`</span>, keeping <span class="in">`Job_Satisfaction_T1`</span> constant. The associated p-value for this effect is p=<span class="in">`r round(summary(model)$coefficients[2,4], 3)`</span>. If this p-value is less than the common significance level of 0.05, it suggests that the effect of <span class="in">`Life_Satisfaction_T1`</span> on <span class="in">`Job_Satisfaction_T2`</span> is statistically significant after accounting for initial levels of <span class="in">`Job_Satisfaction_T1`</span>.</span>
-<span id="cb8-91"><a href="#cb8-91"></a></span>
-<span id="cb8-92"><a href="#cb8-92"></a><span class="fu">## Conclusion</span></span>
-<span id="cb8-93"><a href="#cb8-93"></a>The residualized change score model provides insights into the relationship between <span class="in">`Life_Satisfaction_T1`</span> and the change in <span class="in">`Job_Satisfaction`</span> from T1 to T2, controlling for initial levels of job satisfaction. If the p-value is less than 0.05, we can conclude that there is a statistically significant relationship between initial life satisfaction and the subsequent change in job satisfaction. Otherwise, we do not have enough evidence to assert such a relationship.</span>
-<span id="cb8-94"><a href="#cb8-94"></a></span>
+<span id="cb8-91"><a href="#cb8-91"></a><span class="in">```{r}</span></span>
+<span id="cb8-92"><a href="#cb8-92"></a><span class="co">#| echo: false</span></span>
+<span id="cb8-93"><a href="#cb8-93"></a></span>
+<span id="cb8-94"><a href="#cb8-94"></a><span class="do">## Creating variable (names) from output to be used for inline text</span></span>
 <span id="cb8-95"><a href="#cb8-95"></a></span>
+<span id="cb8-96"><a href="#cb8-96"></a><span class="fu">library</span>(broom)</span>
+<span id="cb8-97"><a href="#cb8-97"></a>tidyfit <span class="ot">&lt;-</span> <span class="fu">tidy</span>(model)</span>
+<span id="cb8-98"><a href="#cb8-98"></a>tidyaugment <span class="ot">&lt;-</span> <span class="fu">augment</span>(model)</span>
+<span id="cb8-99"><a href="#cb8-99"></a>tidyglance <span class="ot">&lt;-</span> <span class="fu">glance</span>(model)</span>
+<span id="cb8-100"><a href="#cb8-100"></a></span>
+<span id="cb8-101"><a href="#cb8-101"></a></span>
+<span id="cb8-102"><a href="#cb8-102"></a>Life_Satisfaction_T1_estimate <span class="ot">&lt;-</span> <span class="fu">round</span>(tidyfit[tidyfit<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"Life_Satisfaction_T1"</span>, <span class="st">"estimate"</span>], <span class="dv">3</span>)</span>
+<span id="cb8-103"><a href="#cb8-103"></a></span>
+<span id="cb8-104"><a href="#cb8-104"></a>Life_Satisfaction_T1_pvalue <span class="ot">&lt;-</span> <span class="fu">round</span>(tidyfit[tidyfit<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"Life_Satisfaction_T1"</span>, <span class="st">"p.value"</span>], <span class="dv">3</span>)</span>
+<span id="cb8-105"><a href="#cb8-105"></a></span>
+<span id="cb8-106"><a href="#cb8-106"></a><span class="co"># Extract values from the tibble for inline text</span></span>
+<span id="cb8-107"><a href="#cb8-107"></a>Life_Satisfaction_T1_estimate <span class="ot">&lt;-</span> Life_Satisfaction_T1_estimate<span class="sc">$</span>estimate</span>
+<span id="cb8-108"><a href="#cb8-108"></a>Life_Satisfaction_T1_pvalue <span class="ot">&lt;-</span> Life_Satisfaction_T1_pvalue<span class="sc">$</span>p.value</span>
+<span id="cb8-109"><a href="#cb8-109"></a></span>
+<span id="cb8-110"><a href="#cb8-110"></a><span class="in">```</span></span>
+<span id="cb8-111"><a href="#cb8-111"></a></span>
+<span id="cb8-112"><a href="#cb8-112"></a><span class="fu">### Interpreting the Results</span></span>
+<span id="cb8-113"><a href="#cb8-113"></a>The residualized change score model was conducted to examine the effect of <span class="in">`Life_Satisfaction_T1`</span> on <span class="in">`Job_Satisfaction_T2`</span> while controlling for <span class="in">`Job_Satisfaction_T1`</span>. The coefficient for <span class="in">`Life_Satisfaction_T1`</span> is <span class="in">`r Life_Satisfaction_T1_estimate`</span>, which represents the adjusted change in <span class="in">`Job_Satisfaction_T2`</span> for each one-unit increase in <span class="in">`Life_Satisfaction_T1`</span>, keeping <span class="in">`Job_Satisfaction_T1`</span> constant. The associated p-value for this effect is p=<span class="in">`r Life_Satisfaction_T1_pvalue`</span>. If this p-value is less than the common significance level of 0.05, it suggests that the effect of <span class="in">`Life_Satisfaction_T1`</span> on <span class="in">`Job_Satisfaction_T2`</span> is statistically significant after accounting for initial levels of <span class="in">`Job_Satisfaction_T1`</span>.</span>
+<span id="cb8-114"><a href="#cb8-114"></a></span>
+<span id="cb8-115"><a href="#cb8-115"></a><span class="fu">## Conclusion</span></span>
+<span id="cb8-116"><a href="#cb8-116"></a>The residualized change score model provides insights into the relationship between <span class="in">`Life_Satisfaction_T1`</span> and the change in <span class="in">`Job_Satisfaction`</span> from T1 to T2, controlling for initial levels of job satisfaction. If the p-value is less than 0.05, we can conclude that there is a statistically significant relationship between initial life satisfaction and the subsequent change in job satisfaction. Otherwise, we do not have enough evidence to assert such a relationship.</span>
+<span id="cb8-117"><a href="#cb8-117"></a></span>
+<span id="cb8-118"><a href="#cb8-118"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

@@ -100,21 +100,41 @@ model <- geeglm(Job_Satisfaction ~ TimePoint, data = data, id = Individual, fami
 ```{r}
 print(model)
 ```
-
 ```{r}
-## Creating variable (names) to be used for inline text
+#| echo: false
 
-p_value_T2 <- summary(model)$coefficients["TimePointT2", "Pr(>|W|)"]
-p_value_T3 <- summary(model)$coefficients["TimePointT3", "Pr(>|W|)"]
-coeff_T3 <- summary(model)$coefficients["TimePointT3", 3]
+## Creating variable (names) from output to be used for inline text
+
+library(broom)
+tidyfit <- tidy(model)
+#tidyaugment <- augment(model)
+tidyglance <- glance(model)
+
+
+TimePointT2_estimate <- round(tidyfit[tidyfit$term == "TimePointT2", "estimate"], 3)
+TimePointT2_pvalue <- round(tidyfit[tidyfit$term == "TimePointT2", "p.value"], 3)
+
+# Extract values from the tibble for inline text
+TimePointT2_estimate <- TimePointT2_estimate$estimate
+TimePointT2_pvalue <- TimePointT2_pvalue$p.value
+
+#p_value_T2 <- summary(model)$coefficients["TimePointT2", "Pr(>|W|)"]
+#p_value_T3 <- summary(model)$coefficients["TimePointT3", "Pr(>|W|)"]
+#coeff_T3 <- summary(model)$coefficients["TimePointT3", 3]
+
+# Life_Satisfaction_T1_estimate <- round(tidyfit[tidyfit$term == "Life_Satisfaction_T1", "estimate"], 3)
+# 
+# Life_Satisfaction_T1_pvalue <- round(tidyfit[tidyfit$term == "Life_Satisfaction_T1", "p.value"], 3)
+# 
+
 
 ```
 
 ### Interpreting the Results
 A marginal model was fitted using the Generalized Estimating Equations (GEE) approach to assess the effect of `TimePoint` on `Job_Satisfaction` while accounting for the correlation of observations within individuals. The model used an exchangeable correlation structure, assuming that observations within the same individual have the same correlation. The output of the `geeglm` function provides estimates for the coefficients, along with their standard errors, Wald statistics, and p-values. The coefficient for `TimePoint` indicates how the log odds of Job Satisfaction change from one time point to another. If the p-value associated with this coefficient is less than 0.05, it suggests that there is a statistically significant change in Job Satisfaction across the time points. For a more detailed interpretation, we would look at the specific values obtained from the `print(model)` output, such as:
 
-- Coefficient (Estimate) for `TimePoint`: `r coeff_T3`
-- Associated p-value: `r p_value_T2`)
+- Coefficient (Estimate) for `TimePoint`: `r TimePointT2_estimate`
+- Associated p-value: `r TimePointT2_pvalue`)
 
 ## Conclusion
 If the p-value for the `TimePoint` coefficient is less than 0.05, we conclude that there is a statistically significant change in `Job_Satisfaction` scores between the time points. Otherwise, there is no significant change based on the marginal model results. The exact nature (increase/decrease) of the change can be inferred from the sign (+/-) of the coefficient.

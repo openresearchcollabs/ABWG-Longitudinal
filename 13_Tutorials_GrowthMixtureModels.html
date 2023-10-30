@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Biostatistics Working Group">
+
+<title>Growth Mixture Models</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="13_Tutorials_GrowthMixtureModels_files/libs/clipboard/clipboard.min.js"></script>
+<script src="13_Tutorials_GrowthMixtureModels_files/libs/quarto-html/quarto.js"></script>
+<script src="13_Tutorials_GrowthMixtureModels_files/libs/quarto-html/popper.min.js"></script>
+<script src="13_Tutorials_GrowthMixtureModels_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="13_Tutorials_GrowthMixtureModels_files/libs/quarto-html/anchor.min.js"></script>
+<link href="13_Tutorials_GrowthMixtureModels_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="13_Tutorials_GrowthMixtureModels_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="13_Tutorials_GrowthMixtureModels_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="13_Tutorials_GrowthMixtureModels_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="13_Tutorials_GrowthMixtureModels_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Growth Mixture Models</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Biostatistics Working Group </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>%%% Wardenaar, K. (2020). Latent Class Growth Analysis and Growth Mixture Modeling using R: A tutorial for two R-packages and a comparison with Mplus. %%%</p>
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<p>Growth mixture modeling (GMM) is a statistical technique used to identify heterogeneous subgroups or classes that follow distinct developmental paths (growth trajectories) within populations over time. These models are an extension of latent growth curve models, with a focus on delineating variability in growth trajectories. This is particularly relevant for longitudinal research where it’s suspected that different subpopulations might exhibit different growth, stability, or decline trajectories. The GMM framework estimates both the shape and number of latent trajectories and the probability of an individual belonging to each trajectory. These models capture overall growth patterns while simultaneously allowing for subgroup variations.</p>
+<p>[+add diagrams/figures]</p>
+<section id="when-to-use-growth-mixture-models" class="level3">
+<h3 class="anchored" data-anchor-id="when-to-use-growth-mixture-models">When to use Growth Mixture Models?</h3>
+<p>You should consider Growth Mixture Models in the following situations:</p>
+<ol type="1">
+<li>You are interested in: Identifying subgroups or trajectories within a population that exhibit distinct growth patterns over time.</li>
+<li>Your data: Captures repeated measurements, tracking the development or change of a certain variable across multiple time points.</li>
+<li>Your objective: Is to uncover heterogeneity in growth trajectories and classify individuals into distinct trajectories based on observed data.</li>
+</ol>
+</section>
+<section id="getting-started-with-growth-mixture-models" class="level3">
+<h3 class="anchored" data-anchor-id="getting-started-with-growth-mixture-models">Getting Started with Growth Mixture Models</h3>
+<p>In this tutorial, we will guide you through an example of a growth mixture model using a small dataset. By the time you complete this tutorial, you will be equipped to:</p>
+<ol type="1">
+<li>Understand the basic concepts behind Growth Mixture Models.</li>
+<li>Implement this modeling technique on your longitudinal data using the appropriate statistical tools.</li>
+<li>Analyze and interpret the distinct growth trajectory outcomes and the proportion of individuals in each trajectory.</li>
+</ol>
+</section>
+</section>
+<section id="basic-example" class="level2">
+<h2 class="anchored" data-anchor-id="basic-example">Basic Example</h2>
+<p>In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you’ll likely start by importing your own data.</p>
+<p>The simulated dataset created for this example consists of scores on a single outcome variable (“Job_Satisfaction”) for 500 individuals each measured at four time points: T1-T5.</p>
+<section id="create-example-dataset" class="level4">
+<h4 class="anchored" data-anchor-id="create-example-dataset">Create Example Dataset</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Download and open package MASS.</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Simple function to simulate longitudinal data with random intercept(s) and slope(s).</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>ml_data <span class="ot">&lt;-</span> <span class="cf">function</span>(n_pers, n_time, beta_int, beta_slo_time, beta_slo_covar, beta_slo_interact, mean_i, var_i, mean_s, var_s, cov_is, mean_r, var_r) {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>REff <span class="ot">=</span> <span class="fu">mvrnorm</span>(n_pers, <span class="at">mu=</span><span class="fu">c</span>(mean_i,mean_s), <span class="at">Sigma=</span><span class="fu">rbind</span>(<span class="fu">c</span>(var_i, cov_is), <span class="fu">c</span>(cov_is, var_s) ))</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(REff) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"intercept"</span>,<span class="st">"slope"</span>);</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  dat<span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">ID   =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>n_pers,   <span class="at">each=</span>n_time),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">time =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>n_time,   <span class="at">times=</span>n_pers),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="at">covar=</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>,n_pers<span class="sc">/</span><span class="dv">2</span>, <span class="at">each=</span>n_time),<span class="fu">rep</span>(<span class="dv">1</span>,n_pers<span class="sc">/</span><span class="dv">2</span>, <span class="at">each=</span>n_time)),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="at">int =</span> <span class="fu">rep</span>(REff[,<span class="dv">1</span>], <span class="at">each=</span>n_time),</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="at">slo =</span> <span class="fu">rep</span>(REff[,<span class="dv">2</span>], <span class="at">each=</span>n_time), <span class="at">slo_cov=</span><span class="fu">rep</span>(beta_slo_covar, <span class="at">each=</span>n_time), <span class="at">slo_interact=</span><span class="fu">rep</span>(beta_slo_interact, <span class="at">each=</span>n_time),</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="at">Job_Satisfaction =</span> <span class="cn">NA</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>time <span class="ot">&lt;-</span> dat<span class="sc">$</span>time<span class="dv">-1</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>interact <span class="ot">&lt;-</span> dat<span class="sc">$</span>time<span class="sc">*</span>dat<span class="sc">$</span>covar</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  Job_Satisfaction <span class="ot">=</span> <span class="fu">with</span>(dat, (beta_int <span class="sc">+</span> int) <span class="sc">+</span> (beta_slo_covar)<span class="sc">*</span>covar</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>           <span class="sc">+</span> (beta_slo_time <span class="sc">+</span> slo)<span class="sc">*</span>time</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>           <span class="sc">+</span> (beta_slo_interact)<span class="sc">*</span>interact</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>           <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="at">n=</span>n_pers<span class="sc">*</span>n_time, <span class="at">mean=</span>mean_r, <span class="at">sd=</span><span class="fu">sqrt</span>(var_r)))</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>Job_Satisfaction <span class="ot">&lt;-</span>Job_Satisfaction</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dat) }</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate tutorial data</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2002</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>d1 <span class="ot">&lt;-</span> <span class="fu">ml_data</span>( <span class="at">n_pers=</span><span class="dv">500</span>,</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="at">n_time=</span><span class="dv">5</span>,</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="at">beta_int=</span><span class="dv">0</span>, <span class="at">beta_slo_time=</span><span class="fl">0.3</span>, <span class="at">beta_slo_covar=</span><span class="fl">0.5</span>, <span class="at">beta_slo_interact=</span><span class="fl">1.5</span>, <span class="at">mean_i=</span><span class="dv">10</span>,</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="at">var_i=</span><span class="fl">0.13</span>,</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="at">mean_s=</span><span class="dv">0</span>,</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="at">var_s=</span><span class="fl">0.09</span>,</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="at">cov_is=</span><span class="dv">0</span>,</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="at">mean_r=</span><span class="dv">0</span>,</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="at">var_r=</span><span class="dv">1</span>)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co"># trim the number of variables</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> d1[,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">8</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="view-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="view-dataset">View Dataset</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  ID time covar Job_Satisfaction
+1  1    0     0         10.05297
+2  1    1     0         12.56214
+3  1    2     0         10.13121
+4  1    3     0         12.71862
+5  1    4     0         12.25841
+6  2    0     0         10.49615</code></pre>
+</div>
+</div>
+</section>
+<section id="model-specification-and-estimation" class="level3">
+<h3 class="anchored" data-anchor-id="model-specification-and-estimation">Model Specification and Estimation</h3>
+<p>To specify a Growth Mixture Model (GMM), we will leverage the lcmm syntax to identify distinct trajectory classes within the data, representing different patterns of growth or change. This enables us to capture the heterogeneity in developmental trajectories, considering both the shared and individual-specific growth patterns.</p>
+<section id="install-and-load-necessary-libraries" class="level4">
+<h4 class="anchored" data-anchor-id="install-and-load-necessary-libraries">Install and Load Necessary Libraries</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install the lcmm package if not already installed</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span>(<span class="st">"lcmm"</span> <span class="sc">%in%</span> <span class="fu">installed.packages</span>())) {</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">"lcmm"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lcmm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="model" class="level4">
+<h4 class="anchored" data-anchor-id="model">Model</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the GMM for Life Satisfaction across 5 time points</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2002</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>oneclass <span class="ot">&lt;-</span> <span class="fu">hlme</span>(Job_Satisfaction <span class="sc">~</span> time, <span class="at">subject =</span> <span class="st">"ID"</span>, <span class="at">random=</span><span class="sc">~</span><span class="dv">1</span> <span class="sc">+</span> time, <span class="at">ng =</span> <span class="dv">1</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> data)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>twoclass <span class="ot">&lt;-</span> <span class="fu">gridsearch</span>(<span class="at">rep =</span> <span class="dv">100</span>, <span class="at">maxiter =</span> <span class="dv">10</span>, <span class="at">minit =</span> oneclass,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>           <span class="fu">hlme</span>(Job_Satisfaction <span class="sc">~</span> time, <span class="at">subject =</span> <span class="st">"ID"</span>, <span class="at">random=</span><span class="sc">~</span><span class="dv">1</span> <span class="sc">+</span> time,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                <span class="at">ng =</span> <span class="dv">2</span>, <span class="at">data =</span> data, <span class="at">mixture =</span> <span class="sc">~</span> time, <span class="at">nwg=</span>T))</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>threeclass <span class="ot">&lt;-</span> <span class="fu">gridsearch</span>(<span class="at">rep =</span> <span class="dv">100</span>, <span class="at">maxiter =</span> <span class="dv">10</span>, <span class="at">minit =</span> oneclass,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>           <span class="fu">hlme</span>(Job_Satisfaction <span class="sc">~</span> time, <span class="at">subject =</span> <span class="st">"ID"</span>, <span class="at">random=</span><span class="sc">~</span><span class="dv">1</span><span class="sc">+</span>time,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>                        <span class="at">ng =</span> <span class="dv">3</span>, <span class="at">data =</span> data, <span class="at">mixture =</span> <span class="sc">~</span> time,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>                        <span class="at">nwg=</span>T))</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># make table with results for the 4 models:</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="fu">summarytable</span>(oneclass, twoclass, threeclass)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           G    loglik npm      BIC %class1 %class2 %class3
+oneclass   1 -4392.479   6 8822.246   100.0                
+twoclass   2 -4255.757  10 8573.659    51.2    48.8        
+threeclass 3 -4253.242  14 8593.489    12.0    39.2    48.8</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>test <span class="ot">&lt;-</span> <span class="fu">summarytable</span>(oneclass)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         G    loglik npm      BIC %class1
+oneclass 1 -4392.479   6 8822.246     100</code></pre>
+</div>
+</div>
+</section>
+<section id="fit-model" class="level4">
+<h4 class="anchored" data-anchor-id="fit-model">Fit Model</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtain and print a summary of the model</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">summary</span>(twoclass)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Heterogenous linear mixed model 
+     fitted by maximum likelihood method 
+ 
+hlme(fixed = Job_Satisfaction ~ time, mixture = ~time, random = ~1 + 
+    time, subject = "ID", ng = 2, nwg = T, data = data)
+ 
+Statistical Model: 
+     Dataset: data 
+     Number of subjects: 500 
+     Number of observations: 2500 
+     Number of latent classes: 2 
+     Number of parameters: 10  
+ 
+Iteration process: 
+     Convergence criteria satisfied 
+     Number of iterations:  6 
+     Convergence criteria: parameters= 4.1e-09 
+                         : likelihood= 2.6e-07 
+                         : second derivatives= 6.8e-14 
+ 
+Goodness-of-fit statistics: 
+     maximum log-likelihood: -4255.76  
+     AIC: 8531.51  
+     BIC: 8573.66  
+ 
+ 
+Maximum Likelihood Estimates: 
+ 
+Fixed effects in the class-membership model:
+(the class of reference is the last class) 
+
+                     coef      Se    Wald p-value
+intercept class1  0.04954 0.09238   0.536 0.59179
+
+Fixed effects in the longitudinal model:
+
+                     coef      Se    Wald p-value
+intercept class1 10.59136 0.05471 193.580 0.00000
+intercept class2  9.96707 0.05615 177.520 0.00000
+time class1       1.76293 0.02919  60.396 0.00000
+time class2       0.29359 0.02869  10.233 0.00000
+
+
+Variance-covariance matrix of the random-effects:
+          intercept    time
+intercept   0.15014        
+time       -0.01944 0.08708
+
+                                    coef      Se
+Proportional coefficient class1  1.03829 0.11323
+Residual standard error:         0.99246 0.01812</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the data (Figure 1)</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>covar <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>covar)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>plot1 <span class="ot">&lt;-</span><span class="fu">ggplot</span>()<span class="sc">+</span><span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y=</span>Job_Satisfaction, <span class="at">x=</span>time, <span class="at">group=</span>ID, <span class="at">colour=</span>covar), <span class="at">data=</span>data, <span class="at">show.legend =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>plot1 <span class="ot">&lt;-</span> plot1 <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span> <span class="fu">theme_classic</span>() </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>plot1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="13_Tutorials_GrowthMixtureModels_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Creating variable (names) from output to be used for inline text</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>tidyfit <span class="ot">&lt;-</span> <span class="fu">tidy</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: 'tidy.numeric' is deprecated.
+See help("Deprecated")</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#augmentfit &lt;- augment(fit)</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">#glancefit &lt;- glance(fit)</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>intercept_class1_value <span class="ot">&lt;-</span> tidyfit<span class="sc">$</span>x[<span class="st">"intercept class1"</span>, <span class="st">"coef"</span>]</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co">#intercept_class1_value &lt;- tidyfit[tidyfit$term == "intercept class1", "coef"]</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co">#intercept_class1_value &lt;- tidyfit[tidyfit$term == "intercept class1", "coef"]</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract column data</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co">#p_values &lt;- tidyfit$p.value</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co">#estimate &lt;- tidyfit$estimate</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract p-values for specific terms into tibbles</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co">#intercept_variance_pvalue &lt;- round(tidyfit[tidyfit$term == "i ~~ i", "p.value"], 3)</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co">#slope_variance_pvalue &lt;- round(tidyfit[tidyfit$term == "s ~~ s", "p.value"], 3)</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="co">#intercept_estimate &lt;- round(tidyfit[tidyfit$term == "i ~~ i", "estimate"], 3)</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="co">#slope_estimate &lt;- round(tidyfit[tidyfit$term == "s ~~ s", "estimate"], 3)</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="co">#intercept_slope_covariance &lt;- round(tidyfit[tidyfit$term == "i ~~ s", "estimate"], 3)</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="co">#rmsea &lt;- glancefit$rmsea</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="co">#bic &lt;- glancefit$BIC</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract values from the tibble for inline text</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="co">#var_i_pval &lt;- intercept_variance_pvalue$p.value</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a><span class="co">#var_s_pval &lt;- slope_variance_pvalue$p.value</span></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a><span class="co">#int_est &lt;- intercept_estimate$estimate</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a><span class="co">#slp_est &lt;- slope_estimate$estimate </span></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a><span class="co">#is_cov &lt;- intercept_slope_covariance</span></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a><span class="co">#model_list &lt;- split(tidyfit, tidyfit$term)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="interpreting-the-results" class="level3">
+<h3 class="anchored" data-anchor-id="interpreting-the-results">Interpreting the Results</h3>
+<p>A Growth Mixture Model (GMM) was applied to identify distinct trajectories (or growth patterns) in the dataset. GMM allows for the identification of latent subgroups within a population that follow different developmental or growth trajectories over time.</p>
+<p>Using the <code>hlme</code> function, we estimated a GMM with 3 distinct growth trajectories (subgroups) using the predictor <code>time</code>.</p>
+<p>From the <code>summary</code> output: - The estimated means and variances for each trajectory group can be extracted.</p>
+<p>estimated means for each trajectory: G1:10.59136 G2: G3:</p>
+<p>estimated variances for each trajectory: G1: 10.59136 G2: G3:</p>
+<ul>
+<li>The proportions of individuals in each trajectory group are: <strong>r gmm$proportions</strong></li>
+<li>The estimated growth parameters (intercept and slope) for each trajectory group are: <strong>r gmm$parameters</strong></li>
+</ul>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>The Growth Mixture Model has identified multiple distinct trajectories within the data. By examining the estimated proportions and growth parameters, we can gain insights into the different developmental or growth patterns present in the population. Further, statistical tests can be conducted to determine the significance and implications of these trajectories.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -72,12 +72,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -153,7 +151,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Reference</span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools ms-auto tools-wide">
+            <div class="quarto-navbar-tools ms-auto">
     <a href="https://twitter.com" rel="" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
     <div class="dropdown">
       <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
@@ -170,7 +168,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           </li>
       </ul>
     </div>
-  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
           </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
@@ -226,7 +223,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./tutorials.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Tutorials: A Brief Overview</span></a>
+ <span class="menu-text"><i class="bi bi-book"></i> What are Tutorials?</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -238,12 +235,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./1_Tutorials_DifferenceScores.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Difference Scores</span></a>
-  </div>
-</li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./2_Tutorials_ResidualizedChangeScores.html" class="sidebar-item-text sidebar-link">
@@ -562,11 +553,7 @@ Number of clusters:   500   Maximum cluster size: 4 </code></pre>
 <section id="interpreting-the-results" class="level3">
 <h3 class="anchored" data-anchor-id="interpreting-the-results">Interpreting the Results</h3>
 <p>Generalized Estimating Equations (GEE) were used to model the relationship between Job Satisfaction and TimePoint, taking into account the correlation of repeated measures within individuals. The model assumes a binomial distribution for Job Satisfaction with a logit link function and uses an exchangeable correlation structure. The output of the <code>geeglm</code> function provides estimates for the coefficients, along with their standard errors, Wald statistics, and p-values. The coefficient for <code>TimePoint</code> represents the change in the log odds of Job Satisfaction for a unit change in TimePoint.</p>
-<p>For a detailed understanding, we can refer to: - Coefficient (Estimate) for <code>TimePoint</code>: NA</p>
-<ul>
-<li>Coefficient (Estimate) for <code>TimePoint</code>: 0.1856002</li>
-<li>Associated p-value: 0.0219366)</li>
-</ul>
+<p>For a detailed understanding, we can refer to: - Coefficient (Estimate) for <code>TimePoint</code>: 0.1856002 - Associated p-value: 0.0219366)</p>
 </section>
 </section>
 <section id="conclusion" class="level2">
@@ -599,121 +586,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
-  const disableStylesheet = (stylesheets) => {
-    for (let i=0; i < stylesheets.length; i++) {
-      const stylesheet = stylesheets[i];
-      stylesheet.rel = 'prefetch';
-    }
-  }
-  const enableStylesheet = (stylesheets) => {
-    for (let i=0; i < stylesheets.length; i++) {
-      const stylesheet = stylesheets[i];
-      stylesheet.rel = 'stylesheet';
-    }
-  }
-  const manageTransitions = (selector, allowTransitions) => {
-    const els = window.document.querySelectorAll(selector);
-    for (let i=0; i < els.length; i++) {
-      const el = els[i];
-      if (allowTransitions) {
-        el.classList.remove('notransition');
-      } else {
-        el.classList.add('notransition');
-      }
-    }
-  }
-  const toggleColorMode = (alternate) => {
-    // Switch the stylesheets
-    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
-    manageTransitions('#quarto-margin-sidebar .nav-link', false);
-    if (alternate) {
-      enableStylesheet(alternateStylesheets);
-      for (const sheetNode of alternateStylesheets) {
-        if (sheetNode.id === "quarto-bootstrap") {
-          toggleBodyColorMode(sheetNode);
-        }
-      }
-    } else {
-      disableStylesheet(alternateStylesheets);
-      toggleBodyColorPrimary();
-    }
-    manageTransitions('#quarto-margin-sidebar .nav-link', true);
-    // Switch the toggles
-    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
-    for (let i=0; i < toggles.length; i++) {
-      const toggle = toggles[i];
-      if (toggle) {
-        if (alternate) {
-          toggle.classList.add("alternate");     
-        } else {
-          toggle.classList.remove("alternate");
-        }
-      }
-    }
-    // Hack to workaround the fact that safari doesn't
-    // properly recolor the scrollbar when toggling (#1455)
-    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
-      manageTransitions("body", false);
-      window.scrollTo(0, 1);
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-        manageTransitions("body", true);
-      }, 40);  
-    }
-  }
-  const isFileUrl = () => { 
-    return window.location.protocol === 'file:';
-  }
-  const hasAlternateSentinel = () => {  
-    let styleSentinel = getColorSchemeSentinel();
-    if (styleSentinel !== null) {
-      return styleSentinel === "alternate";
-    } else {
-      return false;
-    }
-  }
-  const setStyleSentinel = (alternate) => {
-    const value = alternate ? "alternate" : "default";
-    if (!isFileUrl()) {
-      window.localStorage.setItem("quarto-color-scheme", value);
-    } else {
-      localAlternateSentinel = value;
-    }
-  }
-  const getColorSchemeSentinel = () => {
-    if (!isFileUrl()) {
-      const storageValue = window.localStorage.getItem("quarto-color-scheme");
-      return storageValue != null ? storageValue : localAlternateSentinel;
-    } else {
-      return localAlternateSentinel;
-    }
-  }
-  let localAlternateSentinel = 'default';
-  // Dark / light mode switch
-  window.quartoToggleColorScheme = () => {
-    // Read the current dark / light value 
-    let toAlternate = !hasAlternateSentinel();
-    toggleColorMode(toAlternate);
-    setStyleSentinel(toAlternate);
-  };
-  // Ensure there is a toggle, if there isn't float one in the top right
-  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
-    const a = window.document.createElement('a');
-    a.classList.add('top-right');
-    a.classList.add('quarto-color-scheme-toggle');
-    a.href = "";
-    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
-    const i = window.document.createElement("i");
-    i.classList.add('bi');
-    a.appendChild(i);
-    window.document.body.appendChild(a);
-  }
-  // Switch to dark mode if need be
-  if (hasAlternateSentinel()) {
-    toggleColorMode(true);
-  } else {
-    toggleColorMode(false);
-  }
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -1109,14 +981,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb8-113"><a href="#cb8-113"></a>Generalized Estimating Equations (GEE) were used to model the relationship between Job Satisfaction and TimePoint, taking into account the correlation of repeated measures within individuals. The model assumes a binomial distribution for Job Satisfaction with a logit link function and uses an exchangeable correlation structure. The output of the <span class="in">`geeglm`</span> function provides estimates for the coefficients, along with their standard errors, Wald statistics, and p-values. The coefficient for <span class="in">`TimePoint`</span> represents the change in the log odds of Job Satisfaction for a unit change in TimePoint.</span>
 <span id="cb8-114"><a href="#cb8-114"></a></span>
 <span id="cb8-115"><a href="#cb8-115"></a>For a detailed understanding, we can refer to:</span>
-<span id="cb8-116"><a href="#cb8-116"></a><span class="ss">- </span>Coefficient (Estimate) for <span class="in">`TimePoint`</span>: <span class="in">`r round(coef(model)["TimePoint"], 3)`</span></span>
-<span id="cb8-117"><a href="#cb8-117"></a></span>
-<span id="cb8-118"><a href="#cb8-118"></a><span class="ss">- </span>Coefficient (Estimate) for <span class="in">`TimePoint`</span>: <span class="in">`r coeff_T3`</span></span>
-<span id="cb8-119"><a href="#cb8-119"></a><span class="ss">- </span>Associated p-value: <span class="in">`r p_value_T2`</span>)</span>
-<span id="cb8-120"><a href="#cb8-120"></a></span>
-<span id="cb8-121"><a href="#cb8-121"></a><span class="fu">## Conclusion</span></span>
-<span id="cb8-122"><a href="#cb8-122"></a>If the p-value for the <span class="in">`TimePoint`</span> coefficient is less than 0.05, we can conclude that there is a statistically significant change in Job Satisfaction across the TimePoints according to the GEE model. Otherwise, we do not find evidence for such a change. The direction (increase or decrease) of this change can be determined by the sign of the coefficient for <span class="in">`TimePoint`</span>.</span>
-<span id="cb8-123"><a href="#cb8-123"></a></span>
+<span id="cb8-116"><a href="#cb8-116"></a><span class="ss">- </span>Coefficient (Estimate) for <span class="in">`TimePoint`</span>: <span class="in">`r coeff_T3`</span></span>
+<span id="cb8-117"><a href="#cb8-117"></a><span class="ss">- </span>Associated p-value: <span class="in">`r p_value_T2`</span>)</span>
+<span id="cb8-118"><a href="#cb8-118"></a></span>
+<span id="cb8-119"><a href="#cb8-119"></a><span class="fu">## Conclusion</span></span>
+<span id="cb8-120"><a href="#cb8-120"></a>If the p-value for the <span class="in">`TimePoint`</span> coefficient is less than 0.05, we can conclude that there is a statistically significant change in Job Satisfaction across the TimePoints according to the GEE model. Otherwise, we do not find evidence for such a change. The direction (increase or decrease) of this change can be determined by the sign of the coefficient for <span class="in">`TimePoint`</span>.</span>
+<span id="cb8-121"><a href="#cb8-121"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

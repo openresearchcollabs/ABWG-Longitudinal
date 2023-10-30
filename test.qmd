@@ -1,0 +1,22 @@
+---
+title: "Output-style"
+format: 
+  html:
+    css: styles.css
+---
+
+```{r}
+#| class-output: output
+
+x = "hello quarto"
+print(x)
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| class-output: output
+
+2 * 2
+```

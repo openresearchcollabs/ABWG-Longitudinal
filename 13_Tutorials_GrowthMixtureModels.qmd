@@ -4,6 +4,10 @@ author: "Biostatistics Working Group"
 
 ---
 
+%%%
+Wardenaar, K. (2020). Latent Class Growth Analysis and Growth Mixture Modeling using R: A tutorial for two R-packages and a comparison with Mplus.
+%%%
+
 ## Overview
 Growth mixture modeling (GMM) is a statistical technique used to identify heterogeneous subgroups or classes that follow distinct developmental paths (growth trajectories) within populations over time. These models are an extension of latent growth curve models, with a focus on delineating variability in growth trajectories. This is particularly relevant for longitudinal research where it's suspected that different subpopulations might exhibit different growth, stability, or decline trajectories. The GMM framework estimates both the shape and number of latent trajectories and the probability of an individual belonging to each trajectory. These models capture overall growth patterns while simultaneously allowing for subgroup variations.
 
@@ -14,63 +18,63 @@ You should consider Growth Mixture Models in the following situations:
 
 1. You are interested in: Identifying subgroups or trajectories within a population that exhibit distinct growth patterns over time.
 2. Your data: Captures repeated measurements, tracking the development or change of a certain variable across multiple time points.
-3. Your objective: Is to uncover latent heterogeneity in growth trajectories and classify individuals into these distinct trajectories based on observed data.
+3. Your objective: Is to uncover heterogeneity in growth trajectories and classify individuals into distinct trajectories based on observed data.
 
 ### Getting Started with Growth Mixture Models
-In this tutorial, we will guide you through an example of a growth mixture models using a small dataset. By the time you complete this tutorial, you will be equipped to:
+In this tutorial, we will guide you through an example of a growth mixture model using a small dataset. By the time you complete this tutorial, you will be equipped to:
 
 1. Understand the basic concepts behind Growth Mixture Models.
 2. Implement this modeling technique on your longitudinal data using the appropriate statistical tools.
-3. Analyze and interpret the outcomes to discern the distinct growth trajectories and the proportion of individuals in each trajectory.
+3. Analyze and interpret the distinct growth trajectory outcomes and the proportion of individuals in each trajectory.
 
 ## Basic Example
 In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you'll likely start by importing your own data.
 
-The simulated dataset created for this example consists of scores on a single outcome variable ("Job_Satisfaction") for 500 individuals each measured at four time points: T1-T4.  
+The simulated dataset created for this example consists of scores on a single outcome variable ("Job_Satisfaction") for 500 individuals each measured at four time points: T1-T5.  
 
 #### Create Example Dataset
 ```{r}
 
-# Setting the seed for reproducibility
-set.seed(123)
-
-# Setting the number of individuals for our sample data
-n <- 500
-
-# Specifying the desired correlation matrix for our data (5x5 matrix for 5 timepoints)
-cor_matrix <- matrix(c(1, 0.3, 0.3, 0.3, 0.3,
-                      0.3, 1, 0.3, 0.3, 0.3,
-                      0.3, 0.3, 1, 0.3, 0.3,
-                      0.3, 0.3, 0.3, 1, 0.3,
-                      0.3, 0.3, 0.3, 0.3, 1), 
-                      nrow=5)
-
-# Using Cholesky decomposition to generate correlated data
-cholesky <- chol(cor_matrix)
-
-# Generating correlated random data for 5 timepoints
-random_data <- matrix(rnorm(n * 5), ncol=5)
-correlated_data <- random_data %*% cholesky
-
-# Converting the generated data into a structured data frame in wide format
-data_wide <- data.frame(
-  Individual = 1:n,
-  Job_Satisfaction_T1 = round(runif(n, 5, 10)),
-  Job_Satisfaction_T2 = round(runif(n, 5, 10)),
-  Job_Satisfaction_T3 = round(runif(n, 5, 10)),
-  Job_Satisfaction_T4 = round(runif(n, 5, 10)),
-  Job_Satisfaction_T5 = round(runif(n, 5, 10)),
-  Life_Satisfaction_T1 = round(correlated_data[,1] * 2 + 7),
-  Life_Satisfaction_T2 = round(correlated_data[,2] * 2 + 7),
-  Life_Satisfaction_T3 = round(correlated_data[,3] * 2 + 7),
-  Life_Satisfaction_T4 = round(correlated_data[,4] * 2 + 7),
-  Life_Satisfaction_T5 = round(correlated_data[,5] * 2 + 7)
-)
+#Download and open package MASS.
+library(MASS)
+#Simple function to simulate longitudinal data with random intercept(s) and slope(s).
+ml_data <- function(n_pers, n_time, beta_int, beta_slo_time, beta_slo_covar, beta_slo_interact, mean_i, var_i, mean_s, var_s, cov_is, mean_r, var_r) {
+REff = mvrnorm(n_pers, mu=c(mean_i,mean_s), Sigma=rbind(c(var_i, cov_is), c(cov_is, var_s) ))
+  colnames(REff) = c("intercept","slope");
+  dat= data.frame(ID   = rep(1:n_pers,   each=n_time),
+                  time = rep(1:n_time,   times=n_pers),
+covar= c(rep(0,n_pers/2, each=n_time),rep(1,n_pers/2, each=n_time)),
+int = rep(REff[,1], each=n_time),
+slo = rep(REff[,2], each=n_time), slo_cov=rep(beta_slo_covar, each=n_time), slo_interact=rep(beta_slo_interact, each=n_time),
+Job_Satisfaction = NA)
+  dat$time <- dat$time-1
+  dat$interact <- dat$time*dat$covar
+  Job_Satisfaction = with(dat, (beta_int + int) + (beta_slo_covar)*covar
+           + (beta_slo_time + slo)*time
+           + (beta_slo_interact)*interact
+           + rnorm(n=n_pers*n_time, mean=mean_r, sd=sqrt(var_r)))
+  dat$Job_Satisfaction <-Job_Satisfaction
+  return(dat) }
+# simulate tutorial data
+set.seed(2002)
+d1 <- ml_data( n_pers=500,
+n_time=5,
+beta_int=0, beta_slo_time=0.3, beta_slo_covar=0.5, beta_slo_interact=1.5, mean_i=10,
+var_i=0.13,
+mean_s=0,
+var_s=0.09,
+cov_is=0,
+mean_r=0,
+var_r=1)
+# trim the number of variables
+data <- d1[,c(1,2,3,8)]
 
 ```
 
-### Model Specification and Estimation
-Now that we have our simulated data, we can fit a Growth Mixture Model. In this example, we will assume that there are three latent classes. However, in practice, the number of classes is usually unknown and must be determined through model comparisons or other methods.
+### View Dataset
+```{r}
+head(data)
+```
 
 ### Model Specification and Estimation
 To specify a Growth Mixture Model (GMM), we will leverage the lcmm syntax to identify distinct trajectory classes within the data, representing different patterns of growth or change. This enables us to capture the heterogeneity in developmental trajectories, considering both the shared and individual-specific growth patterns.
@@ -89,42 +93,61 @@ library(lcmm)
 #### Model
 ```{r}
 
-# Load necessary libraries
-library(lcmm)
-library(tidyr)
-
-# Convert wide format data to long format
-data_long <- data_wide %>% 
-  gather(key = "Variable_Time", value = "Score", -Individual) %>%
-  separate(Variable_Time, into = c("Variable", "Time"), sep = "_T")
-
-# Specify initial values
-Bfixed <- c(7, 0.5, 7, 0.5) # Initial values for intercept and slope for each class
-Brand <- c(7, 0.5, 4, 0.2, 0.1)  # Initial values for random intercept, slope, their variances, and covariance
-Bmix <- c(7, 0.5, 7, 0.5) # Initial values for mixture intercept and slope for each class
-
 # Fit the GMM for Life Satisfaction across 5 time points
-gmm_model <- lcmm(Score ~ Time, random = ~ Time, subject = 'Individual', 
-                 mixture = ~ Time, 
-                 ng = 2, # specifying number of latent classes 
-                 B = list(fixed = Bfixed, random = Brand, mixture = Bmix),
-                 data = subset(data_long, Variable == "Life_Satisfaction"))
 
-# Examine the results
-summary(gmm_model)
+set.seed(2002)
+oneclass <- hlme(Job_Satisfaction ~ time, subject = "ID", random=~1 + time, ng = 1,
+           data = data)
+twoclass <- gridsearch(rep = 100, maxiter = 10, minit = oneclass,
+           hlme(Job_Satisfaction ~ time, subject = "ID", random=~1 + time,
+                ng = 2, data = data, mixture = ~ time, nwg=T))
+threeclass <- gridsearch(rep = 100, maxiter = 10, minit = oneclass,
+           hlme(Job_Satisfaction ~ time, subject = "ID", random=~1+time,
+                        ng = 3, data = data, mixture = ~ time,
+                        nwg=T))
+# make table with results for the 4 models:
+summarytable(oneclass, twoclass, threeclass)
 
+test <- summarytable(oneclass)
 ```
 
 #### Fit Model
 ```{r}
 # Obtain and print a summary of the model
-summary_gmm <- summary(gmm)
+fit <- summary(twoclass)
 ```
 
-#### Model Summary
 ```{r}
-# Print a summary of the model
-print(summary_gmm)
+# plot the data (Figure 1)
+library(ggplot2)
+data$covar <- as.factor(data$covar)
+plot1 <-ggplot()+geom_line(aes(y=Job_Satisfaction, x=time, group=ID, colour=covar), data=data, show.legend = FALSE)
+plot1 <- plot1 + theme(legend.position = "none") + theme_classic() 
+plot1
+```
+
+```{r}
+
+## Creating variable (names) from output to be used for inline text
+
+library(broom)
+tidyfit <- tidy(fit)
+
+intercept_class1_value <- tidyfit$x["intercept class1", "coef"]
+
+# Extract column data
+#p_values <- tidyfit$p.value
+#estimate <- tidyfit$estimate
+
+# Extract p-values for specific terms into tibbles
+#intercept_variance_pvalue <- round(tidyfit[tidyfit$term == "i ~~ i", "p.value"], 3)
+
+#rmsea <- glancefit$rmsea
+#bic <- glancefit$BIC
+
+# Extract values from the tibble for inline text
+#var_i_pval <- intercept_variance_pvalue$p.value
+
 ```
 
 ### Interpreting the Results
@@ -133,9 +156,21 @@ A Growth Mixture Model (GMM) was applied to identify distinct trajectories (or g
 Using the `hlme` function, we estimated a GMM with 3 distinct growth trajectories (subgroups) using the predictor `time`. 
 
 From the `summary` output:
-- The estimated means and variances for each trajectory group can be extracted. 
-- The proportions of individuals in each trajectory group are: `r gmm$proportions`
-- The estimated growth parameters (intercept and slope) for each trajectory group are: `r gmm$parameters`
+- The estimated means and variances for each trajectory group can be extracted.
+
+estimated means  for each trajectory:
+G1:`r intercept_class1_value`
+G2:
+G3:
+
+estimated variances for each trajectory:
+G1: `r intercept_class1_value`
+G2:
+G3:
+
+
+- The proportions of individuals in each trajectory group are: **r gmm$proportions**
+- The estimated growth parameters (intercept and slope) for each trajectory group are: **r gmm$parameters**
 
 ## Conclusion
 The Growth Mixture Model has identified multiple distinct trajectories within the data. By examining the estimated proportions and growth parameters, we can gain insights into the different developmental or growth patterns present in the population. Further, statistical tests can be conducted to determine the significance and implications of these trajectories.

@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Biostatistics Working Group">
+
+<title>Random-Intercept Crosslagged Panel Models</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="15_Tutorials_RandomInterceptCrosslaggedPanelModels_files/libs/clipboard/clipboard.min.js"></script>
+<script src="15_Tutorials_RandomInterceptCrosslaggedPanelModels_files/libs/quarto-html/quarto.js"></script>
+<script src="15_Tutorials_RandomInterceptCrosslaggedPanelModels_files/libs/quarto-html/popper.min.js"></script>
+<script src="15_Tutorials_RandomInterceptCrosslaggedPanelModels_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="15_Tutorials_RandomInterceptCrosslaggedPanelModels_files/libs/quarto-html/anchor.min.js"></script>
+<link href="15_Tutorials_RandomInterceptCrosslaggedPanelModels_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="15_Tutorials_RandomInterceptCrosslaggedPanelModels_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="15_Tutorials_RandomInterceptCrosslaggedPanelModels_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="15_Tutorials_RandomInterceptCrosslaggedPanelModels_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="15_Tutorials_RandomInterceptCrosslaggedPanelModels_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Random-Intercept Crosslagged Panel Models</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Biostatistics Working Group </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="section" class="level4">
+<h4 class="anchored" data-anchor-id="section"></h4>
+<p>see: <span class="citation" data-cites="article">@article</span>{mulder2021three, title={Three extensions of the random intercept cross-lagged panel model}, author={Mulder, Jeroen D and Hamaker, Ellen L}, journal={Structural Equation Modeling: A Multidisciplinary Journal}, volume={28}, number={4}, pages={638–648}, year={2021}, publisher={Taylor &amp; Francis} }</p>
+</section>
+<section id="section-1" class="level4">
+<h4 class="anchored" data-anchor-id="section-1"></h4>
+</section>
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<p>Random-Intercept Crosslagged Panel Model (RI-CLPMs) is a statistical method used capture dynamic associations between variables across time points, while accounting for individual differences. This approach builds upon traditional crosslagged panel models by introducing a random intercept, which captures the stable, trait-like differences between individuals. RI-CLPMs emphasize the distinction between within-person variability and between-person differences. This approach allows researchers to simultaneously explore how variables influence each other over time (crosslagged effects) and how these relationships might vary across individuals due to their unique traits. The blend of capturing dynamic relations and individual heterogeneity provides insight on whether observed changes are due to intrinsic individual differences or because of the influence of one variable on another.</p>
+<p>[+add diagrams/figures]</p>
+<section id="when-to-use-random-intercept-crosslagged-panel-models" class="level3">
+<h3 class="anchored" data-anchor-id="when-to-use-random-intercept-crosslagged-panel-models">When to use Random-Intercept Crosslagged Panel Models?</h3>
+<p>You should consider Random-Intercept Crosslagged Panel Models in the following situations:</p>
+<ol type="1">
+<li>You want to understand: The reciprocal relationships between variables over time, considering individual-specific effects.</li>
+<li>Your data: Is longitudinal, with repeated measures of at least two variables across 4+ time points.</li>
+<li>You aim to: Capture the stable individual differences and understand how one variable can predict changes in another across time.</li>
+</ol>
+</section>
+<section id="getting-started-with-random-intercept-crosslagged-panel-models" class="level3">
+<h3 class="anchored" data-anchor-id="getting-started-with-random-intercept-crosslagged-panel-models">Getting Started with Random-Intercept Crosslagged Panel Models</h3>
+<p>In this tutorial, we will guide you through an example of a random-intercept crosslagged panel model using a small dataset. By the time you complete this tutorial, you will be equipped to:</p>
+<ol type="1">
+<li>Understand the basic concepts of random-intercept crosslagged panel models.</li>
+<li>Construct these models to assess the dynamic interplay between variables over time, accounting for individual differences.</li>
+<li>Analyze and interpret the model’s results to make informed conclusions about temporal relationships between the studied variables.</li>
+</ol>
+</section>
+</section>
+<section id="basic-example" class="level2">
+<h2 class="anchored" data-anchor-id="basic-example">Basic Example</h2>
+<p>In this tutorial, we will begin by generating a sample dataset directly within R to ensure everyone has the same starting point and can follow along without needing to download or access external files. This generated dataset will serve as our example throughout this tutorial. In your own analyses, you’ll likely start by importing your own data.</p>
+<p>The simulated dataset created for this example consists of scores on two outcome variables (“Job_Satisfaction”, “Life_Satisfaction”) for 500 individuals each measured at five time points: T1-T5.</p>
+<section id="create-example-dataset" class="level4">
+<h4 class="anchored" data-anchor-id="create-example-dataset">Create Example Dataset</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Setting the seed for reproducibility</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Setting the number of individuals for our sample data</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Specifying the desired correlation matrix for our data (5x5 matrix for 5 timepoints)</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>                      <span class="fl">0.3</span>, <span class="dv">1</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                      <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="dv">1</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>                      <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="dv">1</span>, <span class="fl">0.3</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>                      <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="dv">1</span>), </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>                      <span class="at">nrow=</span><span class="dv">5</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Using Cholesky decomposition to generate correlated data</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>cholesky <span class="ot">&lt;-</span> <span class="fu">chol</span>(cor_matrix)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Generating correlated random data for 5 timepoints</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>random_data <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n <span class="sc">*</span> <span class="dv">5</span>), <span class="at">ncol=</span><span class="dv">5</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>correlated_data <span class="ot">&lt;-</span> random_data <span class="sc">%*%</span> cholesky</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Converting the generated data into a structured data frame in wide format</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">Individual =</span> <span class="dv">1</span><span class="sc">:</span>n,</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">Job_Satisfaction_T1 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">Job_Satisfaction_T2 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">Job_Satisfaction_T3 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">Job_Satisfaction_T4 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">Job_Satisfaction_T5 =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="dv">5</span>, <span class="dv">10</span>)),</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">Life_Satisfaction_T1 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">1</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>),</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">Life_Satisfaction_T2 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">2</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>),</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">Life_Satisfaction_T3 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">3</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>),</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">Life_Satisfaction_T4 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">4</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>),</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">Life_Satisfaction_T5 =</span> <span class="fu">round</span>(correlated_data[,<span class="dv">5</span>] <span class="sc">*</span> <span class="dv">2</span> <span class="sc">+</span> <span class="dv">7</span>)</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="model-specification-and-estimation" class="level3">
+<h3 class="anchored" data-anchor-id="model-specification-and-estimation">Model Specification and Estimation</h3>
+<p>Now that we have our simulated data, we can fit a Random-Intercept Cross-Lagged Panel Model using the lavaan package.</p>
+</section>
+<section id="model-specification-and-estimation-1" class="level3">
+<h3 class="anchored" data-anchor-id="model-specification-and-estimation-1">Model Specification and Estimation</h3>
+<p>To specify a Random-Intercept Cross-Lagged Panel Model (RI-CLPM), we will employ the lavaan syntax. This model allows us to explore the interplay between two variables across multiple time points. While modeling the cross-lagged associations between the variables, the RI-CLPM also accounts for stable individual differences through the inclusion of random intercepts.</p>
+<section id="install-and-load-necessary-libraries" class="level4">
+<h4 class="anchored" data-anchor-id="install-and-load-necessary-libraries">Install and Load Necessary Libraries</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install the lavaan package if not already installed</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span>(<span class="st">"lavaan"</span> <span class="sc">%in%</span> <span class="fu">installed.packages</span>())) {</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">"lavaan"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="fit-model" class="level4">
+<h4 class="anchored" data-anchor-id="fit-model">Fit Model</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="st">'</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="st">  # Create between components (random intercepts)</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="st">  RIx =~ 1*Job_Satisfaction_T1 + 1*Job_Satisfaction_T2 + 1*Job_Satisfaction_T3 + 1*Job_Satisfaction_T4+ 1*Job_Satisfaction_T5</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="st">  RIy =~ 1*Life_Satisfaction_T1 + 1*Life_Satisfaction_T2 + 1*Life_Satisfaction_T3 + 1*Life_Satisfaction_T4 + 1*Life_Satisfaction_T5</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="st">  # Create within-person centered variables</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="st">  wx1 =~ 1*Job_Satisfaction_T1</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="st">  wx2 =~ 1*Job_Satisfaction_T2</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="st">  wx3 =~ 1*Job_Satisfaction_T3 </span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="st">  wx4 =~ 1*Job_Satisfaction_T4</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="st">  wx5 =~ 1*Job_Satisfaction_T5</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="st">  wy1 =~ 1*Life_Satisfaction_T1</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="st">  wy2 =~ 1*Life_Satisfaction_T2</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="st">  wy3 =~ 1*Life_Satisfaction_T3</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="st">  wy4 =~ 1*Life_Satisfaction_T4</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="st">  wy5 =~ 1*Life_Satisfaction_T5</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="st">  # Estimate lagged effects between within-person centered variables</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="st">  wx2 + wy2 ~ wx1 + wy1</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="st">  wx3 + wy3 ~ wx2 + wy2</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="st">  wx4 + wy4 ~ wx3 + wy3</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="st">  wx5 + wy5 ~ wx4 + wy4</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="st">  # Estimate covariance between within-person centered variables at first wave</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="st">  wx1 ~~ wy1 # Covariance</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="st">  # Estimate covariances between residuals of within-person centered variables </span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="st">  # (i.e., innovations)</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="st">  wx2 ~~ wy2</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="st">  wx3 ~~ wy3</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="st">  wx4 ~~ wy4</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="st">  wx5 ~~ wy5</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="st">  # Estimate variance and covariance of random intercepts</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="st">  RIx ~~ RIx</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="st">  RIy ~~ RIy</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="st">  RIx ~~ RIy</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="st">  # Estimate (residual) variance of within-person centered variables</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="st">  wx1 ~~ wx1 # Variances</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="st">  wy1 ~~ wy1 </span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="st">  wx2 ~~ wx2 # Residual variances</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="st">  wy2 ~~ wy2 </span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="st">  wx3 ~~ wx3 </span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="st">  wy3 ~~ wy3 </span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="st">  wx4 ~~ wx4 </span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="st">  wy4 ~~ wy4 </span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="st">  wx5 ~~ wx5</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="st">  wy5 ~~ wy5</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="st">'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="fit-model-1" class="level4">
+<h4 class="anchored" data-anchor-id="fit-model-1">Fit Model</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the Random-Intercept Crosslagged Panel Model</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lavaan</span>(model,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data, </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">missing =</span> <span class="st">"ML"</span>, </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">meanstructure =</span> T, </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">int.ov.free =</span> T</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="model-summary" class="level4">
+<h4 class="anchored" data-anchor-id="model-summary">Model Summary</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit, <span class="at">standardized =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>lavaan 0.6.16 ended normally after 73 iterations
+
+  Estimator                                         ML
+  Optimization method                           NLMINB
+  Number of model parameters                        44
+
+  Number of observations                           500
+  Number of missing patterns                         1
+
+Model Test User Model:
+                                                      
+  Test statistic                                17.590
+  Degrees of freedom                                21
+  P-value (Chi-square)                           0.675
+
+Parameter Estimates:
+
+  Standard errors                             Standard
+  Information                                 Observed
+  Observed information based on                Hessian
+
+Latent Variables:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+  RIx =~                                                                
+    Job_Stsfctn_T1    1.000                               0.318    0.217
+    Job_Stsfctn_T2    1.000                               0.318    0.213
+    Job_Stsfctn_T3    1.000                               0.318    0.213
+    Job_Stsfctn_T4    1.000                               0.318    0.218
+    Job_Stsfctn_T5    1.000                               0.318    0.214
+  RIy =~                                                                
+    Lif_Stsfctn_T1    1.000                               1.078    0.548
+    Lif_Stsfctn_T2    1.000                               1.078    0.550
+    Lif_Stsfctn_T3    1.000                               1.078    0.529
+    Lif_Stsfctn_T4    1.000                               1.078    0.534
+    Lif_Stsfctn_T5    1.000                               1.078    0.568
+  wx1 =~                                                                
+    Job_Stsfctn_T1    1.000                               1.429    0.976
+  wx2 =~                                                                
+    Job_Stsfctn_T2    1.000                               1.460    0.977
+  wx3 =~                                                                
+    Job_Stsfctn_T3    1.000                               1.462    0.977
+  wx4 =~                                                                
+    Job_Stsfctn_T4    1.000                               1.427    0.976
+  wx5 =~                                                                
+    Job_Stsfctn_T5    1.000                               1.452    0.977
+  wy1 =~                                                                
+    Lif_Stsfctn_T1    1.000                               1.645    0.836
+  wy2 =~                                                                
+    Lif_Stsfctn_T2    1.000                               1.637    0.835
+  wy3 =~                                                                
+    Lif_Stsfctn_T3    1.000                               1.728    0.849
+  wy4 =~                                                                
+    Lif_Stsfctn_T4    1.000                               1.707    0.846
+  wy5 =~                                                                
+    Lif_Stsfctn_T5    1.000                               1.562    0.823
+
+Regressions:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+  wx2 ~                                                                 
+    wx1              -0.073    0.050   -1.459    0.145   -0.072   -0.072
+    wy1              -0.043    0.045   -0.949    0.342   -0.048   -0.048
+  wy2 ~                                                                 
+    wx1              -0.024    0.058   -0.415    0.678   -0.021   -0.021
+    wy1              -0.090    0.055   -1.628    0.104   -0.091   -0.091
+  wx3 ~                                                                 
+    wx2              -0.070    0.049   -1.418    0.156   -0.070   -0.070
+    wy2               0.020    0.046    0.430    0.667    0.022    0.022
+  wy3 ~                                                                 
+    wx2               0.061    0.059    1.033    0.302    0.052    0.052
+    wy2               0.030    0.059    0.515    0.607    0.029    0.029
+  wx4 ~                                                                 
+    wx3              -0.023    0.048   -0.479    0.632   -0.023   -0.023
+    wy3              -0.033    0.042   -0.780    0.435   -0.040   -0.040
+  wy4 ~                                                                 
+    wx3               0.170    0.060    2.815    0.005    0.146    0.146
+    wy3              -0.191    0.055   -3.464    0.001   -0.194   -0.194
+  wx5 ~                                                                 
+    wx4              -0.027    0.050   -0.544    0.586   -0.027   -0.027
+    wy4              -0.024    0.043   -0.569    0.569   -0.028   -0.028
+  wy5 ~                                                                 
+    wx4              -0.032    0.057   -0.561    0.575   -0.029   -0.029
+    wy4              -0.022    0.051   -0.437    0.662   -0.025   -0.025
+
+Covariances:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+  wx1 ~~                                                                
+    wy1               0.045    0.117    0.382    0.702    0.019    0.019
+ .wx2 ~~                                                                
+   .wy2               0.020    0.124    0.164    0.870    0.009    0.009
+ .wx3 ~~                                                                
+   .wy3               0.100    0.128    0.785    0.432    0.040    0.040
+ .wx4 ~~                                                                
+   .wy4              -0.272    0.126   -2.153    0.031   -0.115   -0.115
+ .wx5 ~~                                                                
+   .wy5               0.017    0.114    0.152    0.879    0.008    0.008
+  RIx ~~                                                                
+    RIy               0.010    0.045    0.225    0.822    0.029    0.029
+
+Intercepts:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+   .Job_Stsfctn_T1    7.488    0.065  114.332    0.000    7.488    5.113
+   .Job_Stsfctn_T2    7.550    0.067  113.003    0.000    7.550    5.054
+   .Job_Stsfctn_T3    7.456    0.067  111.438    0.000    7.456    4.984
+   .Job_Stsfctn_T4    7.468    0.065  114.246    0.000    7.468    5.109
+   .Job_Stsfctn_T5    7.520    0.066  113.142    0.000    7.520    5.060
+   .Lif_Stsfctn_T1    7.066    0.088   80.340    0.000    7.066    3.593
+   .Lif_Stsfctn_T2    7.012    0.088   80.014    0.000    7.012    3.578
+   .Lif_Stsfctn_T3    7.066    0.091   77.576    0.000    7.066    3.469
+   .Lif_Stsfctn_T4    7.150    0.090   79.195    0.000    7.150    3.542
+   .Lif_Stsfctn_T5    6.936    0.085   81.726    0.000    6.936    3.655
+    RIx               0.000                               0.000    0.000
+    RIy               0.000                               0.000    0.000
+    wx1               0.000                               0.000    0.000
+   .wx2               0.000                               0.000    0.000
+   .wx3               0.000                               0.000    0.000
+   .wx4               0.000                               0.000    0.000
+   .wx5               0.000                               0.000    0.000
+    wy1               0.000                               0.000    0.000
+   .wy2               0.000                               0.000    0.000
+   .wy3               0.000                               0.000    0.000
+   .wy4               0.000                               0.000    0.000
+   .wy5               0.000                               0.000    0.000
+
+Variances:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+    RIx               0.101    0.039    2.575    0.010    1.000    1.000
+    RIy               1.162    0.109   10.610    0.000    1.000    1.000
+    wx1               2.043    0.138   14.818    0.000    1.000    1.000
+    wy1               2.706    0.203   13.298    0.000    1.000    1.000
+   .wx2               2.114    0.146   14.532    0.000    0.992    0.992
+   .wy2               2.655    0.213   12.441    0.000    0.991    0.991
+   .wx3               2.126    0.146   14.602    0.000    0.995    0.995
+   .wy3               2.976    0.226   13.197    0.000    0.996    0.996
+   .wx4               2.031    0.137   14.775    0.000    0.998    0.998
+   .wy4               2.749    0.231   11.909    0.000    0.943    0.943
+   .wx5               2.105    0.143   14.719    0.000    0.999    0.999
+   .wy5               2.437    0.187   13.026    0.000    0.999    0.999
+   .Job_Stsfctn_T1    0.000                               0.000    0.000
+   .Job_Stsfctn_T2    0.000                               0.000    0.000
+   .Job_Stsfctn_T3    0.000                               0.000    0.000
+   .Job_Stsfctn_T4    0.000                               0.000    0.000
+   .Job_Stsfctn_T5    0.000                               0.000    0.000
+   .Lif_Stsfctn_T1    0.000                               0.000    0.000
+   .Lif_Stsfctn_T2    0.000                               0.000    0.000
+   .Lif_Stsfctn_T3    0.000                               0.000    0.000
+   .Lif_Stsfctn_T4    0.000                               0.000    0.000
+   .Lif_Stsfctn_T5    0.000                               0.000    0.000</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Creating variable (names) from output to be used for inline text</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>tidyfit <span class="ot">&lt;-</span> <span class="fu">tidy</span>(fit)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#wx1 ~~ wy1</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract p-values for specific terms into tibbles</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>intercept_variance_estimate_V1 <span class="ot">&lt;-</span> <span class="fu">round</span>(tidyfit[tidyfit<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"RIx =~ Job_Satisfaction_T1"</span>, <span class="st">"estimate"</span>], <span class="dv">3</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>slope_variance_estimate_V1 <span class="ot">&lt;-</span> <span class="fu">round</span>(tidyfit[tidyfit<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"wx2 ~ wx1"</span>, <span class="st">"estimate"</span>], <span class="dv">3</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract values from the tibble for inline text</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>test1 <span class="ot">&lt;-</span> intercept_variance_estimate_V1<span class="sc">$</span>estimate</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>test2 <span class="ot">&lt;-</span> slope_variance_estimate_V1<span class="sc">$</span>estimate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="interpreting-the-results" class="level3">
+<h3 class="anchored" data-anchor-id="interpreting-the-results">Interpreting the Results</h3>
+<p>1 -0.073</p>
+<p>A State-Trait Model was fitted to decompose the observed variance in the repeated measurements into a stable, trait component and a fluctuating, state component. The trait component captures the stable, consistent characteristics of an individual over the different time points, while the state component captures the fluctuations or changes that are specific to each time point.</p>
+<p>From the <code>summary</code> output: - The estimated loadings for the trait component can provide insight into the relative consistency of the trait over time. - The estimated loadings for the state component can highlight the relative magnitude of the fluctuating component at each time point. - The residual variances provide information on the unexplained variance for each time point after accounting for the trait and state components.</p>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>The State-Trait Model allows us to understand the proportion of variance in the observed data that can be attributed to stable, trait-like characteristics versus transient, state-like fluctuations. This provides a richer understanding of the dynamics of the measured construct over time, moving beyond a simple comparison of mean levels.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

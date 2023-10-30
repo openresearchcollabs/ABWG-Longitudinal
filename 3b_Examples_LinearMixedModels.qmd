@@ -1,6 +1,7 @@
 ---
 title: "Linear Mixed Models: Random Intercept and Slope"
 author: "Biostatistics Working Group"
+
 ---
 
 # LMM: Intercept & Slope {.unnumbered}

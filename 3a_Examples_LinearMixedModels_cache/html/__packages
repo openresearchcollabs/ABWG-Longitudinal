@@ -15,3 +15,4 @@ lme4
 report
 broom
 gridExtra
+broom.mixed

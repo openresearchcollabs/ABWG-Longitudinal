@@ -3,8 +3,6 @@ title: "Difference Scores: Paired Samples T-test"
 author: "Biostatistics Working Group"
 ---
 
-# Paired Samples T-test {.unnumbered}
-
 ## Overview
 
 <p>

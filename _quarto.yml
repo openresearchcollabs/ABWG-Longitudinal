@@ -51,6 +51,7 @@ website:
   twitter-card: true
   site-url: https://swhawes.github.io/abcd-biostats-longitudinal/
   page-navigation: true
+  open-graph: true
   navbar:
     background: darkblue #slategray #primary #goldenrod
     search: true
@@ -63,17 +64,17 @@ website:
         file: manuscript.qmd
       - text: "Tutorials"
         file: tutorials.qmd
-      - text: "Examples"
+      - text: "ABCD Examples"
         file: examples.qmd
-      - text: "Explanations"
-        file: explanations.qmd
-      - text: "Reference"
-        file: reference.qmd
+      - text: "Contribute"
+        file: contribute.qmd
+      #- text: "Reference"
+       # file: reference.qmd
       #- text: "Documentation"
       #  file: documentation.qmd
     tools:
-      - icon: twitter
-        href: https://twitter.com
+      #- icon: twitter
+        #href: https://twitter.com
       - icon: github
         menu:
           - text: Source Code
@@ -87,8 +88,8 @@ website:
       logo: "./figures/lights.png"
       pinned: true
       tools:
-        - icon: twitter
-          href: https://twitter.com
+        #- icon: twitter
+         # href: https://twitter.com
         - icon: github
           menu:
             - text: Source Code
@@ -106,7 +107,7 @@ website:
         - tutorials.qmd
         - section: "Traditional Linear Models"
           contents:
-            - 1_Tutorials_DifferenceScores.qmd
+            - subfoldertest/1_Tutorials_DifferenceScores.qmd
             - 2_Tutorials_ResidualizedChangeScores.qmd
             - 3_Tutorials_LinearMixedModels.qmd
         - section: "Traditional Non-linear Models"
@@ -259,9 +260,10 @@ website:
         href: reference.qmd
 format:
   html:
-    theme:
-      light: cosmos #flatly
-      dark: darkly
+    theme: styles.scss
+    #theme:
+      #light: cosmos #flatly
+      #dark: darkly
     css: styles.css
     toc: true
     toc-depth: 1

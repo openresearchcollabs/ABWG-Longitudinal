@@ -1,59 +1,39 @@
----
-title: "sandbox"
----
 
-
-```{r descriptives}
-#| echo: TRUE
-#| messages: FALSE
-#| warning: FALSE
-
-library(tidyverse)    # Collection of R packages for data science
-library(table1)       # Tables of Descriptive Statistics in HTML
-
-df <- read_csv("/Users/shawes/df.csv")
-
-df_descriptivestable <- df
-
-df_descriptivestable <- df_descriptivestable %>%
-    select(
-        src_subject_id, eventname, age, sex, race.4level, hisp, high.educ.bl,
-        household.income.bl, nihtbx_totalcomp_fc, anthroheightcalc, anthroweightcalc
-    )
-
-df_descriptivestable$eventname <-
-    factor(df_descriptivestable$eventname,
-        labels = c(
-            "Baseline", # Reference
-            "Year_1",
-            "Year_2",
-            "Year_3",
-            "Year_4"
-        )
-    )
-
-df_descriptivestable$sex <-
-    factor(df_descriptivestable$sex,
-        labels = c(
-            "Male",
-            "Female"
-        )
-    )
-
-# Rename columns
-colnames(df_descriptivestable)[colnames(df_descriptivestable) %in% c("age", "sex", "race.4level", "hisp", "high.educ.bl", "household.income.bl", "nihtbx_totalcomp_fc", "anthroheightcalc", "anthroweightcalc")] <-
-    c(
-        "Age", "Sex", "Race", "Hispanic", "Education", "Income", "Cognition",
-        "Height", "Weight"
-    )
-
-# Now, re-run the table1 function
-table1_result <- table1(
-    ~ Age + Sex + Race + Hispanic + Education + Income +
-        Cognition + Height + Weight | eventname,
-    data = df_descriptivestable, topclass = "Rtable1-zebra",
-)
-
-print(table1_result)
+```{ojs}
+d3 = require("d3@7")
 
 ```
+
+afwsferagfvre
+
+```{ojs}
+ring = {
+ 
+  const svg = d3.select(createSVG(width, height));
+  
+  const innerRadius = d3.min([width, height])/5
+  const outerRadius = d3.min([width, height])/3
+  
+  const innerCircle = svg.append("circle")
+      .attr("cx", width/2)
+      .attr("cy", height/2)
+      .attr("r", innerRadius)
+      .style("fill","none")
+      .style("stroke", "#000")
+      
+ const outerCircle = svg.append("circle")
+      .attr("cx", width/2)
+      .attr("cy", height/2)
+      .attr("r", outerRadius)
+      .style("fill","none")
+      .style("stroke", "#000")
+   
+  return svg.node()
+}
+```
+
+
+
+
+
+

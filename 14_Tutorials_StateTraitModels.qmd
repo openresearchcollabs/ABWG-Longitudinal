@@ -3,6 +3,15 @@ title: "State-Trait Models"
 author: "Biostatistics Working Group"
 ---
 
+Perhaps see: 
+@article{stadtbaeumer2022comparing,
+  title={Comparing revised latent state--trait models including autoregressive effects.},
+  author={Stadtbaeumer, Nele and Kreissl, Stefanie and Mayer, Axel},
+  journal={Psychological Methods},
+  year={2022},
+  publisher={American Psychological Association}
+}
+
 ## Overview
 
 Latent State-Trait (LST) models aim to decompose the variability in repeated measurements into two main components: state and trait. The `state` component captures the situational or momentary fluctuations in a characteristic. States are transient and can change based on external influences or specific conditions at a particular time point. The `trait` component represents the consistent, stable part of an individual's characteristic or behavior. It captures what remains constant across different situations and times. Traits are intrinsic to an individual and can be thought of as their 'typical' or 'average' level of the measured characteristic. LSTMs allow researchers to quantify how much of the observed variability in data at a given time point can be attributed to stable, person-specific traits and how much can be attributed to fluctuating states.
@@ -12,9 +21,9 @@ Latent State-Trait (LST) models aim to decompose the variability in repeated mea
 ### When to use Latent State-Trait Models?
 You should consider Latent State-Trait Models in the following situations:
 
-1. You want to discern: The stable, enduring qualities (traits) from those that vary due to temporary conditions (states) in an individual's behavior or emotions.
+1. You want to discern: Stable, persistent processes (traits) from those that vary due to temporary conditions (states).
 2. Your variable: Reflects a combination of stable characteristics and situational influences, measured repeatedly over time or situations.
-3. You are interested in: Disentangling the variance attributable to enduring individual differences from that due to situational or momentary influences.
+3. You are interested in: Disentangling the variance attributable to stable individual differences from that due to situational or momentary influences.
 
 ### Getting Started with Latent State-Trait Models
 In this tutorial, we will guide you through an example of a latent state-trait model using a small dataset. By the time you complete this tutorial, you will be equipped to:
@@ -81,7 +90,7 @@ model <- '
 #### Fit Model
 ```{r}
 # Fit the State-Trait Model
-fit <- sem(model, data = data_wide)
+fit <- sem(model, data = data)
 ```
 
 #### Model Summary
