@@ -147,19 +147,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./examples.html" rel="" target="">
- <span class="menu-text">Examples</span></a>
+ <span class="menu-text">ABCD Examples</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./explanations.html" rel="" target="">
- <span class="menu-text">Explanations</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./reference.html" rel="" target="">
- <span class="menu-text">Reference</span></a>
+    <a class="nav-link" href="./contribute.qmd" rel="" target="">
+ <span class="menu-text">Contribute</span></a>
   </li>  
 </ul>
             <div class="quarto-navbar-tools ms-auto">
-    <a href="https://twitter.com" rel="" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
     <div class="dropdown">
       <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
@@ -202,7 +197,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <img src="././figures/lights.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
       <div class="sidebar-tools-main">
-    <a href="https://twitter.com" rel="" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
     <div class="dropdown">
       <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
       <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
@@ -230,7 +224,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./tutorials.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><i class="bi bi-book"></i> What are Tutorials?</span></a>
+ <span class="menu-text">Tutorials: A Brief Overview</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -570,7 +564,6 @@ Estimated Correlation Parameters:
 Number of clusters:   500   Maximum cluster size: 4 </code></pre>
 </div>
 </div>
-<p>0.657 0</p>
 </section>
 </section>
 <section id="interpreting-the-results" class="level3">
@@ -1034,25 +1027,22 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb8-142"><a href="#cb8-142"></a></span>
 <span id="cb8-143"><a href="#cb8-143"></a><span class="in">```</span></span>
 <span id="cb8-144"><a href="#cb8-144"></a></span>
-<span id="cb8-145"><a href="#cb8-145"></a><span class="in">`r TimePointT2_estimate`</span></span>
-<span id="cb8-146"><a href="#cb8-146"></a><span class="in">`r TimePointT2_pvalue`</span></span>
+<span id="cb8-145"><a href="#cb8-145"></a><span class="fu">### Interpreting the Results</span></span>
+<span id="cb8-146"><a href="#cb8-146"></a>A marginal model was fitted using the Generalized Estimating Equations (GEE) approach to assess the effect of <span class="in">`TimePoint`</span> on <span class="in">`Job_Satisfaction`</span> while accounting for the correlation of observations within individuals. The model used an exchangeable correlation structure, assuming that observations within the same individual have the same correlation. The output of the <span class="in">`geeglm`</span> function provides estimates for the coefficients, along with their standard errors, Wald statistics, and p-values. The coefficient for <span class="in">`TimePoint`</span> indicates how the log odds of Job Satisfaction change from one time point to another. If the p-value associated with this coefficient is less than 0.05, it suggests that there is a statistically significant change in Job Satisfaction across the time points. For a more detailed interpretation, we would look at the specific values obtained from the <span class="in">`print(model)`</span> output, such as:</span>
 <span id="cb8-147"><a href="#cb8-147"></a></span>
-<span id="cb8-148"><a href="#cb8-148"></a><span class="fu">### Interpreting the Results</span></span>
-<span id="cb8-149"><a href="#cb8-149"></a>A marginal model was fitted using the Generalized Estimating Equations (GEE) approach to assess the effect of <span class="in">`TimePoint`</span> on <span class="in">`Job_Satisfaction`</span> while accounting for the correlation of observations within individuals. The model used an exchangeable correlation structure, assuming that observations within the same individual have the same correlation. The output of the <span class="in">`geeglm`</span> function provides estimates for the coefficients, along with their standard errors, Wald statistics, and p-values. The coefficient for <span class="in">`TimePoint`</span> indicates how the log odds of Job Satisfaction change from one time point to another. If the p-value associated with this coefficient is less than 0.05, it suggests that there is a statistically significant change in Job Satisfaction across the time points. For a more detailed interpretation, we would look at the specific values obtained from the <span class="in">`print(model)`</span> output, such as:</span>
+<span id="cb8-148"><a href="#cb8-148"></a><span class="ss">- </span>Coefficient (Estimate) for <span class="in">`TimePoint`</span>: <span class="in">`r TimePointT2_estimate`</span></span>
+<span id="cb8-149"><a href="#cb8-149"></a><span class="ss">- </span>Associated p-value: <span class="in">`r TimePointT2_pvalue`</span>)</span>
 <span id="cb8-150"><a href="#cb8-150"></a></span>
-<span id="cb8-151"><a href="#cb8-151"></a><span class="ss">- </span>Coefficient (Estimate) for <span class="in">`TimePoint`</span>: <span class="in">`r TimePointT2_estimate`</span></span>
-<span id="cb8-152"><a href="#cb8-152"></a><span class="ss">- </span>Associated p-value: <span class="in">`r TimePointT2_pvalue`</span>)</span>
+<span id="cb8-151"><a href="#cb8-151"></a><span class="fu">## Conclusion</span></span>
+<span id="cb8-152"><a href="#cb8-152"></a>If the p-value for the <span class="in">`TimePoint`</span> coefficient is less than 0.05, we conclude that there is a statistically significant change in <span class="in">`Job_Satisfaction`</span> scores between the time points. Otherwise, there is no significant change based on the marginal model results. The exact nature (increase/decrease) of the change can be inferred from the sign (+/-) of the coefficient.</span>
 <span id="cb8-153"><a href="#cb8-153"></a></span>
-<span id="cb8-154"><a href="#cb8-154"></a><span class="fu">## Conclusion</span></span>
-<span id="cb8-155"><a href="#cb8-155"></a>If the p-value for the <span class="in">`TimePoint`</span> coefficient is less than 0.05, we conclude that there is a statistically significant change in <span class="in">`Job_Satisfaction`</span> scores between the time points. Otherwise, there is no significant change based on the marginal model results. The exact nature (increase/decrease) of the change can be inferred from the sign (+/-) of the coefficient.</span>
+<span id="cb8-154"><a href="#cb8-154"></a></span>
+<span id="cb8-155"><a href="#cb8-155"></a></span>
 <span id="cb8-156"><a href="#cb8-156"></a></span>
 <span id="cb8-157"><a href="#cb8-157"></a></span>
 <span id="cb8-158"><a href="#cb8-158"></a></span>
 <span id="cb8-159"><a href="#cb8-159"></a></span>
 <span id="cb8-160"><a href="#cb8-160"></a></span>
-<span id="cb8-161"><a href="#cb8-161"></a></span>
-<span id="cb8-162"><a href="#cb8-162"></a></span>
-<span id="cb8-163"><a href="#cb8-163"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

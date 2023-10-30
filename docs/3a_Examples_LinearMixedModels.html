@@ -174,19 +174,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./examples.html" rel="" target="">
- <span class="menu-text">Examples</span></a>
+ <span class="menu-text">ABCD Examples</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./explanations.html" rel="" target="">
- <span class="menu-text">Explanations</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./reference.html" rel="" target="">
- <span class="menu-text">Reference</span></a>
+    <a class="nav-link" href="./contribute.qmd" rel="" target="">
+ <span class="menu-text">Contribute</span></a>
   </li>  
 </ul>
             <div class="quarto-navbar-tools ms-auto">
-    <a href="https://twitter.com" rel="" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
     <div class="dropdown">
       <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
@@ -229,7 +224,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <img src="././figures/lights.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
       <div class="sidebar-tools-main">
-    <a href="https://twitter.com" rel="" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-twitter"></i></a>
     <div class="dropdown">
       <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
       <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
@@ -257,7 +251,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./examples.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Examples: A Brief Overview</span></a>
+ <span class="menu-text"><i class="bi bi-book"></i> Examples</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -841,7 +835,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>::: blue</p>
 <p>The code fits a linear mixed model to predict the ‘Height’ variable based on time points (‘eventname’) and handedness (‘Handedness’), while accounting for individual-level variability by including random intercepts for each participant (‘src_subject_id’). The results of the model are then printed to provide a summary of the fitted model parameters.</p>
 <p><strong>STEP 1: Compute LMM Model with Random Intercepts</strong></p>
-<div class="cell" data-hash="3a_Examples_LinearMixedModels_cache/html/build-model-1_d882c4feb774226871746b953e63bae7">
+<div class="cell" data-hash="3a_Examples_LinearMixedModels_cache/html/build-model-1_6ee495a962c82fe8e733ac6408fa9b62">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r fold-hide number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="do">## Linear Mixed Model with a random intercept (LMM-ri)</span></span>
@@ -930,9 +924,7 @@ sexMale or other -0.04379154  0.188725847</code></pre>
 the part related to the fixed effects alone (marginal R2) is of 0.41</code></pre>
 </div>
 </div>
-<p>The code provided executes a linear mixed model (LMM) to predict children’s height across different time points (Baseline, Year_1, Year_2, Year_3, and Year_4), and also takes into account their handedness (Handedness). This model accounts for individual variability in height by including a random intercept for each subject (src_subject_id). The output indicates that the model was fit using the REML (Restricted Maximum Likelihood) criterion. The random intercept for the src_subject_id has a standard deviation of 2.147 units, and the residual standard deviation is 2.257 units. The fixed effects section provides the coefficients for the intercept, eventname, and two levels of the Handedness variable.</p>
-<p>From the model summary: The intercept, corresponding to the reference levels of the predictors (presumably the baseline event and right-handedness), is estimated at <strong>r fixed_effects(model)[1]</strong> units, and this effect is highly significant. The effect of the linear term for eventname is positive and statistically significant, suggesting an increase of approximately <strong>r eventname_effect</strong> units in height for each unit change in eventname. Regarding handedness, children who are left-handed show a non-significant increase in height of about <strong>r left_handed_effect</strong> units compared to right-handed children, while those with mixed-handedness show a significant increase of <strong>r mixed_handed_effect</strong> units.</p>
-<p>The model’s explanatory power is highlighted by a conditional R2 of <strong>r conditional_R2</strong>, meaning it explains **r conditional_R2*100<strong>% of the total variance when considering both fixed and random effects. The marginal R2, which considers only the fixed effects, is </strong>r marginal_R2**.</p>
+<p>The code provided executes a linear mixed model (LMM) to predict children’s height across different time points (Baseline, Year_1, Year_2, Year_3, and Year_4), and also takes into account their sex. This model accounts for individual variability in height by including a random intercept for each subject (src_subject_id). The output indicates that the model was fit using the REML (Restricted Maximum Likelihood) criterion.</p>
 <section id="model-plots" class="level3">
 <h3 class="anchored" data-anchor-id="model-plots">Model Plots</h3>
 <p>The following set of plots are used to facilitate model diagnostics. The first is a histogram showcasing the distribution of random intercepts for individual subjects, indicating variations in height not explained by the fixed effects. The second depicts residuals versus fitted values, helping assess the model’s fit and potential heteroscedasticity. The third contrasts observed and predicted height values across different time points, offering a side-by-side evaluation of the model’s predictions against actual observations.</p>
@@ -1007,8 +999,10 @@ Baseline   Year_1   Year_2   Year_3   Year_4
 <p><img src="3a_Examples_LinearMixedModels_files/figure-html/trajectoryplot-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>60.025</p>
-<p>The provided code visualizes individual and group-mean height trajectories over different event names. Individual height trajectories for each subject are depicted as faded gray lines, allowing for a clear view of the variability among subjects. In contrast, the overall group-mean trajectory, which represents the average trend across all individuals for each event name, is highlighted in blue. The average height at r mean(df_descriptable<span class="math inline">Height) has increased by **r mean(df_descriptable</span>Height_followup - df_descriptable$Height)** units from baseline. The attached chart effectively communicates these trajectories, emphasizing the average trend of the group while also showcasing individual differences.</p>
+<p>The estimate of the random intercept was 60.025 (<em>SE</em> 0.043). The fixed effects section provides the coefficients for the intercept, eventname, and the sex variable.</p>
+<p>From the model summary: The intercept, corresponding to the reference levels of the predictors (presumably the baseline event and sex-male), is estimated at 60.025 units, and this effect is highly significant. The effect of the linear term for eventname is positive and statistically significant, suggesting an increase of approximately ##r eventname_estimate## units in height for each unit change in eventname. Regarding sex, boys show a xxxxxx increase in height of about #r sex_effect# units compared to girls.</p>
+<p>The model’s explanatory power is highlighted by a conditional R2 of <strong>r conditional_R2</strong>, meaning it explains **r conditional_R2*100<strong>% of the total variance when considering both fixed and random effects. The marginal R2, which considers only the fixed effects, is </strong>r marginal_R2**.</p>
+<p>The provided code visualizes individual and group-mean height trajectories over different event names. Individual height trajectories for each subject are depicted as faded gray lines, allowing for a clear view of the variability among subjects. In contrast, the overall group-mean trajectory, which represents the average trend across all individuals for each event name, is highlighted in blue.</p>
 </section>
 </div></section>
 <section id="wrapping-up" class="level2">
@@ -1020,7 +1014,7 @@ Baseline   Year_1   Year_2   Year_3   Year_4
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
 <div class="blue">
-<p>The linear mixed model analysis was conducted to predict children’s height across different time points (Baseline, Year_1, Year_2, Year_3, and Year_4) using the event name (eventname) and handedness (Handedness). The eventname predictor was statistically significant with a p-value of r format.pval(fixed_effects<span class="math inline">Pr(&gt;|t|)[2], digits = 3). For the handedness variable, children with mixed-handedness showed a significant increase in height of about r round(fixed_effects</span>Estimate[4], 4) units compared to right-handed children with a p-value of r format.pval(fixed_effects<span class="math inline">Pr(&gt;|t|)[4], digits = 3). On the other hand, left-handed children's height increase, although positive at r round(fixed_effects</span>Estimate[3], 4) units, was not statistically significant with a p-value of r format.pval(fixed_effects<span class="math inline">Pr(&gt;|t|)[3], digits = 3). The model's overall ability to explain the variance in height was substantial, with a conditional R^2 of r report_performance(model)</span>Conditional R2[1], indicating that it accounted for this proportion of the variability in height when considering both fixed and random effects. The marginal R^2 was r report_performance(model)$Marginal R2[1], meaning that the fixed effects alone explained this proportion of the variability.</p>
+<p>The linear mixed model analysis was conducted to predict children’s height across different time points (Baseline, Year_1, Year_2, Year_3, and Year_4) using the event name (eventname) and height (Height). The eventname predictor was statistically significant with a p-value of r format.pval(fixed_effects<span class="math inline">Pr(&gt;|t|)[2], digits = 3). For the height variable, children with xxxx showed a significant increase in height of about r round(fixed_effects</span>Estimate[4], 4) units compared to xxxx children with a p-value of r format.pval(fixed_effects<span class="math inline">Pr(&gt;|t|)[4], digits = 3). On the other hand, xxxx children's height increase, although positive at r round(fixed_effects</span>Estimate[3], 4) units, was not statistically significant with a p-value of r format.pval(fixed_effects<span class="math inline">Pr(&gt;|t|)[3], digits = 3). The model's overall ability to explain the variance in height was substantial, with a conditional R^2 of r report_performance(model)</span>Conditional R2[1], indicating that it accounted for this proportion of the variability in height when considering both fixed and random effects. The marginal R^2 was r report_performance(model)$Marginal R2[1], meaning that the fixed effects alone explained this proportion of the variability.</p>
 </div>
 </div>
 </div>
@@ -1613,140 +1607,148 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb18-267"><a href="#cb18-267"></a><span class="co">#| message: FALSE</span></span>
 <span id="cb18-268"><a href="#cb18-268"></a><span class="co">#| warning: FALSE</span></span>
 <span id="cb18-269"><a href="#cb18-269"></a><span class="co">#| echo: TRUE</span></span>
-<span id="cb18-270"><a href="#cb18-270"></a></span>
-<span id="cb18-271"><a href="#cb18-271"></a><span class="do">## Linear Mixed Model with a random intercept (LMM-ri)</span></span>
-<span id="cb18-272"><a href="#cb18-272"></a>model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(anthroheightcalc <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> eventname <span class="sc">+</span> sex <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>src_subject_id), <span class="at">data =</span> df, <span class="at">REML=</span>T)</span>
-<span id="cb18-273"><a href="#cb18-273"></a></span>
-<span id="cb18-274"><a href="#cb18-274"></a><span class="fu">print</span>(model)</span>
-<span id="cb18-275"><a href="#cb18-275"></a><span class="in">```</span></span>
-<span id="cb18-276"><a href="#cb18-276"></a></span>
-<span id="cb18-277"><a href="#cb18-277"></a><span class="in">```{r model-output}</span></span>
-<span id="cb18-278"><a href="#cb18-278"></a><span class="co">#| echo: TRUE</span></span>
-<span id="cb18-279"><a href="#cb18-279"></a><span class="co">#| messages: FALSE</span></span>
-<span id="cb18-280"><a href="#cb18-280"></a><span class="co">#| warning: FALSE</span></span>
-<span id="cb18-281"><a href="#cb18-281"></a><span class="co">#| code-summary: testing</span></span>
-<span id="cb18-282"><a href="#cb18-282"></a></span>
-<span id="cb18-283"><a href="#cb18-283"></a><span class="do">## Output and reports extending from the LMM-ri analyses</span></span>
-<span id="cb18-284"><a href="#cb18-284"></a><span class="fu">summary</span>(model)</span>
-<span id="cb18-285"><a href="#cb18-285"></a><span class="fu">confint</span>(model, <span class="at">level =</span> <span class="fl">0.95</span>, <span class="at">method =</span> <span class="st">"Wald"</span>)</span>
-<span id="cb18-286"><a href="#cb18-286"></a><span class="fu">report_performance</span>(model)</span>
-<span id="cb18-287"><a href="#cb18-287"></a></span>
-<span id="cb18-288"><a href="#cb18-288"></a><span class="in">```</span></span>
-<span id="cb18-289"><a href="#cb18-289"></a></span>
-<span id="cb18-290"><a href="#cb18-290"></a>The code provided executes a linear mixed model (LMM) to predict children's </span>
-<span id="cb18-291"><a href="#cb18-291"></a>height across different time points (Baseline, Year_1, Year_2, Year_3, and Year_4), and also takes into account their handedness (Handedness). This model accounts for individual variability in height by including a random intercept for each subject (src_subject_id). The output indicates that the model was fit using the REML (Restricted Maximum Likelihood) criterion. The random intercept for the src_subject_id has a standard deviation of 2.147 units, and the residual standard deviation is 2.257 units. The fixed effects section provides the coefficients for the intercept, eventname, and two levels of the Handedness variable.</span>
-<span id="cb18-292"><a href="#cb18-292"></a></span>
-<span id="cb18-293"><a href="#cb18-293"></a>From the model summary: The intercept, corresponding to the reference levels of the </span>
-<span id="cb18-294"><a href="#cb18-294"></a>predictors (presumably the baseline event and right-handedness), is estimated at </span>
-<span id="cb18-295"><a href="#cb18-295"></a>**r fixed_effects(model)[1]** units, and this effect is highly significant. The effect of the linear term for eventname is positive and statistically significant, suggesting an increase of approximately **r eventname_effect** units in height for each unit change in eventname. Regarding handedness, children who are left-handed show a non-significant increase in height of about **r left_handed_effect** units compared to right-handed children, while those with mixed-handedness show a significant increase of **r mixed_handed_effect** units.</span>
-<span id="cb18-296"><a href="#cb18-296"></a></span>
-<span id="cb18-297"><a href="#cb18-297"></a>The model's explanatory power is highlighted by a conditional R2 of **r conditional_R2**, meaning it explains **r conditional_R2*100**% of the total variance when considering both fixed and random effects. The marginal R2, which considers only the fixed effects, is **r marginal_R2**.</span>
-<span id="cb18-298"><a href="#cb18-298"></a></span>
-<span id="cb18-299"><a href="#cb18-299"></a><span class="fu">### Model Plots</span></span>
+<span id="cb18-270"><a href="#cb18-270"></a><span class="co">#| cache: true</span></span>
+<span id="cb18-271"><a href="#cb18-271"></a></span>
+<span id="cb18-272"><a href="#cb18-272"></a><span class="do">## Linear Mixed Model with a random intercept (LMM-ri)</span></span>
+<span id="cb18-273"><a href="#cb18-273"></a>model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(anthroheightcalc <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> eventname <span class="sc">+</span> sex <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>src_subject_id), <span class="at">data =</span> df, <span class="at">REML=</span>T)</span>
+<span id="cb18-274"><a href="#cb18-274"></a></span>
+<span id="cb18-275"><a href="#cb18-275"></a><span class="fu">print</span>(model)</span>
+<span id="cb18-276"><a href="#cb18-276"></a><span class="in">```</span></span>
+<span id="cb18-277"><a href="#cb18-277"></a></span>
+<span id="cb18-278"><a href="#cb18-278"></a><span class="in">```{r model-output}</span></span>
+<span id="cb18-279"><a href="#cb18-279"></a><span class="co">#| echo: TRUE</span></span>
+<span id="cb18-280"><a href="#cb18-280"></a><span class="co">#| messages: FALSE</span></span>
+<span id="cb18-281"><a href="#cb18-281"></a><span class="co">#| warning: FALSE</span></span>
+<span id="cb18-282"><a href="#cb18-282"></a><span class="co">#| code-summary: testing</span></span>
+<span id="cb18-283"><a href="#cb18-283"></a></span>
+<span id="cb18-284"><a href="#cb18-284"></a><span class="do">## Output and reports extending from the LMM-ri analyses</span></span>
+<span id="cb18-285"><a href="#cb18-285"></a><span class="fu">summary</span>(model)</span>
+<span id="cb18-286"><a href="#cb18-286"></a><span class="fu">confint</span>(model, <span class="at">level =</span> <span class="fl">0.95</span>, <span class="at">method =</span> <span class="st">"Wald"</span>)</span>
+<span id="cb18-287"><a href="#cb18-287"></a><span class="fu">report_performance</span>(model)</span>
+<span id="cb18-288"><a href="#cb18-288"></a></span>
+<span id="cb18-289"><a href="#cb18-289"></a><span class="in">```</span></span>
+<span id="cb18-290"><a href="#cb18-290"></a></span>
+<span id="cb18-291"><a href="#cb18-291"></a>The code provided executes a linear mixed model (LMM) to predict children's </span>
+<span id="cb18-292"><a href="#cb18-292"></a>height across different time points (Baseline, Year_1, Year_2, Year_3, and Year_4), and also takes into account their sex. This model accounts for individual variability in height by including a random intercept for each subject (src_subject_id). The output indicates that the model was fit using the REML (Restricted Maximum Likelihood) criterion. </span>
+<span id="cb18-293"><a href="#cb18-293"></a></span>
+<span id="cb18-294"><a href="#cb18-294"></a><span class="fu">### Model Plots</span></span>
+<span id="cb18-295"><a href="#cb18-295"></a></span>
+<span id="cb18-296"><a href="#cb18-296"></a>The following set of plots are used to facilitate model diagnostics. The first is a histogram showcasing the distribution of random intercepts for individual subjects, indicating variations in height not explained by the fixed effects. The second depicts residuals versus fitted values, helping assess the model's fit and potential heteroscedasticity. The third contrasts observed and predicted height values across different time points, offering a side-by-side evaluation of the model's predictions against actual observations.</span>
+<span id="cb18-297"><a href="#cb18-297"></a></span>
+<span id="cb18-298"><a href="#cb18-298"></a>::: blue</span>
+<span id="cb18-299"><a href="#cb18-299"></a><span class="in">```{r diagnosticplots}</span></span>
 <span id="cb18-300"><a href="#cb18-300"></a></span>
-<span id="cb18-301"><a href="#cb18-301"></a>The following set of plots are used to facilitate model diagnostics. The first is a histogram showcasing the distribution of random intercepts for individual subjects, indicating variations in height not explained by the fixed effects. The second depicts residuals versus fitted values, helping assess the model's fit and potential heteroscedasticity. The third contrasts observed and predicted height values across different time points, offering a side-by-side evaluation of the model's predictions against actual observations.</span>
-<span id="cb18-302"><a href="#cb18-302"></a></span>
-<span id="cb18-303"><a href="#cb18-303"></a>::: blue</span>
-<span id="cb18-304"><a href="#cb18-304"></a><span class="in">```{r diagnosticplots}</span></span>
-<span id="cb18-305"><a href="#cb18-305"></a></span>
-<span id="cb18-306"><a href="#cb18-306"></a><span class="co"># Extract the random effects</span></span>
-<span id="cb18-307"><a href="#cb18-307"></a>random_effects <span class="ot">&lt;-</span> <span class="fu">ranef</span>(model)[[<span class="dv">1</span>]]</span>
-<span id="cb18-308"><a href="#cb18-308"></a></span>
-<span id="cb18-309"><a href="#cb18-309"></a><span class="co"># Convert to dataframe</span></span>
-<span id="cb18-310"><a href="#cb18-310"></a>random_effects_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Intercept =</span> random_effects<span class="sc">$</span><span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span>)</span>
+<span id="cb18-301"><a href="#cb18-301"></a><span class="co"># Extract the random effects</span></span>
+<span id="cb18-302"><a href="#cb18-302"></a>random_effects <span class="ot">&lt;-</span> <span class="fu">ranef</span>(model)[[<span class="dv">1</span>]]</span>
+<span id="cb18-303"><a href="#cb18-303"></a></span>
+<span id="cb18-304"><a href="#cb18-304"></a><span class="co"># Convert to dataframe</span></span>
+<span id="cb18-305"><a href="#cb18-305"></a>random_effects_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Intercept =</span> random_effects<span class="sc">$</span><span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span>)</span>
+<span id="cb18-306"><a href="#cb18-306"></a></span>
+<span id="cb18-307"><a href="#cb18-307"></a><span class="co"># Plot 1: Histogram</span></span>
+<span id="cb18-308"><a href="#cb18-308"></a>hist_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(random_effects_df, <span class="fu">aes</span>(<span class="at">x =</span> Intercept)) <span class="sc">+</span></span>
+<span id="cb18-309"><a href="#cb18-309"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> ..density..), <span class="at">bins =</span> <span class="dv">30</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">fill =</span> <span class="st">"lightblue"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Histogram of Random Effects"</span>, <span class="at">x =</span> <span class="st">"Random Intercept Values"</span>, <span class="at">y =</span> <span class="st">"Density"</span>) <span class="sc">+</span></span>
+<span id="cb18-310"><a href="#cb18-310"></a>  <span class="fu">theme_minimal</span>()</span>
 <span id="cb18-311"><a href="#cb18-311"></a></span>
-<span id="cb18-312"><a href="#cb18-312"></a><span class="co"># Plot 1: Histogram</span></span>
-<span id="cb18-313"><a href="#cb18-313"></a>hist_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(random_effects_df, <span class="fu">aes</span>(<span class="at">x =</span> Intercept)) <span class="sc">+</span></span>
-<span id="cb18-314"><a href="#cb18-314"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> ..density..), <span class="at">bins =</span> <span class="dv">30</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">fill =</span> <span class="st">"lightblue"</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Histogram of Random Effects"</span>, <span class="at">x =</span> <span class="st">"Random Intercept Values"</span>, <span class="at">y =</span> <span class="st">"Density"</span>) <span class="sc">+</span></span>
-<span id="cb18-315"><a href="#cb18-315"></a>  <span class="fu">theme_minimal</span>()</span>
-<span id="cb18-316"><a href="#cb18-316"></a></span>
-<span id="cb18-317"><a href="#cb18-317"></a><span class="co"># Plot 2: Residuals vs Fitted Values</span></span>
-<span id="cb18-318"><a href="#cb18-318"></a>resid_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="cn">NULL</span>, <span class="fu">aes</span>(<span class="at">x =</span> fitted_values, <span class="at">y =</span> residuals)) <span class="sc">+</span></span>
-<span id="cb18-319"><a href="#cb18-319"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb18-320"><a href="#cb18-320"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb18-321"><a href="#cb18-321"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Residuals vs Fitted Values"</span>, <span class="at">x =</span> <span class="st">"Fitted Values"</span>, <span class="at">y =</span> <span class="st">"Residuals"</span>) <span class="sc">+</span></span>
-<span id="cb18-322"><a href="#cb18-322"></a>  <span class="fu">theme_minimal</span>()</span>
-<span id="cb18-323"><a href="#cb18-323"></a></span>
-<span id="cb18-324"><a href="#cb18-324"></a><span class="in">```</span></span>
+<span id="cb18-312"><a href="#cb18-312"></a><span class="co"># Plot 2: Residuals vs Fitted Values</span></span>
+<span id="cb18-313"><a href="#cb18-313"></a>resid_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="cn">NULL</span>, <span class="fu">aes</span>(<span class="at">x =</span> fitted_values, <span class="at">y =</span> residuals)) <span class="sc">+</span></span>
+<span id="cb18-314"><a href="#cb18-314"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb18-315"><a href="#cb18-315"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb18-316"><a href="#cb18-316"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Residuals vs Fitted Values"</span>, <span class="at">x =</span> <span class="st">"Fitted Values"</span>, <span class="at">y =</span> <span class="st">"Residuals"</span>) <span class="sc">+</span></span>
+<span id="cb18-317"><a href="#cb18-317"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb18-318"><a href="#cb18-318"></a></span>
+<span id="cb18-319"><a href="#cb18-319"></a><span class="in">```</span></span>
+<span id="cb18-320"><a href="#cb18-320"></a></span>
+<span id="cb18-321"><a href="#cb18-321"></a><span class="in">```{r trajectoryplot}</span></span>
+<span id="cb18-322"><a href="#cb18-322"></a></span>
+<span id="cb18-323"><a href="#cb18-323"></a><span class="co"># Extract the data frame used in the model</span></span>
+<span id="cb18-324"><a href="#cb18-324"></a>model_data <span class="ot">&lt;-</span> model<span class="sc">@</span>frame</span>
 <span id="cb18-325"><a href="#cb18-325"></a></span>
-<span id="cb18-326"><a href="#cb18-326"></a><span class="in">```{r trajectoryplot}</span></span>
-<span id="cb18-327"><a href="#cb18-327"></a></span>
-<span id="cb18-328"><a href="#cb18-328"></a><span class="co"># Extract the data frame used in the model</span></span>
-<span id="cb18-329"><a href="#cb18-329"></a>model_data <span class="ot">&lt;-</span> model<span class="sc">@</span>frame</span>
-<span id="cb18-330"><a href="#cb18-330"></a></span>
-<span id="cb18-331"><a href="#cb18-331"></a><span class="co"># Extract unique subject IDs from the model's data</span></span>
-<span id="cb18-332"><a href="#cb18-332"></a>original_subject_ids <span class="ot">&lt;-</span> <span class="fu">unique</span>(model_data<span class="sc">$</span>src_subject_id)</span>
-<span id="cb18-333"><a href="#cb18-333"></a></span>
-<span id="cb18-334"><a href="#cb18-334"></a><span class="co"># Subset the original data to include only those subjects</span></span>
-<span id="cb18-335"><a href="#cb18-335"></a>df_subset <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(src_subject_id <span class="sc">%in%</span> original_subject_ids)</span>
-<span id="cb18-336"><a href="#cb18-336"></a></span>
-<span id="cb18-337"><a href="#cb18-337"></a>eventname_map <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb18-338"><a href="#cb18-338"></a>  <span class="st">"baseline_year_1_arm_1"</span> <span class="ot">=</span> <span class="st">"Baseline"</span>,</span>
-<span id="cb18-339"><a href="#cb18-339"></a>  <span class="st">"1_year_follow_up_y_arm_1"</span> <span class="ot">=</span> <span class="st">"Year_1"</span>,</span>
-<span id="cb18-340"><a href="#cb18-340"></a>  <span class="st">"2_year_follow_up_y_arm_1"</span> <span class="ot">=</span> <span class="st">"Year_2"</span>,</span>
-<span id="cb18-341"><a href="#cb18-341"></a>  <span class="st">"3_year_follow_up_y_arm_1"</span> <span class="ot">=</span> <span class="st">"Year_3"</span>,</span>
-<span id="cb18-342"><a href="#cb18-342"></a>  <span class="st">"4_year_follow_up_y_arm_1"</span> <span class="ot">=</span> <span class="st">"Year_4"</span></span>
-<span id="cb18-343"><a href="#cb18-343"></a>)</span>
-<span id="cb18-344"><a href="#cb18-344"></a></span>
-<span id="cb18-345"><a href="#cb18-345"></a><span class="co"># Apply the recoding to the eventname variable</span></span>
-<span id="cb18-346"><a href="#cb18-346"></a>df_subset<span class="sc">$</span>eventname <span class="ot">&lt;-</span> <span class="fu">factor</span>(df_subset<span class="sc">$</span>eventname, <span class="at">levels =</span> <span class="fu">names</span>(eventname_map), <span class="at">labels =</span> eventname_map)</span>
-<span id="cb18-347"><a href="#cb18-347"></a></span>
-<span id="cb18-348"><a href="#cb18-348"></a><span class="co"># Verify the recoding</span></span>
-<span id="cb18-349"><a href="#cb18-349"></a><span class="fu">table</span>(df_subset<span class="sc">$</span>eventname)</span>
-<span id="cb18-350"><a href="#cb18-350"></a></span>
-<span id="cb18-351"><a href="#cb18-351"></a><span class="co"># Generate the plot</span></span>
-<span id="cb18-352"><a href="#cb18-352"></a><span class="fu">ggplot</span>(df_subset, <span class="fu">aes</span>(<span class="at">x =</span> eventname, <span class="at">y =</span> anthroheightcalc, <span class="at">group =</span> src_subject_id)) <span class="sc">+</span></span>
-<span id="cb18-353"><a href="#cb18-353"></a>  <span class="co"># Individual estimated height trajectories in faded lines</span></span>
-<span id="cb18-354"><a href="#cb18-354"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> src_subject_id), <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"grey50"</span>) <span class="sc">+</span></span>
-<span id="cb18-355"><a href="#cb18-355"></a>  <span class="co"># Overall group-mean trajectory in blue with increased thickness</span></span>
-<span id="cb18-356"><a href="#cb18-356"></a>  <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">group =</span> <span class="dv">1</span>), <span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"line"</span>, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb18-357"><a href="#cb18-357"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Individual and Group-Mean Height Trajectories"</span>,</span>
-<span id="cb18-358"><a href="#cb18-358"></a>       <span class="at">x =</span> <span class="st">"Event Name"</span>,</span>
-<span id="cb18-359"><a href="#cb18-359"></a>       <span class="at">y =</span> <span class="st">"Height"</span>) <span class="sc">+</span></span>
-<span id="cb18-360"><a href="#cb18-360"></a>  <span class="fu">theme_minimal</span>()</span>
-<span id="cb18-361"><a href="#cb18-361"></a></span>
-<span id="cb18-362"><a href="#cb18-362"></a><span class="in">```</span></span>
+<span id="cb18-326"><a href="#cb18-326"></a><span class="co"># Extract unique subject IDs from the model's data</span></span>
+<span id="cb18-327"><a href="#cb18-327"></a>original_subject_ids <span class="ot">&lt;-</span> <span class="fu">unique</span>(model_data<span class="sc">$</span>src_subject_id)</span>
+<span id="cb18-328"><a href="#cb18-328"></a></span>
+<span id="cb18-329"><a href="#cb18-329"></a><span class="co"># Subset the original data to include only those subjects</span></span>
+<span id="cb18-330"><a href="#cb18-330"></a>df_subset <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(src_subject_id <span class="sc">%in%</span> original_subject_ids)</span>
+<span id="cb18-331"><a href="#cb18-331"></a></span>
+<span id="cb18-332"><a href="#cb18-332"></a>eventname_map <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb18-333"><a href="#cb18-333"></a>  <span class="st">"baseline_year_1_arm_1"</span> <span class="ot">=</span> <span class="st">"Baseline"</span>,</span>
+<span id="cb18-334"><a href="#cb18-334"></a>  <span class="st">"1_year_follow_up_y_arm_1"</span> <span class="ot">=</span> <span class="st">"Year_1"</span>,</span>
+<span id="cb18-335"><a href="#cb18-335"></a>  <span class="st">"2_year_follow_up_y_arm_1"</span> <span class="ot">=</span> <span class="st">"Year_2"</span>,</span>
+<span id="cb18-336"><a href="#cb18-336"></a>  <span class="st">"3_year_follow_up_y_arm_1"</span> <span class="ot">=</span> <span class="st">"Year_3"</span>,</span>
+<span id="cb18-337"><a href="#cb18-337"></a>  <span class="st">"4_year_follow_up_y_arm_1"</span> <span class="ot">=</span> <span class="st">"Year_4"</span></span>
+<span id="cb18-338"><a href="#cb18-338"></a>)</span>
+<span id="cb18-339"><a href="#cb18-339"></a></span>
+<span id="cb18-340"><a href="#cb18-340"></a><span class="co"># Apply the recoding to the eventname variable</span></span>
+<span id="cb18-341"><a href="#cb18-341"></a>df_subset<span class="sc">$</span>eventname <span class="ot">&lt;-</span> <span class="fu">factor</span>(df_subset<span class="sc">$</span>eventname, <span class="at">levels =</span> <span class="fu">names</span>(eventname_map), <span class="at">labels =</span> eventname_map)</span>
+<span id="cb18-342"><a href="#cb18-342"></a></span>
+<span id="cb18-343"><a href="#cb18-343"></a><span class="co"># Verify the recoding</span></span>
+<span id="cb18-344"><a href="#cb18-344"></a><span class="fu">table</span>(df_subset<span class="sc">$</span>eventname)</span>
+<span id="cb18-345"><a href="#cb18-345"></a></span>
+<span id="cb18-346"><a href="#cb18-346"></a><span class="co"># Generate the plot</span></span>
+<span id="cb18-347"><a href="#cb18-347"></a><span class="fu">ggplot</span>(df_subset, <span class="fu">aes</span>(<span class="at">x =</span> eventname, <span class="at">y =</span> anthroheightcalc, <span class="at">group =</span> src_subject_id)) <span class="sc">+</span></span>
+<span id="cb18-348"><a href="#cb18-348"></a>  <span class="co"># Individual estimated height trajectories in faded lines</span></span>
+<span id="cb18-349"><a href="#cb18-349"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> src_subject_id), <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"grey50"</span>) <span class="sc">+</span></span>
+<span id="cb18-350"><a href="#cb18-350"></a>  <span class="co"># Overall group-mean trajectory in blue with increased thickness</span></span>
+<span id="cb18-351"><a href="#cb18-351"></a>  <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">group =</span> <span class="dv">1</span>), <span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"line"</span>, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb18-352"><a href="#cb18-352"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Individual and Group-Mean Height Trajectories"</span>,</span>
+<span id="cb18-353"><a href="#cb18-353"></a>       <span class="at">x =</span> <span class="st">"Event Name"</span>,</span>
+<span id="cb18-354"><a href="#cb18-354"></a>       <span class="at">y =</span> <span class="st">"Height"</span>) <span class="sc">+</span></span>
+<span id="cb18-355"><a href="#cb18-355"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb18-356"><a href="#cb18-356"></a></span>
+<span id="cb18-357"><a href="#cb18-357"></a><span class="in">```</span></span>
+<span id="cb18-358"><a href="#cb18-358"></a></span>
+<span id="cb18-361"><a href="#cb18-361"></a><span class="in">```{r}</span></span>
+<span id="cb18-362"><a href="#cb18-362"></a><span class="co">#| echo: false</span></span>
 <span id="cb18-363"><a href="#cb18-363"></a></span>
-<span id="cb18-366"><a href="#cb18-366"></a><span class="in">```{r}</span></span>
-<span id="cb18-367"><a href="#cb18-367"></a><span class="co">#| echo: false</span></span>
-<span id="cb18-368"><a href="#cb18-368"></a></span>
-<span id="cb18-369"><a href="#cb18-369"></a><span class="do">## Creating variable (names) from output to be used for inline text</span></span>
+<span id="cb18-364"><a href="#cb18-364"></a><span class="do">## Creating variable (names) from output to be used for inline text</span></span>
+<span id="cb18-365"><a href="#cb18-365"></a></span>
+<span id="cb18-366"><a href="#cb18-366"></a><span class="fu">library</span>(broom.mixed)</span>
+<span id="cb18-367"><a href="#cb18-367"></a>tidyfit <span class="ot">&lt;-</span> <span class="fu">tidy</span>(model)</span>
+<span id="cb18-368"><a href="#cb18-368"></a>tidyaugment <span class="ot">&lt;-</span> <span class="fu">augment</span>(model)</span>
+<span id="cb18-369"><a href="#cb18-369"></a>tidyglance <span class="ot">&lt;-</span> <span class="fu">glance</span>(model)</span>
 <span id="cb18-370"><a href="#cb18-370"></a></span>
-<span id="cb18-371"><a href="#cb18-371"></a><span class="fu">library</span>(broom.mixed)</span>
-<span id="cb18-372"><a href="#cb18-372"></a>tidyfit <span class="ot">&lt;-</span> <span class="fu">tidy</span>(model)</span>
-<span id="cb18-373"><a href="#cb18-373"></a>tidyaugment <span class="ot">&lt;-</span> <span class="fu">augment</span>(model)</span>
-<span id="cb18-374"><a href="#cb18-374"></a>tidyglance <span class="ot">&lt;-</span> <span class="fu">glance</span>(model)</span>
+<span id="cb18-371"><a href="#cb18-371"></a></span>
+<span id="cb18-372"><a href="#cb18-372"></a>Intercept_estimate <span class="ot">&lt;-</span> <span class="fu">round</span>(tidyfit[tidyfit<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"(Intercept)"</span>, <span class="st">"estimate"</span>], <span class="dv">3</span>)</span>
+<span id="cb18-373"><a href="#cb18-373"></a></span>
+<span id="cb18-374"><a href="#cb18-374"></a>Intercept_SE <span class="ot">&lt;-</span> <span class="fu">round</span>(tidyfit[tidyfit<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"(Intercept)"</span>, <span class="st">"std.error"</span>], <span class="dv">3</span>)</span>
 <span id="cb18-375"><a href="#cb18-375"></a></span>
-<span id="cb18-376"><a href="#cb18-376"></a></span>
-<span id="cb18-377"><a href="#cb18-377"></a>Intercept_estimate <span class="ot">&lt;-</span> <span class="fu">round</span>(tidyfit[tidyfit<span class="sc">$</span>term <span class="sc">==</span> <span class="st">"(Intercept)"</span>, <span class="st">"estimate"</span>], <span class="dv">3</span>)</span>
-<span id="cb18-378"><a href="#cb18-378"></a></span>
-<span id="cb18-379"><a href="#cb18-379"></a><span class="co">#Intercept_pvalue &lt;- round(tidyfit[tidyfit$term == "(Intercept)", "p.value"], 3)</span></span>
-<span id="cb18-380"><a href="#cb18-380"></a></span>
-<span id="cb18-381"><a href="#cb18-381"></a><span class="co"># Extract values from the tibble for inline text</span></span>
-<span id="cb18-382"><a href="#cb18-382"></a>Intercept_estimate <span class="ot">&lt;-</span> Intercept_estimate<span class="sc">$</span>estimate</span>
-<span id="cb18-383"><a href="#cb18-383"></a><span class="co">#Intercept_pvalue &lt;- Intercept_pvalue$p.value</span></span>
-<span id="cb18-384"><a href="#cb18-384"></a></span>
-<span id="cb18-385"><a href="#cb18-385"></a><span class="in">```</span></span>
+<span id="cb18-376"><a href="#cb18-376"></a><span class="co"># Extract values from the tibble for inline text</span></span>
+<span id="cb18-377"><a href="#cb18-377"></a>Intercept_estimate <span class="ot">&lt;-</span> Intercept_estimate<span class="sc">$</span>estimate</span>
+<span id="cb18-378"><a href="#cb18-378"></a>Intercept_SE <span class="ot">&lt;-</span> Intercept_SE<span class="sc">$</span>std.error</span>
+<span id="cb18-379"><a href="#cb18-379"></a></span>
+<span id="cb18-380"><a href="#cb18-380"></a><span class="co">#r eventname_estimate</span></span>
+<span id="cb18-381"><a href="#cb18-381"></a><span class="co">#r sex_effect</span></span>
+<span id="cb18-382"><a href="#cb18-382"></a><span class="co">#r conditional_R2</span></span>
+<span id="cb18-383"><a href="#cb18-383"></a><span class="co">#r conditional_R2*100**%</span></span>
+<span id="cb18-384"><a href="#cb18-384"></a><span class="co">#r marginal_R2</span></span>
+<span id="cb18-385"><a href="#cb18-385"></a></span>
 <span id="cb18-386"><a href="#cb18-386"></a></span>
-<span id="cb18-387"><a href="#cb18-387"></a><span class="in">`r Intercept_estimate`</span></span>
-<span id="cb18-388"><a href="#cb18-388"></a></span>
-<span id="cb18-389"><a href="#cb18-389"></a>The provided code visualizes individual and group-mean height trajectories over different event names. Individual height trajectories for each subject are depicted as faded gray lines, allowing for a clear view of the variability among subjects. In contrast, the overall group-mean trajectory, which represents the average trend across all individuals for each event name, is highlighted in blue. </span>
-<span id="cb18-390"><a href="#cb18-390"></a>The average height at r mean(df_descriptable$Height) has increased by **r mean(df_descriptable$Height_followup - df_descriptable$Height)** units from baseline. The attached chart effectively communicates these trajectories, emphasizing the average trend of the group while also showcasing individual differences.</span>
+<span id="cb18-387"><a href="#cb18-387"></a></span>
+<span id="cb18-388"><a href="#cb18-388"></a><span class="in">```</span></span>
+<span id="cb18-389"><a href="#cb18-389"></a></span>
+<span id="cb18-390"><a href="#cb18-390"></a>The estimate of the random intercept was <span class="in">`r Intercept_estimate`</span> (*SE* <span class="in">`r Intercept_SE`</span>). The fixed effects section provides the coefficients for the intercept, eventname, and the sex variable.</span>
 <span id="cb18-391"><a href="#cb18-391"></a></span>
-<span id="cb18-392"><a href="#cb18-392"></a><span class="fu">## Wrapping Up</span></span>
-<span id="cb18-393"><a href="#cb18-393"></a><span class="kw">&lt;div</span> <span class="er">class</span> <span class="ot">=</span> <span class="st">"blue"</span><span class="kw">&gt;</span></span>
-<span id="cb18-394"><a href="#cb18-394"></a></span>
-<span id="cb18-395"><a href="#cb18-395"></a>::: panel-tabset</span>
-<span id="cb18-396"><a href="#cb18-396"></a><span class="fu">### Write-up {.tabset .tabset-fade .tabset-pills}</span></span>
+<span id="cb18-392"><a href="#cb18-392"></a>From the model summary: The intercept, corresponding to the reference levels of the </span>
+<span id="cb18-393"><a href="#cb18-393"></a>predictors (presumably the baseline event and sex-male), is estimated at </span>
+<span id="cb18-394"><a href="#cb18-394"></a><span class="in">`r Intercept_estimate`</span> units, and this effect is highly significant. The effect of the linear term for eventname is positive and statistically significant, suggesting an increase of approximately ##r eventname_estimate## units in height for each unit change in eventname. Regarding sex, boys show a xxxxxx increase in height of about #r sex_effect# units compared to girls.</span>
+<span id="cb18-395"><a href="#cb18-395"></a></span>
+<span id="cb18-396"><a href="#cb18-396"></a>The model's explanatory power is highlighted by a conditional R2 of **r conditional_R2**, meaning it explains **r conditional_R2*100**% of the total variance when considering both fixed and random effects. The marginal R2, which considers only the fixed effects, is **r marginal_R2**.</span>
 <span id="cb18-397"><a href="#cb18-397"></a></span>
-<span id="cb18-398"><a href="#cb18-398"></a>::: blue</span>
+<span id="cb18-398"><a href="#cb18-398"></a>The provided code visualizes individual and group-mean height trajectories over different event names. Individual height trajectories for each subject are depicted as faded gray lines, allowing for a clear view of the variability among subjects. In contrast, the overall group-mean trajectory, which represents the average trend across all individuals for each event name, is highlighted in blue.</span>
 <span id="cb18-399"><a href="#cb18-399"></a></span>
-<span id="cb18-400"><a href="#cb18-400"></a>The linear mixed model analysis was conducted to predict children's height across different time points (Baseline, Year_1, Year_2, Year_3, and Year_4) using the event name (eventname) and handedness (Handedness). The eventname predictor was statistically significant with a p-value of r format.pval(fixed_effects$Pr(&gt;|t|)<span class="co">[</span><span class="ot">2</span><span class="co">]</span>, digits = 3). For the handedness variable, children with mixed-handedness showed a significant increase in height of about r round(fixed_effects$Estimate<span class="co">[</span><span class="ot">4</span><span class="co">]</span>, 4) units compared to right-handed children with a p-value of r format.pval(fixed_effects$Pr(&gt;|t|)<span class="co">[</span><span class="ot">4</span><span class="co">]</span>, digits = 3). On the other hand, left-handed children's height increase, although positive at r round(fixed_effects$Estimate<span class="co">[</span><span class="ot">3</span><span class="co">]</span>, 4) units, was not statistically significant with a p-value of r format.pval(fixed_effects$Pr(&gt;|t|)<span class="co">[</span><span class="ot">3</span><span class="co">]</span>, digits = 3). The model's overall ability to explain the variance in height was substantial, with a conditional R^2 of r report_performance(model)$Conditional R2<span class="co">[</span><span class="ot">1</span><span class="co">]</span>, indicating that it accounted for this proportion of the variability in height when considering both fixed and random effects. The marginal R^2 was r report_performance(model)$Marginal R2<span class="co">[</span><span class="ot">1</span><span class="co">]</span>, meaning that the fixed effects alone explained this proportion of the variability.</span>
-<span id="cb18-401"><a href="#cb18-401"></a></span>
-<span id="cb18-402"><a href="#cb18-402"></a>:::</span>
-<span id="cb18-403"><a href="#cb18-403"></a>:::</span>
-<span id="cb18-404"><a href="#cb18-404"></a></span>
+<span id="cb18-400"><a href="#cb18-400"></a><span class="fu">## Wrapping Up</span></span>
+<span id="cb18-401"><a href="#cb18-401"></a><span class="kw">&lt;div</span> <span class="er">class</span> <span class="ot">=</span> <span class="st">"blue"</span><span class="kw">&gt;</span></span>
+<span id="cb18-402"><a href="#cb18-402"></a></span>
+<span id="cb18-403"><a href="#cb18-403"></a>::: panel-tabset</span>
+<span id="cb18-404"><a href="#cb18-404"></a><span class="fu">### Write-up {.tabset .tabset-fade .tabset-pills}</span></span>
 <span id="cb18-405"><a href="#cb18-405"></a></span>
+<span id="cb18-406"><a href="#cb18-406"></a>::: blue</span>
+<span id="cb18-407"><a href="#cb18-407"></a></span>
+<span id="cb18-408"><a href="#cb18-408"></a>The linear mixed model analysis was conducted to predict children's height across different time points (Baseline, Year_1, Year_2, Year_3, and Year_4) using the event name (eventname) and height (Height). The eventname predictor was statistically significant with a p-value of r format.pval(fixed_effects$Pr(&gt;|t|)<span class="co">[</span><span class="ot">2</span><span class="co">]</span>, digits = 3). For the height variable, children with xxxx showed a significant increase in height of about r round(fixed_effects$Estimate<span class="co">[</span><span class="ot">4</span><span class="co">]</span>, 4) units compared to xxxx children with a p-value of r format.pval(fixed_effects$Pr(&gt;|t|)<span class="co">[</span><span class="ot">4</span><span class="co">]</span>, digits = 3). On the other hand, xxxx children's height increase, although positive at r round(fixed_effects$Estimate<span class="co">[</span><span class="ot">3</span><span class="co">]</span>, 4) units, was not statistically significant with a p-value of r format.pval(fixed_effects$Pr(&gt;|t|)<span class="co">[</span><span class="ot">3</span><span class="co">]</span>, digits = 3). The model's overall ability to explain the variance in height was substantial, with a conditional R^2 of r report_performance(model)$Conditional R2<span class="co">[</span><span class="ot">1</span><span class="co">]</span>, indicating that it accounted for this proportion of the variability in height when considering both fixed and random effects. The marginal R^2 was r report_performance(model)$Marginal R2<span class="co">[</span><span class="ot">1</span><span class="co">]</span>, meaning that the fixed effects alone explained this proportion of the variability.</span>
+<span id="cb18-409"><a href="#cb18-409"></a></span>
+<span id="cb18-410"><a href="#cb18-410"></a>:::</span>
+<span id="cb18-411"><a href="#cb18-411"></a>:::</span>
+<span id="cb18-412"><a href="#cb18-412"></a></span>
+<span id="cb18-413"><a href="#cb18-413"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
