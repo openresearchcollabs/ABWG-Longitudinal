@@ -31,7 +31,7 @@ In this example, we will utilize xxxxxx models to analyze xxxxxx obtained across
 #| output: FALSE
 
 # Create a list of required packages
-packages_required <- c("tidyverse","rstatix","DT")
+packages_required <- c("tidyverse","rstatix","DT", "lcsm","lavaan")
 
 # Check which packages are not installed and install them
 packages_to_install <- setdiff(packages_required, rownames(installed.packages()))
@@ -59,8 +59,8 @@ lapply(packages_required, library, character.only = TRUE)
 library(tidyverse)    # Collection of R packages for data science
 library(rstatix)      # Pipe-friendly framework for basic statistical tests
 library(DT)           # Rendering interactive data tables
-
-
+library(lcsm)         #
+library(lavaan)       #
 ```
 :::
 
@@ -306,31 +306,90 @@ The code fits a xxxx to examine the 'xxxxx' variable across time points ('eventn
 
 **STEP 2: Compute xxxxx**
 
-```{r, eval = FALSE}
-# Define the Latent Change Score Model
 
-model <- '
+###########
+###########
+###########
 
-    delta12 =~ 0*anthroheightcalc_1
-    delta23 =~ 0*anthroheightcalc_2
+```{r}
 
-    anthroheightcalc_1 ~ 1*anthroheightcalc_0 + delta12
-    anthroheightcalc_2 ~ 1*anthroheightcalc_1 + delta23
+uni_lavaan_syntax <- fit_uni_lcsm(data = df_wide, 
+             var =  c("anthroweightcalc_0", "anthroweightcalc_1",
+                      "anthroweightcalc_2","anthroweightcalc_3"),
+             model = list(alpha_constant = TRUE, 
+                          beta = TRUE, 
+                          phi = TRUE),
+                          return_lavaan_syntax = TRUE)
 
-    delta12 ~~ 1*delta12
-    delta23 ~~ 1*delta23
-'
+# Return lavaan syntax in easy to read format
+cat(uni_lavaan_syntax)
+
+# Now extract parameter estimates
+# Only extract first 7 columns for this example by adding [ , 1:7]
+param_bi_lcsm_01 <- extract_param(fit_uni_lcsm, printp = TRUE)[ , 1:4]
+
+# Print table of parameter estimates
+kable(param_bi_lcsm_01, digits = 3)
 
 ```
 
 
-```{r, eval = FALSE}
-# Fit the model
-fit <- sem(lcs.model, data = df_wide, missing = "FIML")
+```{r}
 
-summary(fit, fit.measures=TRUE, standardized=TRUE, rsquare=TRUE)
+library(knitr)
+
+# Fit bivariate lcsm and save the results
+uni_lavaan_results <- fit_uni_lcsm(data = df_wide, 
+             var =  c("anthroweightcalc_0", "anthroweightcalc_1",
+                    "anthroweightcalc_2","anthroweightcalc_3",
+                    "anthroweightcalc_4"),
+             model = list(alpha_constant = TRUE, 
+                          beta = TRUE, 
+                          phi = TRUE)
+             )
+
+# Save the lavaan syntax that is used to create the layout matrix for semPlot
+uni_lavaan_syntax <- fit_uni_lcsm(data = df_wide, 
+             var =  c("anthroweightcalc_0", "anthroweightcalc_1",
+                    "anthroweightcalc_2","anthroweightcalc_3",
+                    "anthroweightcalc_4"),
+             model = list(alpha_constant = TRUE, 
+                          beta = TRUE, 
+                          phi = TRUE),
+             return_lavaan_syntax = TRUE)
+
+# Plot the results
+plot_lcsm(lavaan_object = uni_lavaan_results,
+          lavaan_syntax = uni_lavaan_syntax,
+          edge.label.cex = .9,  
+          lcsm_colours = TRUE,
+          lcsm = "univariate")
+
+# Now extract parameter estimates
+# Only extract first 7 columns for this example by adding [ , 1:7]
+param_bi_lcsm_01 <- extract_param(uni_lavaan_results, printp = TRUE)[ , 1:6]
+
+# Print table of parameter estimates
+kable(param_bi_lcsm_01, digits = 3)
+
+# Create plot for construct x
+plot_x <- plot_trajectories(data = df_wide,
+                            id_var = "src_subject_id", 
+                            var_list = c("anthroweightcalc_0",
+                                         "anthroweightcalc_1",
+                                         "anthroweightcalc_2",
+                                         "anthroweightcalc_3",
+                                         "anthroweightcalc_4"),
+                            xlab = "Time", ylab = "X Score",
+                            connect_missing = FALSE, 
+                            random_sample_frac = 0.3)
+
+plot_x
 
 ```
+
+
+
 
 
 

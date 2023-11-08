@@ -68,8 +68,8 @@ website:
         file: examples.qmd
       - text: "Contribute"
         file: contribute.qmd
-      #- text: "Reference"
-       # file: reference.qmd
+      - text: "Resources"
+        file: resources.qmd
       #- text: "Documentation"
       #  file: documentation.qmd
     tools:

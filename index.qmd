@@ -14,11 +14,15 @@ format:
       gutter-width: 0rem
 ---
 
+::: {.column-screen}
+![](./figures/Figlanding5.svg)
+:::
+
 ```{=html}
 
-<div class="bg"></div>
+<!-- <div class="bg"></div> -->
 
-<p>test3.</p>
+<!--<p>test3.</p> -->
 
 ```
 

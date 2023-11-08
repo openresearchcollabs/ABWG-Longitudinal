@@ -5,6 +5,14 @@ author: "Biostatistics Working Group"
 
 # Signed-Rank Test {.unnumbered}
 
+####
+It is actually quite common that numeric depend variables need to be transformed or converted into ranks, i.e. ordinal variables, because the distribution of residuals does not allow the application of parametric tests such as t-tests or linear regression. In such cases, as we are dealing with rank (ordinal) data, the application of a chi-square test is unwarranted and we need to use another test. There are different alternatives depending on whether the data are paired (coming from the same individuals) or if all observations are independent.
+
+The non-parametric alternative for independent t-tests, i.e. for data where we are dealing with two separate groups and a numeric dependent variable that violates parametric assumptions (or an ordinal dependent variable), is the Mann-Whitney U-test. In contrast, if the groups under investigation represent identical participants that are tested under two conditions, the appropriate alternative is a Wilcoxon Signed Rank test (which is thus the alternative for paired t-test).
+
+Imagine we wanted to determine if two language families differed with respect to the size of their phoneme inventories. You have already ranked the inventory sizes and would now like to now if language family correlates with inventory size. As such, we are dealing with two independent groups and we want to implement a non-parametric alternative of a t-test. To answer this question, you create the table shown below.
+####
+
 ## Overview
 
 <p>
@@ -31,7 +39,7 @@ In this example, we will utilize the signed-rank test to analyze xxxxxx obtained
 #| output: FALSE
 
 # Create a list of required packages
-packages_required <- c("tidyverse","rstatix","DT")
+packages_required <- c("tidyverse","rstatix","DT", "gtsummary","easystats")
 
 # Check which packages are not installed and install them
 packages_to_install <- setdiff(packages_required, rownames(installed.packages()))
@@ -59,7 +67,8 @@ lapply(packages_required, library, character.only = TRUE)
 library(tidyverse)    # Collection of R packages for data science
 library(rstatix)      # Pipe-friendly framework for basic statistical tests
 library(DT)           # Rendering interactive data tables
-
+library(easystats)    #
+library(gtsummary)    #
 ```
 :::
 
@@ -145,6 +154,70 @@ df <- merged_data %>%
   # Exclude cases from unused assessment waves
   filter(!is.na(eventname))
 
+#####
+#Creating new ordinal variable for the example
+df$education <- factor(
+  with(df, ifelse(high.educ.bl %in% c("1st grade", "2nd grade", "3rd grade", "4th grade",
+                                      "5th grade",
+                                      "6th grade", "7th grade", "8th grade", "9th grade",
+                                      "10th grade",
+                                      "11th grade", "12th grade"), "lt_highschool",
+                  ifelse(high.educ.bl == "High school graduate", "highschool",
+                  ifelse(high.educ.bl == "GED or equivalent Diploma", "GED",
+                  ifelse(high.educ.bl == "Some college", "some_college",
+                  ifelse(high.educ.bl %in% c("Associate degree: Academic Program", 
+                                              "Associate degree: Occupational"),
+                         "associate_degree",
+                  ifelse(high.educ.bl == "Bachelor's degree (ex. BA", "Bachelor's_degree",
+                  ifelse(high.educ.bl == "Master's degree (ex. MA", "Master's_degree",
+                  ifelse(high.educ.bl %in% c("Doctoral degree (ex. PhD", "Professional
+                                             School degree (ex. MD"), 
+                         "Advanced_degree", NA))))))))))
+  levels = c("lt_highschool", "highschool", "GED", "some_college", "associate_degree",
+             "Bachelor's_degree", "Master's_degree", "Advanced_degree")
+  ordered = TRUE
+
+
+####
+
+####
+df$income <- factor(
+  with(df, ifelse(household.income.bl == "Less than $5,000", "<$5,000",
+                  ifelse(household.income.bl == "$5,000 through $11,999", "$5,000-$11,999",
+                  ifelse(household.income.bl == "$12,000 through $15,999", "$12,000-$15,999",
+                  ifelse(household.income.bl == "$16,000 through $24,999", "$16,000-$24,999",
+                  ifelse(household.income.bl == "$25,000 through $34,999", "$25,000-$34,999",
+                  ifelse(household.income.bl == "$35,000 through $49,999", "$35,000-$49,999",
+                  ifelse(household.income.bl == "$50,000 through $74,999", "$50,000-$74,999",
+                  ifelse(household.income.bl == "$75,000 through $99,999", "$75,000-$99,999",
+                  ifelse(household.income.bl == "$100,000 through $199,999", "$100,000-$199,999",
+                  ifelse(household.income.bl == "$200,000 and greater", "≥$200,000",
+                  NA))))))))))),
+  levels = c("<$5,000", "$5,000-$11,999", "$12,000-$15,999", "$16,000-$24,999",
+             "$25,000-$34,999", "$35,000-$49,999", "$50,000-$74,999",
+             "$75,000-$99,999", "$100,000-$199,999", "≥$200,000"),
+  ordered = TRUE
+)
+
+####
+
+# Create a mapping from factor levels to numeric values
+income_levels <- c("Less than $5,000", "$5,000 through $11,999", "$12,000 through $15,999", "$16,000 through $24,999", "$25,000 through $34,999", "$35,000 through $49,999", "$50,000 through $74,999", "$75,000 through $99,999", "$100,000 through $199,999", "$200,000 and greater", "Don't know", "Refuse to answer", "No deseo responder")
+
+# We assign numbers 1 through 10, but we have 12 levels, including "Don't know", "Refuse to answer", and "No deseo responder"
+# Let's assume "Don't know" and any refusal to answer will be treated as NA
+income_numeric_values <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, NA, NA, NA)
+
+# Create a named vector for easy lookup
+income_values <- setNames(income_numeric_values, income_levels)
+
+# Convert the `income` factor to numeric using the named vector
+df$income_numeric <- income_values[as.character(df$household.income.bl)]
+
+# Handling NAs and refused to answer
+df$income_numeric[is.na(df$household.income.bl) | df$household.income.bl %in% c("Don't know", "Refuse to answer", "No deseo responder")] <- NA
+
+
 ```
 :::
 
@@ -158,86 +231,24 @@ df <- merged_data %>%
 #| messages: FALSE
 #| warning: FALSE
 
-# Define a function to compute descriptives
-compute_descriptives <- function(data, event_name) {
-  # For factor variables
-  sex_desc <- paste0(table(data$sex), " (", round(100 * prop.table(table(data$sex)), 1), "%)")
-  race_desc <- paste0(table(data$race.4level), " (", round(100 * prop.table(table(data$race.4level)), 1), "%)")
-  
-  # For numeric variables
-  age_desc <- paste0(round(mean(data$age, na.rm = TRUE), 2), " (", round(sd(data$age, na.rm = TRUE), 2), ")")
-  weight_desc <- paste0(round(mean(data$anthroweightcalc, na.rm = TRUE), 2), " (", round(sd(data$anthroweightcalc, na.rm = TRUE), 2), ")")
-  
-  # Combine into a data frame
-  desc_df <- data.frame(
-    Variable = c("Sex - Female", "Sex - Male or other", "Race - Asian", "Race - Black", "Race - Other/Mixed", "Race - White", "Age", "Weight"),
-    Value = c(sex_desc, race_desc, age_desc, weight_desc)
-  )
-  
-  # Rename the Value column based on event name
-  colnames(desc_df)[2] <- event_name
-  return(desc_df)
-}
+descriptives_table <- df %>%
+  select(eventname, sex, race.4level, income_numeric, education) %>%
+  mutate(eventname = factor(eventname, labels = c("Baseline", "Year 1","Year 2","Year 3","Year 4"))) %>%
+  mutate(sex = factor(sex, labels = c("Female", "Male"))) %>%
+  tbl_summary(
+    by = eventname,
+    missing = "no",
+    label = list(sex ~ "Sex", race.4level ~ "Race", income_numeric ~ "Income", 
+                 education ~ "Education"),
+    statistic = list(all_continuous() ~ "{mean} ({sd}) )", all_categorical() ~ "{p}%"),
+  ) %>%
+modify_header(all_stat_cols() ~ "**{level}**<br>N = {n}") %>%
+  bold_labels() %>%
+  italicize_levels() %>%
+  modify_spanning_header(all_stat_cols() ~ "**Assessment Wave**")
+theme_gtsummary_compact()
 
-# Compute descriptives for each event
-baseline_desc <- compute_descriptives(subset(df, eventname == "baseline_year_1_arm_1"), "baseline_year_1_arm_1")
-one_year_desc <- compute_descriptives(subset(df, eventname == "1_year_follow_up_y_arm_1"), "1_year_follow_up_y_arm_1")
-two_year_desc <- compute_descriptives(subset(df, eventname == "2_year_follow_up_y_arm_1"), "2_year_follow_up_y_arm_1")
-three_year_desc <- compute_descriptives(subset(df, eventname == "3_year_follow_up_y_arm_1"), "3_year_follow_up_y_arm_1")
-
-# Join all data frames side-by-side
-final_table <- baseline_desc %>%
-  left_join(one_year_desc, by = "Variable") %>%
-  left_join(two_year_desc, by = "Variable") %>%
-  left_join(three_year_desc, by = "Variable")
-
-# Adjust for the required format
-final_table[1:6, 3:5] <- NA
-
-# Round numeric values to two decimal places
-numeric_cols <- sapply(final_table, is.numeric)
-final_table[numeric_cols] <- lapply(final_table[numeric_cols], round, 2)
-
-# Create heading rows with the same columns as final_table
-heading_rows <- data.frame(
-  Variable = c("Sex", "Race"),
-  baseline_year_1_arm_1 = NA_real_,
-  `1_year_follow_up_y_arm_1` = NA_real_,
-  `2_year_follow_up_y_arm_1` = NA_real_,
-  `3_year_follow_up_y_arm_1` = NA_real_
-)
-
-# Set column names of heading_rows to match final_table
-colnames(heading_rows) <- colnames(final_table)
-
-# Introduce group labels and adjust the "Variable" column
-final_table <- rbind(
-                    heading_rows[1,], 
-                    final_table[1:2,],
-                    heading_rows[2,], 
-                    final_table[3:6,], 
-                    final_table[7:9,]
-                    )
-
-# Update the Variable column to remove redundant factor variable name
-final_table$Variable <- gsub("Sex - ", "", final_table$Variable)
-final_table$Variable <- gsub("Race - ", "", final_table$Variable)
-final_table$Variable[final_table$Variable == "Male or other"] <- "Male"
-
-# Add non-breaking spaces for increased indentation
-final_table$Variable[final_table$Variable %in% c("Female", "Male", "Asian", "Black", "Other/Mixed", "White")] <- 
-  paste0(rep("&nbsp;", 6), final_table$Variable[final_table$Variable %in% c("Female", "Male", "Asian", "Black", "Other/Mixed", "White")])
-
-# Update column headers
-colnames(final_table)[2:5] <- c("Baseline", "Year 1", "Year 2", "Year 3")
-
-# Display the table interactively without row names, with updated column headers, and with HTML entities rendered
-datatable(final_table, 
-          colnames = c("", "Baseline", "Year 1", "Year 2", "Year 3"),
-          options = list(pageLength = nrow(final_table), autoWidth = TRUE),
-          rownames = FALSE, escape = FALSE,
-          caption = "Descriptives Table")  # Add table title
-
+descriptives_table
 ```
 
 :::
@@ -267,7 +278,7 @@ df_static <- df %>%
   select(src_subject_id, site_id_l, sex)
 
 df_changing <- df %>%
-  select(src_subject_id, eventname, anthroweightcalc)
+  select(src_subject_id, eventname, income_numeric, education)
 
 # Convert the changing variables from long format to wide format
 df_wide_changing <- df_changing %>%
@@ -281,25 +292,25 @@ df_wide <- df_static %>%
 
 # Rename columns to shorter names for easier reference
 df_wide <- df_wide %>% 
-        rename("anthroweightcalc_0"="anthroweightcalc_baseline_year_1_arm_1",
-               "anthroweightcalc_1"="anthroweightcalc_1_year_follow_up_y_arm_1",
-               "anthroweightcalc_2"="anthroweightcalc_2_year_follow_up_y_arm_1",
-               "anthroweightcalc_3"="anthroweightcalc_3_year_follow_up_y_arm_1",
-               "anthroweightcalc_4"="anthroweightcalc_4_year_follow_up_y_arm_1"
+        rename("income_numeric_0"="income_numeric_baseline_year_1_arm_1",
+               "income_numeric_1"="income_numeric_1_year_follow_up_y_arm_1",
+               "income_numeric_2"="income_numeric_2_year_follow_up_y_arm_1",
+               "income_numeric_3"="income_numeric_3_year_follow_up_y_arm_1",
+               "income_numeric_4"="income_numeric_4_year_follow_up_y_arm_1"
                )
 
 # Reorder columns in the dataframe
-df_wide <- df_wide %>% select(src_subject_id, site_id_l, sex, anthroweightcalc_0, anthroweightcalc_1, anthroweightcalc_2, anthroweightcalc_3, anthroweightcalc_4)
+df_wide <- df_wide %>% select(src_subject_id, site_id_l, sex, income_numeric_0, income_numeric_1, income_numeric_2, income_numeric_3, income_numeric_4)
 
 ```
 
-**Descriptive Statistics for the Weight Variable**
+**Descriptive Statistics for the Income Variable**
 ```{r}
 ## Summary statistics
-# Compute summary statistics for Weight by eventname
+# Compute summary statistics for Income by eventname
 summary <- df %>%
     group_by(eventname) %>%
-    get_summary_stats(anthroweightcalc, type = "mean_sd")
+    get_summary_stats(income_numeric, type = "mean_sd")
 
 data.frame(summary)
 ```
@@ -309,15 +320,59 @@ The summary statistics provide insights into the Weight variable across differen
 **STEP 2: Compute Signed Rank Test**
 ```{r}
 
-test_result <- wilcox.test(df_wide$anthroweightcalc_0, df_wide$anthroweightcalc_1, paired = TRUE)
+
+
+#########
+df_wide$income_numeric_0 <- as.numeric(as.character(df_wide$income_numeric_0))
+df_wide$income_numeric_1 <- as.numeric(as.character(df_wide$income_numeric_1))
+df_wide$income_numeric_4 <- as.numeric(as.character(df_wide$income_numeric_4))
+df_wide_complete <- na.omit(df_wide[, c("income_numeric_0", "income_numeric_4")])
+
+model <- wilcox.test(df_wide_complete$income_numeric_0, df_wide_complete$income_numeric_4, paired = TRUE)
+
+report(wilcox.test(df_wide_complete$income_numeric_0, df_wide_complete$income_numeric_4))
 
 ```
 
 **Descriptive Statistics for the Signed Rank Test result**
-```{r model-checking}
-# Compute xxxx for the signed rank test results
+```{r model-output}
+#| echo: TRUE
+#| messages: FALSE
+#| warning: FALSE
+#| code-summary: testing
 
-test_result
+library(gridExtra)
+
+# Creating the first density plot with ggplot2
+p1 <- ggplot(data.frame(x = na.omit(df_wide$income_numeric_0)), aes(x = x)) +
+  geom_density(fill="red", color="blue") +
+  labs(title = "Kernel Density of Income at Baseline")
+
+# Creating the second density plot with ggplot2
+p2 <- ggplot(data.frame(x = na.omit(df_wide$income_numeric_1)), aes(x = x)) +
+  geom_density(fill="blue", color="red") +
+  labs(title = "Kernel Density of Income at T1")
+
+p3<- ggplot(df_wide, aes(x = income_numeric_0, y = income_numeric_1)) + geom_point(color="#04c24a")
+
+# Create both plot and store in variable
+p4<-ggplot(df_wide, aes(x=income_numeric_0, y=income_numeric_1))+
+geom_segment( aes(x=income_numeric_0, xend=income_numeric_1, y=0, yend=income_numeric_2), color="grey") + geom_point( color="green", size=4)
+ 
+p5<-ggplot(df_wide, aes(x = income_numeric_0)) + 
+geom_density(fill="#69b3a2", color="#e9ecef", alpha=0.8)
+ 
+p6<-ggplot(df_wide, aes(x=income_numeric_0, y=income_numeric_1)) + 
+geom_bar(fill="#69b3a2", stat = "identity")
+ 
+# Arrange the ggplot2 objects on a grid
+grid.arrange(p1, p2, p3, p4, p5, p6, ncol = 3)
+
+ggplot(df_wide, aes(x = sex, y = income_numeric_0, fill = sex)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c("orange", "darkgrey")) +
+  theme_bw() +
+  theme(legend.position = "none")
 ```
 
 This signed rank test evaluates xxxx. The model output provides:
