@@ -15,16 +15,9 @@ format:
 ---
 
 ::: {.column-screen}
-![](./figures/Figlanding5.svg)
+![](./figures/Frame.svg)
 :::
 
-```{=html}
-
-<!-- <div class="bg"></div> -->
-
-<!--<p>test3.</p> -->
-
-```
 
 
 

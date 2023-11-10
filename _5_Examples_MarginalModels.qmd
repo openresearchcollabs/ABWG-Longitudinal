@@ -31,7 +31,9 @@ In this example, we will utilize marginal models to analyze xxxxxx obtained acro
 #| output: FALSE
 
 # Create a list of required packages
-packages_required <- c("tidyverse","rstatix","DT","lme4","geepack")
+packages_required <- c("tidyverse","lme4","geepack", "report",
+                       "broom","gridExtra","easystats","gtsummary",
+                       "marginaleffects")
 
 # Check which packages are not installed and install them
 packages_to_install <- setdiff(packages_required, rownames(installed.packages()))
@@ -57,11 +59,14 @@ lapply(packages_required, library, character.only = TRUE)
 #| output: FALSE
 
 library(tidyverse)    # Collection of R packages for data science
-library(rstatix)      # Pipe-friendly framework for basic statistical tests
-library(DT)           # Rendering interactive data tables
 library(lme4)         # Linear mixed-effects models
 library(geepack)      # Generalized Estimating Equations (GEE) analysis
-
+library(report)       # Easy reporting of regression analyses
+library(broom)        # Tidy and augment statistical models output
+library(gridExtra)    # Arrange multiple grid-based plots on a page
+library(easystats)    #
+library(gtsummary)    #
+library(marginaleffects) #
 ```
 :::
 
@@ -162,87 +167,24 @@ df <- merged_data %>%
 #| messages: FALSE
 #| warning: FALSE
 
-# Define a function to compute descriptives
-compute_descriptives <- function(data, event_name) {
-  # For factor variables
-  sex_desc <- paste0(table(data$sex), " (", round(100 * prop.table(table(data$sex)), 1), "%)")
-  race_desc <- paste0(table(data$race.4level), " (", round(100 * prop.table(table(data$race.4level)), 1), "%)")
-  
-  # For numeric variables
-  age_desc <- paste0(round(mean(data$age, na.rm = TRUE), 2), " (", round(sd(data$age, na.rm = TRUE), 2), ")")
-  weight_desc <- paste0(round(mean(data$anthroweightcalc, na.rm = TRUE), 2), " (", round(sd(data$anthroweightcalc, na.rm = TRUE), 2), ")")
-  height_desc <- paste0(round(mean(data$anthroheightcalc, na.rm = TRUE), 2), " (", round(sd(data$anthroheightcalc, na.rm = TRUE), 2), ")")
-  
-  # Combine into a data frame
-  desc_df <- data.frame(
-    Variable = c("Sex - Female", "Sex - Male or other", "Race - Asian", "Race - Black", "Race - Other/Mixed", "Race - White", "Age", "Weight", "Height"),
-    Value = c(sex_desc, race_desc, age_desc, weight_desc, height_desc)
-  )
-  
-  # Rename the Value column based on event name
-  colnames(desc_df)[2] <- event_name
-  return(desc_df)
-}
+descriptives_table <- df %>%
+  select(eventname, sex, race.4level, hisp, anthroweightcalc) %>%
+  mutate(eventname = factor(eventname, labels = c("Baseline", "Year 1","Year 2","Year 3","Year 4"))) %>%
+  mutate(sex = factor(sex, labels = c("Female", "Male"))) %>%
+  tbl_summary(
+    by = eventname,
+    missing = "no",
+    label = list(sex ~ "Sex", race.4level ~ "Race", hisp ~ "Hispanic", 
+                 anthroweightcalc ~ "Weight"),
+    statistic = list(all_continuous() ~ "{mean} ({sd}) )", all_categorical() ~ "{p}%"),
+  ) %>%
+modify_header(all_stat_cols() ~ "**{level}**<br>N = {n}") %>%
+  bold_labels() %>%
+  italicize_levels() %>%
+  modify_spanning_header(all_stat_cols() ~ "**Assessment Wave**")
+theme_gtsummary_compact()
 
-# Compute descriptives for each event
-baseline_desc <- compute_descriptives(subset(df, eventname == "baseline_year_1_arm_1"), "baseline_year_1_arm_1")
-one_year_desc <- compute_descriptives(subset(df, eventname == "1_year_follow_up_y_arm_1"), "1_year_follow_up_y_arm_1")
-two_year_desc <- compute_descriptives(subset(df, eventname == "2_year_follow_up_y_arm_1"), "2_year_follow_up_y_arm_1")
-three_year_desc <- compute_descriptives(subset(df, eventname == "3_year_follow_up_y_arm_1"), "3_year_follow_up_y_arm_1")
-
-# Join all data frames side-by-side
-final_table <- baseline_desc %>%
-  left_join(one_year_desc, by = "Variable") %>%
-  left_join(two_year_desc, by = "Variable") %>%
-  left_join(three_year_desc, by = "Variable")
-
-# Adjust for the required format
-final_table[1:6, 3:5] <- NA
-
-# Round numeric values to two decimal places
-numeric_cols <- sapply(final_table, is.numeric)
-final_table[numeric_cols] <- lapply(final_table[numeric_cols], round, 2)
-
-# Create heading rows with the same columns as final_table
-heading_rows <- data.frame(
-  Variable = c("Sex", "Race"),
-  baseline_year_1_arm_1 = NA_real_,
-  `1_year_follow_up_y_arm_1` = NA_real_,
-  `2_year_follow_up_y_arm_1` = NA_real_,
-  `3_year_follow_up_y_arm_1` = NA_real_
-)
-
-# Set column names of heading_rows to match final_table
-colnames(heading_rows) <- colnames(final_table)
-
-# Introduce group labels and adjust the "Variable" column
-final_table <- rbind(
-                    heading_rows[1,], 
-                    final_table[1:2,],
-                    heading_rows[2,], 
-                    final_table[3:6,], 
-                    final_table[7:9,]
-                    )
-
-# Update the Variable column to remove redundant factor variable name
-final_table$Variable <- gsub("Sex - ", "", final_table$Variable)
-final_table$Variable <- gsub("Race - ", "", final_table$Variable)
-final_table$Variable[final_table$Variable == "Male or other"] <- "Male"
-
-# Add non-breaking spaces for increased indentation
-final_table$Variable[final_table$Variable %in% c("Female", "Male", "Asian", "Black", "Other/Mixed", "White")] <- 
-  paste0(rep("&nbsp;", 6), final_table$Variable[final_table$Variable %in% c("Female", "Male", "Asian", "Black", "Other/Mixed", "White")])
-
-# Update column headers
-colnames(final_table)[2:5] <- c("Baseline", "Year 1", "Year 2", "Year 3")
-
-# Display the table interactively without row names, with updated column headers, and with HTML entities rendered
-datatable(final_table, 
-          colnames = c("", "Baseline", "Year 1", "Year 2", "Year 3"),
-          options = list(pageLength = nrow(final_table), autoWidth = TRUE),
-          rownames = FALSE, escape = FALSE,
-          caption = "Descriptives Table")  # Add table title
-
+descriptives_table
 ```
 
 :::
@@ -265,22 +207,12 @@ The code fits a xxxx to examine the 'xxxxx' variable across time points ('eventn
 #| warning: FALSE
 #| echo: TRUE
 
-
-```
-
-```{r}
-#Fit the longitudinal marginal model with a binary outcome using a logit link function:
-
+# Fitting the longitudinal marginal model
 model <- geeglm(anthroweightcalc ~ eventname, data = df, id = src_subject_id, family = gaussian(), corstr = "exchangeable")
+#model <- geeglm(Job_Satisfaction ~ TimePoint, data = data, id = Individual, family = #binomial(link = "logit"), corstr = "exchangeable")
 ```
-
-
 
 ```{r}
 summary(model)
 ```
-
-
-
-
 

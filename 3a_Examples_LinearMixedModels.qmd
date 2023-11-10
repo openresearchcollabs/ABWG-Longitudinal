@@ -32,7 +32,7 @@ In this example, we will use the LMM:ri to analyze trajectories of height obtain
 #| output: FALSE
 
 # Create a list of required packages
-packages_required <- c("tidyverse","rstatix","DT","lme4","report","broom","gridExtra", "easystats", "gtsummary")
+packages_required <- c("tidyverse","easystats","lme4","gtsummary","report","broom","gridExtra")
 
 # Check which packages are not installed and install them
 packages_to_install <- setdiff(packages_required, rownames(installed.packages()))
@@ -58,14 +58,12 @@ lapply(packages_required, library, character.only = TRUE)
 #| output: FALSE
 
 library(tidyverse)    # Collection of R packages for data science
-library(rstatix)      # Pipe-friendly framework for basic statistical tests
-library(DT)           # Rendering interactive data tables
+library(easystats)    # Collection of R packages statistical modeling, visualization, and reporting
 library(lme4)         # Linear mixed-effects models
+library(gtsummary)    # Publication-ready tables
 library(report)       # Easy reporting of regression analyses
 library(broom)        # Tidy and augment statistical models output
 library(gridExtra)    # Arrange multiple grid-based plots on a page
-library(easystats)    #
-library(gtsummary)    #
 
 ```
 :::
