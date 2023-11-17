@@ -111,7 +111,7 @@ format:
       toggle: false
       caption: none
     grid:
-      sidebar-width: 200px
+      sidebar-width: 350px
       margin-width: 0px
 
 #fontfamily: libertinus
